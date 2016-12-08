@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 
 
+
+
 export default class AETextInput extends Component {
 
     constructor(props) {
@@ -33,3 +35,9 @@ export default class AETextInput extends Component {
     }
 
 }
+
+AETextInput.propTypes = {
+  value: React.PropTypes.string,
+  field: React.PropTypes.object.isRequired,
+  onInputChange:React.PropTypes.func.isRequired
+};
