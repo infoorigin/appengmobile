@@ -42,7 +42,66 @@ class SideBar extends Component {
             source={drawerImage}
           />
         </Image>
-        <List>
+       
+		
+			  <List>
+          <ListItem button iconLeft onPress={() => this.navigateTo('home')} >
+            <View style={styles.listItemContainer}>
+              <View style={[styles.iconContainer, { backgroundColor: '#5cb85c', paddingLeft: 14 }]}>
+                <Icon name="ios-home" style={styles.sidebarIcon} />
+              </View>
+              <Text style={styles.text}>Home</Text>
+            </View>
+          </ListItem>
+
+           <ListItem button iconLeft onPress={() => this.navigateTo('aeform')} >
+            <View style={styles.listItemContainer}>
+              <View style={[styles.iconContainer, { backgroundColor: '#5cb85c', paddingLeft: 14 }]}>
+                <Icon name="ios-home" style={styles.sidebarIcon} />
+              </View>
+              <Text style={styles.text}>Form Test</Text>
+            </View>
+          </ListItem>
+          
+          <ListItem button iconLeft onPress={() => this.navigateTo('mymessages')}>
+            <View style={styles.listItemContainer}>
+              <View style={[styles.iconContainer, { backgroundColor: '#5cb85c' }]}>
+                <Icon name="ios-document-outline" style={styles.sidebarIcon} />
+              </View>
+              <Text style={styles.text}>My Summary</Text>
+            </View>
+          </ListItem>
+          
+          <ListItem button iconLeft onPress={() => this.navigateTo('coverage')} >
+            <View style={styles.listItemContainer}>
+              <View style={[styles.iconContainer, { backgroundColor: '#5cb85c', paddingLeft: 10 }]}>
+                <Icon name="ios-checkmark-circle-outline" style={styles.sidebarIcon} />
+              </View>
+              <Text style={styles.text}>My Coverage</Text>
+            </View>
+          </ListItem>
+          
+          <ListItem button iconLeft onPress={() => this.navigateTo('finddoctor')} >
+            <View style={styles.listItemContainer}>
+              <View style={[styles.iconContainer, { backgroundColor: '#5cb85c' }]}>
+                <Icon name="ios-search" style={styles.sidebarIcon} />
+              </View>
+              <Text style={styles.text}>Find Care</Text>
+            </View>
+          </ListItem>
+          
+          <ListItem button iconLeft onPress={() => this.navigateTo('support')} >
+            <View style={styles.listItemContainer}>
+              <View style={[styles.iconContainer, { backgroundColor: '#5cb85c', paddingLeft: 10 }]}>
+                <Icon name="ios-call" style={styles.sidebarIcon} />
+              </View>
+              <Text style={styles.text}>Support</Text>
+            </View>
+          </ListItem>
+		
+		
+		
+		
           <ListItem button iconLeft onPress={() => this.navigateTo('anatomy')} >
             <View style={styles.listItemContainer}>
               <View style={[styles.iconContainer, { backgroundColor: '#0209D8', paddingLeft: 14 }]}>

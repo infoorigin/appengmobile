@@ -6,8 +6,18 @@ import { Drawer } from 'native-base';
 import { actions } from 'react-native-navigation-redux-helpers';
 
 import { closeDrawer } from './actions/drawer';
+import MyMessage from './components/eccheckmessage/';
+import Coverage from './components/eccoverage/';
+import FindCare from './components/ecfindcare/';
+import IDCard from './components/ecidcard/';
+import Summary from './components/ecsummary/';
+import Support from './components/ecsupport/';
+import MyClaim from './components/myclaim/';
+import MyCoverage from './components/mycoverage/';
 
 import AEForm from './components/aeform/';
+
+import MyClaimDetail from './components/myclaim/claimdetail';
 
 import Home from './components/home/';
 import Anatomy from './components/anatomy/';
@@ -101,7 +111,29 @@ class AppNavigator extends Component {
   _renderScene(props) { // eslint-disable-line class-methods-use-this
     console.log("Route Key :",props.scene.route.key);
     switch (props.scene.route.key) {
-      case 'splashscreen':
+      
+	  
+	  case 'aeform':return <AEForm  formid='f8448ea6-440e-4624-905e-153ca8bf3a51' baseUrl='http://ec2-52-4-99-199.compute-1.amazonaws.com:9900/mconfig'/>;
+      
+       case 'mycoverage':
+	    		return <MyCoverage />;
+       case 'detailClaim':
+	    		return <MyClaimDetail />;
+    	 case 'myclaim':
+	    		return <MyClaim />;
+	    case 'support':
+	    		return <Support />;
+	    case 'mysummary':
+	    		return <Summary />;
+	    case 'idcard':
+	    		return <IDCard />;
+	    case 'finddoctor':
+	    		return <FindCare />;
+	    case 'coverage':
+	    		return <Coverage />;
+    	 case 'mymessages':
+    		return <MyMessage />;
+	  case 'splashscreen':
         return <SplashPage />;
       case 'home':
         return <Home />;

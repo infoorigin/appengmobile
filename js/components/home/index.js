@@ -1,9 +1,10 @@
 
 import React, { Component } from 'react';
-import { Image } from 'react-native';
+import { Image,TouchableHighlight, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Button, View, H3 } from 'native-base';
+import { Container,Content, Button, View, H3, Text,Header,Title,Icon, Card, CardItem} from 'native-base';
 
+import navigateTo from '../../actions/sideBarNav';
 import { openDrawer } from '../../actions/drawer';
 import myTheme from '../../themes/base-theme';
 import styles from './styles';
@@ -14,29 +15,58 @@ const launchscreenLogo = require('../../../img/logo-kitchen-sink.png');
 class Home extends Component { // eslint-disable-line
 
   static propTypes = {
-    openDrawer: React.PropTypes.func,
+   openDrawer: React.PropTypes.func,
+    navigateTo: React.PropTypes.func,
   }
 
+  navigateTo(route) {
+    this.props.navigateTo(route, 'home');
+  }
+ 
   render() {
     return (
       <Container theme={myTheme}>
+
+      	<Header>
+          <Title>E-Care</Title>
+
+          <Button transparent onPress={this.props.openDrawer}>
+            <Icon name="ios-menu" />
+          </Button>
+        </Header>
+      
         <Image source={launchscreenBg} style={styles.imageContainer}>
-          <View style={styles.logoContainer}>
-            <Image source={launchscreenLogo} style={styles.logo} />
-          </View>
-          <View style={{ alignItems: 'center', marginBottom: 50, backgroundColor: 'transparent' }}>
-            <H3 style={styles.text}>App to showcase</H3>
+         
+          <View style={{ alignItems: 'center', marginBottom: 50, marginTop:10, backgroundColor: 'transparent' }}>
+            <H3 style={styles.text}>E-Care</H3>
             <View style={{ marginTop: 8 }} />
-            <H3 style={styles.text}>NativeBase components</H3>
+            <H3 style={styles.text}>Welcome Robert</H3>
           </View>
-          <View>
-            <Button
-              style={{ backgroundColor: '#6FAF98', alignSelf: 'center' }}
-              onPress={this.props.openDrawer}
-            >
-                Lets Go!
-            </Button>
-          </View>
+          
+          <View >	
+   
+          <Card style={styles.cardContainer}> 
+            
+            <CardItem style={styles.cardItems} onPress={() => this.navigateTo('mysummary')}>
+                  <Text style={styles.cardText}>VIEW MY SUMMARY</Text>
+            </CardItem>
+           
+            <CardItem style={styles.cardItems} onPress={() => this.navigateTo('finddoctor')}>
+              <Text style={styles.cardText}>FIND A DOCTOR</Text>
+            </CardItem>
+            
+            <CardItem style={styles.cardItems} onPress={() => this.navigateTo('myclaim')}>
+              <Text style={styles.cardText}>My Claims</Text>
+            </CardItem>
+            
+            <CardItem style={styles.cardItems} onPress={() => this.navigateTo('mycoverage')}>
+              <Text style={styles.cardText}>Coverage</Text>
+            </CardItem>
+            
+           
+          </Card>
+       
+		   </View>
         </Image>
       </Container>
     );
@@ -46,6 +76,7 @@ class Home extends Component { // eslint-disable-line
 function bindActions(dispatch) {
   return {
     openDrawer: () => dispatch(openDrawer()),
+    navigateTo: (route, homeRoute) => dispatch(navigateTo(route, homeRoute)),
   };
 }
 

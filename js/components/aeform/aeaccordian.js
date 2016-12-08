@@ -9,16 +9,12 @@ import {
 
 import { List, ListItem, InputGroup, Input} from 'native-base';
 
-
 import * as Animatable from 'react-native-animatable';
 import Collapsible from 'react-native-collapsible';
 import Accordion from 'react-native-collapsible/Accordion';
 import AEFormSection from './aeformsection.js'
 
-
 const BACON_IPSUM = 'Bacon ipsum dolor amet chuck turducken landjaeger tongue spare ribs. Picanha beef prosciutto meatball turkey shoulder shank salami cupim doner jowl pork belly cow. Chicken shankle rump swine tail frankfurter meatloaf ground round flank ham hock tongue shank andouille boudin brisket. ';
-
-
 
 const SELECTORS = [
   {
@@ -118,10 +114,9 @@ export default class AccordionView extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Accordion Example 4</Text>
+      <View >
+      
 
-        
         <Accordion
           activeSection={this.state.activeSection}
           sections={this.props.sections}

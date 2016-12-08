@@ -3,10 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
+  TextInput ,
   TouchableHighlightS
 } from 'react-native';
 
-import { List, ListItem, InputGroup, Input} from 'native-base';
+
 import AETextInput from './aetextinput.js';
 
 export default class AEFormSection extends Component {
@@ -43,22 +44,28 @@ _onInputBlur(){
 }  
 
 render() {
+
+  return(
  
-  return (
-      <List>
-        {this.props.sectionItem.fields.map((field, key) => (
-            <ListItem key={key}>
-             <InputGroup> 
-                  <Input inlineLabel label={field.name} 
-                    onBlur = {() => this._onInputBlur()}
-                    onChangeText = {(text) => {this._onInputChange2(field.name, text);}}
-                    placeholder={field.placeholder} 
-                    value={this.state.data[field.name]} />
-               </InputGroup> 
-            </ListItem>
-        ))}
-      </List>
-     );
+    <View style={{padding:10}}>
+      {
+        this.props.sectionItem.renderColumns.map((field, key)=>(
+          
+
+          <AETextInput key={key}
+            value={this.state.data[field.logicalColumn.jsonName]}
+            label = {field.label}
+             onBlur = {() => this._onInputBlur()}
+          />
+
+          
+                
+        ))
+      }
+      </View>
+ 
+  );    
+
 }
 
 }

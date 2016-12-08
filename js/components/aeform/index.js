@@ -13,22 +13,29 @@ import AEFormSection from './aeformsection.js'
 const Item = Picker.Item;
 const camera = require('../../../img/camera.png');
 
-
-
-
-
+const configUrl='/rest/md/';
+const configRequestHeader= {
+			  method: 'GET',
+			  headers: {
+			    'Accept': 'application/json',
+			    'Content-Type': 'application/json',
+			    'app-key':'db6003e6-0093-4e3d-a8d0-d4ff26b750c2',
+				 'mediaType' :'json'
+			  }
+};
 class AEForm extends Component {
 
   static propTypes = {
     openDrawer: React.PropTypes.func,
+    formid:React.PropTypes.string,
+    baseUrl: React.PropTypes.string,
   }
 
   constructor(props) {
     super(props);
 
-    
-
     this.state = {
+      formMD:{},
       formsections : [],
       formdata : []
     };
@@ -39,12 +46,12 @@ class AEForm extends Component {
 
   _initialSectionData(sectionItem) {
       let initialData = {};
-      sectionItem.fields.forEach(f => initialData[f.name] = "");
+      sectionItem.renderColumns.forEach(f => initialData[f.logicalColumn.jsonName] = f.defaultValue);
     return initialData;
   }
 
   _buildSection(sectionItem, sectionData) {
-    console.log("sectionConfig :", JSON.stringify(sectionItem))
+    console.log("sectionConfig render columns:", JSON.stringify(sectionItem.renderColumns))
       let section = {
           title: sectionItem.name,
           content: <AEFormSection onSectionDataChange={this._onSectionDataChange} sectionData={sectionData} sectionItem={sectionItem}> </AEFormSection>,
@@ -52,50 +59,42 @@ class AEForm extends Component {
       return section;
   }
 
+ async pullMD(){
+         var configCompleteUrl = this.props.baseUrl+configUrl+this.props.formid;
+         var formMD={};
+	       await fetch(configCompleteUrl,configRequestHeader).then((response)=> response.json()).then(
+	        function (jsondata) 
+          {  
+            formMD=jsondata.returnData.data;
+
+            let formData = new Object();
+
+
+            formMD.sections.forEach(function(sf) {
+                formData[sf.name] = this._initialSectionData(sf);
+            }.bind(this)); 
+           
+
+
+            let sections = formMD.sections.map(function(sf){ 
+                            return this._buildSection(sf,formData[sf.name]);
+                          }.bind(this)); 
+
+//            this.state.formsections=sections;
+ //           this.state.formdata=formData;             
+            this.setState({
+              formsections: sections,
+              formdata : formData
+            });
+
+				}.bind(this)).catch(function (error) {  
+  					console.log('Request failure: ', error);  
+				}); 
+        return formMD;
+  }
+
   componentDidMount() {
-    let sectionConfigs = [
-      {
-        name :"section1",
-        fields : [
-          {
-          name : "S1Fld1",
-          placeholder : "plc11"
-          },
-          {
-            name : "S1Fld2",
-            placeholder : "plc12"
-          }
-        ]
-      },
-      {
-        name :"section2",
-        fields : [
-          {
-          name : "S2Fld1",
-          placeholder : "plc21"
-          },
-          {
-            name : "S2Fld2",
-            placeholder : "plc122"
-          }
-        ]
-      }
-
-    ]
-    let formData = new Object();
-    sectionConfigs.forEach(function(sf) {
-        formData[sf.name] = this._initialSectionData(sf);
-    }.bind(this)); 
-    console.log("Component mount:",JSON.stringify(formData));
-    let sections = sectionConfigs.map(function(sf){ 
-                    return this._buildSection(sf,formData[sf.name]);
-                  }.bind(this)); 
-    
-
-     this.setState({
-      formsections: sections,
-      formdata : formData
-    });
+    this.pullMD();
   }
 
   _onSectionDataChange(name, sectiondata) {
@@ -124,7 +123,7 @@ class AEForm extends Component {
 
         <Content>
           <AccordionView  sections = {this.state.formsections}/>
-          
+          <Button primary> Primary </Button>
         </Content>  
       </Container>
       

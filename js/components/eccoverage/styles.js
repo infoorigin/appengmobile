@@ -7,7 +7,7 @@ const deviceHeight = Dimensions.get('window').height;
 
 
 function vw(percentageWidth) {
-  return Dimensions.get('window').width * (percentageWidth / 90);
+  return Dimensions.get('window').width * (percentageWidth / 100);
 }
 
 function vh(percentageHeight) {
@@ -42,23 +42,22 @@ module.exports = StyleSheet.create({
   		backgroundColor: 'transparent',
   		flexDirection: 'row',
   		justifyContent: 'center',
-  		
+  		alignItems: 'flex-end',
   },
   
   cardItems: {
   		flex:1,
   		justifyContent: 'center',
   		alignItems: 'center',
-  		flexDirection: 'row',
+  		flexDirection: 'column',
   		
   		backgroundColor: 'cyan',
-  		width:vw(90) /2,
-		  height:vh(100) / 4,
+  		width:vw(90) / 2,
+		height:vh(100) / 4,
   		marginLeft:5,
   		marginTop:5,
   		borderRadius:10,
   		padding:40,
-  		opacity:0.5,
   },
   
   cardText: {
