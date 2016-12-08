@@ -3,9 +3,7 @@ import { InputGroup, Input } from 'native-base';
 import {
   StyleSheet,
   Text,
-  View,
-  TextInput ,
-  TouchableHighlightS
+  View
 } from 'react-native';
 
 
@@ -13,21 +11,20 @@ export default class AETextInput extends Component {
 
     constructor(props) {
         super(props);
-    //    console.log("Props inside AETextInput",JSON.stringify(props));
         this.state = { text: props.value};
     }
 
     
     render() {
-       // console.log("field name :",this.props.field.name);
+        console.log("field name :",this.props.field.name);
         return (
 
          <View>
-             <Text>{this.props.label}</Text>   
+             <Text>{this.props.field.label}</Text>   
             <InputGroup borderType='rounded'>
                 <Input
                     onChangeText={(text) => this.setState({text})}
-                    
+                    onBlur={(event) => this.props.onInputChange(this.props.field.name, this.state.text)}
                     value={this.state.text} />
             </InputGroup>   
         </View>

@@ -34,7 +34,6 @@ _onInputChange2(fieldName, value){
         data : data
      });
      console.log("updated input :",fieldName, value, JSON.stringify(data));
-    
      this.props.onSectionDataChange(this.props.sectionItem.name, data);
 }
 
@@ -54,8 +53,8 @@ render() {
 
           <AETextInput key={key}
             value={this.state.data[field.logicalColumn.jsonName]}
-            label = {field.label}
-             onBlur = {() => this._onInputBlur()}
+              onInputChange={this._onInputChange2} 
+             field = {field}
           />
 
           

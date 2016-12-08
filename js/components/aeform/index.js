@@ -51,7 +51,7 @@ class AEForm extends Component {
   }
 
   _buildSection(sectionItem, sectionData) {
-    console.log("sectionConfig render columns:", JSON.stringify(sectionItem.renderColumns))
+    console.log("sectionConfig :", JSON.stringify(sectionItem))
       let section = {
           title: sectionItem.name,
           content: <AEFormSection onSectionDataChange={this._onSectionDataChange} sectionData={sectionData} sectionItem={sectionItem}> </AEFormSection>,
