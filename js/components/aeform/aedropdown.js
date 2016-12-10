@@ -1,38 +1,44 @@
 
+import React, { Component } from 'react';
 import ModalPicker from 'react-native-modal-picker'
+import { InputGroup, Input } from 'native-base';
+
+import {
+  StyleSheet,
+  Text,
+  View,TextInput
+} from 'react-native';
+
+
 
 export default class AEDropdown extends Component {
   
   constructor(props) {
     super(props);
-    this.state = { text: props.field.placeholder };
+    this.state = { text: props.field.placeholder,
+                   value:props.field.value };
   }
 
   render() { 
 
     return (
-                <View style={{flex:1, justifyContent:'space-around', padding:50}}>
+                <View style={{flex:1, justifyContent:'space-around'}}>
+                    
                     <ModalPicker
-                    data={data}
+                    data={[{label:"India",key:"India"},{label:"USA",key:"USA"},{label:"Germany",key:"Germany"}]}
                     initValue="Select something yummy!"
                     onChange={(option)=>{ 
-                        this.setState({lable:option.label, });
-                        this.setState({textInputValue:option.label});
-                        this.setState({textInputValue:option.label});
+                        this.setState({text:option.label,value:option.key});
+                        this.props.onInputChange(this.props.field.logicalColumn.jsonName, option.key);
                     }}>
-                    
-                     <View>
-                        <Text>{field.label}</Text>   
-                        <InputGroup borderType='rounded'>
-                            <Input 
-                            
-                            value={this.state.data[field.logicalColumn.jsonName]}
-                            onBlur = {() => this._onInputBlur()}
-                            onChangeText = {(text) => {this._onInputChange2(field.logicalColumn.jsonName, text);}}
-                            />
-                        </InputGroup>
-                    </View>
 
+                       
+                            <Text>{this.props.field.label}</Text>   
+                                <TextInput editable={false} underlineColorAndroid='transparent' 
+                                style={{borderWidth:1, borderColor:'#ccc', height:40, borderRadius: 10}}
+                                value={this.state.text}
+                                />
+                        
                     </ModalPicker>
                 </View>
     );

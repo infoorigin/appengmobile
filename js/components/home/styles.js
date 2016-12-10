@@ -42,6 +42,7 @@ module.exports = StyleSheet.create({
   		backgroundColor: 'transparent',
   		flexDirection: 'row',
   		justifyContent: 'center',
+      flexWrap: 'wrap'
   		
   },
   

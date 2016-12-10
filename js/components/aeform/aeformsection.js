@@ -4,11 +4,15 @@ import {
   Text,
   View,
   TextInput ,
+  Input,
   TouchableHighlightS
 } from 'react-native';
 
-
+import AEDropdown from './aedropdown.js';
 import AETextInput from './aetextinput.js';
+import AERadio from './aeradio.js';
+import AECheckbox from './aecheckbox.js';
+import AETextArea from './aetextarea.js';
 
 export default class AEFormSection extends Component {
 
@@ -50,17 +54,45 @@ render() {
       {
         this.props.sectionItem.renderColumns.map((field, key)=>(
           
+          <View>
+         
 
-          <AETextInput key={key}
+           <AEDropdown key={key}
             value={this.state.data[field.logicalColumn.jsonName]}
               onInputChange={this._onInputChange2} 
              field = {field}
           />
+           <AETextInput 
+            value={this.state.data[field.logicalColumn.jsonName]}
+              onInputChange={this._onInputChange2} 
+             field = {field}
+          />
+           <AERadio 
+            value={this.state.data[field.logicalColumn.jsonName]}
+              onInputChange={this._onInputChange2} 
+             field = {field}
+             itemsPerRow='4'
+          />
 
-          
+           <AECheckbox 
+            value={this.state.data[field.logicalColumn.jsonName]}
+              onInputChange={this._onInputChange2} 
+             field = {field}
+             itemsPerRow='4'
+          />
+         
+           <AETextArea 
+            value={this.state.data[field.logicalColumn.jsonName]}
+              onInputChange={this._onInputChange2} 
+             field = {field}
+             itemsPerRow='4'
+          />
+
+          </View>
                 
         ))
       }
+      
       </View>
  
   );    
