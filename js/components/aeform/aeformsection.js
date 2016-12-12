@@ -52,49 +52,60 @@ render() {
  
     <View style={{padding:10}}>
       {
-        this.props.sectionItem.renderColumns.map((field, key)=>(
-          
-          <View>
-         
+        this.props.sectionItem.renderColumns.map(function(field, key){
+             console.log('------------------------------>');
+             console.log(field);
+             switch(field.type) {
+                                case 'selectoption':
+                                   return(
+                                          <AEDropdown key={key}
+                                            value={this.state.data[field.logicalColumn.jsonName]}
+                                              onInputChange={this._onInputChange2} 
+                                            field = {field}
+                                          />
+                                         );
+                                case 'checkbox':
+                                   return(
+                                          <AECheckbox key={key}
+                                              value={this.state.data[field.logicalColumn.jsonName]}
+                                                onInputChange={this._onInputChange2} 
+                                              field = {field}
+                                              itemsPerRow='4'
+                                            />
+                                          );
+                                case 'radiooption':
+                                   return(
+                                          <AERadio key={key}
+                                            value={this.state.data[field.logicalColumn.jsonName]}
+                                              onInputChange={this._onInputChange2} 
+                                            field = {field}
+                                            itemsPerRow='4'
+                                          />
+                                        );
+                                case 'textarea':
+                                     return(
+                                        <AETextArea key={key}
+                                            value={this.state.data[field.logicalColumn.jsonName]}
+                                              onInputChange={this._onInputChange2} 
+                                            field = {field}
+                                            itemsPerRow='4'
+                                          />
+                                     );
+                                default:
+                                return(
+                                   <AETextInput key={key}
+                                    value={this.state.data[field.logicalColumn.jsonName]}
+                                      onInputChange={this._onInputChange2} 
+                                    field = {field}
+                                  />
+                                );
+             }
 
-           <AEDropdown key={key}
-            value={this.state.data[field.logicalColumn.jsonName]}
-              onInputChange={this._onInputChange2} 
-             field = {field}
-          />
-           <AETextInput 
-            value={this.state.data[field.logicalColumn.jsonName]}
-              onInputChange={this._onInputChange2} 
-             field = {field}
-          />
-           <AERadio 
-            value={this.state.data[field.logicalColumn.jsonName]}
-              onInputChange={this._onInputChange2} 
-             field = {field}
-             itemsPerRow='4'
-          />
-
-           <AECheckbox 
-            value={this.state.data[field.logicalColumn.jsonName]}
-              onInputChange={this._onInputChange2} 
-             field = {field}
-             itemsPerRow='4'
-          />
-         
-           <AETextArea 
-            value={this.state.data[field.logicalColumn.jsonName]}
-              onInputChange={this._onInputChange2} 
-             field = {field}
-             itemsPerRow='4'
-          />
-
-          </View>
-                
-        ))
+        }.bind(this))
       }
-      
-      </View>
- 
+      </View>   
+
+        
   );    
 
 }

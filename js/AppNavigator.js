@@ -16,6 +16,7 @@ import MyClaim from './components/myclaim/';
 import MyCoverage from './components/mycoverage/';
 
 import AEForm from './components/aeform/';
+import AEDataGrid from './components/aedatagrid/';
 
 import MyClaimDetail from './components/myclaim/claimdetail';
 
@@ -112,15 +113,22 @@ class AppNavigator extends Component {
     console.log("Route Key :",props.scene.route.key);
     switch (props.scene.route.key) {
       
-	  
-	  case 'aeform':return <AEForm  formid='f8448ea6-440e-4624-905e-153ca8bf3a51' baseUrl='http://ec2-52-4-99-199.compute-1.amazonaws.com:9900/mconfig'/>;
+       case 'datagrid':
+	    		return  <AEDataGrid 
+             girdId='8505ee57-8b85-42e4-a3e7-2481e3371d62' 
+             nodeId='05817d40-92f2-4694-a1bb-9eeb5b6772cc' 
+             baseUrl='http://ec2-52-4-99-199.compute-1.amazonaws.com:9900/mconfig'
+						 />
+
+	     case 'editform':return <AEForm  
+              formid='f8448ea6-440e-4624-905e-153ca8bf3a51' 
+              baseUrl='http://ec2-52-4-99-199.compute-1.amazonaws.com:9900/mconfig'/>;
       
+
        case 'mycoverage':
 	    		return <MyCoverage />;
        case 'detailClaim':
 	    		return <MyClaimDetail />;
-    	 case 'myclaim':
-	    		return <MyClaim />;
 	    case 'support':
 	    		return <Support />;
 	    case 'mysummary':
@@ -141,8 +149,7 @@ class AppNavigator extends Component {
         return <Anatomy />;
       case 'badge':
         return <NHBadge />;
-      case 'aeform':
-        return <AEForm />;
+     
       case 'button':
         return <NHButton />;
       case 'card':

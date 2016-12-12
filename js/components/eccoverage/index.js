@@ -4,7 +4,7 @@ import { Image,TouchableHighlight, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { Container,Content, Button, View, H3, Text,Header,Title,Icon, Card, CardItem,List, ListItem} from 'native-base';
 
-import DataGrid from '../datagrid/';
+import DataGrid from '../aedatagrid/';
 import { openDrawer } from '../../actions/drawer';
 import myTheme from '../../themes/base-theme';
 import styles from './styles';
@@ -33,22 +33,24 @@ class Coverage extends Component { // eslint-disable-line
       
         <Image source={launchscreenBg} style={styles.imageContainer}>
          
-          <View style={{ alignItems: 'flex-start', marginBottom: 50, marginTop:10, backgroundColor: 'transparent' }}>
+          <View style={{ alignItems: 'flex-start', marginBottom: 50, marginTop:10}}>
             <H3 style={styles.text}>XXXXXX</H3>
             <View style={{ marginTop: 8 }} />
             <H3 style={styles.text}>Coverage</H3>
           </View>
           
           <View >	
-   					<Text> Message List </Text>
+   				
 						 
 						 <View>
-						 <DataGrid 
+						 
+             <DataGrid 
              girdId='8505ee57-8b85-42e4-a3e7-2481e3371d62' 
              nodeId='05817d40-92f2-4694-a1bb-9eeb5b6772cc' 
              baseUrl='http://ec2-52-4-99-199.compute-1.amazonaws.com:9900/mconfig'
 						 onClick={()=>Alert.alert('Ok')}
 						 />
+
 						 </View>
 						 
    					 

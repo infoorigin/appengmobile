@@ -50,6 +50,15 @@ class SideBar extends Component {
             </View>
           </ListItem>
 
+           <ListItem button iconLeft onPress={() => this.navigateTo('datagrid')} >
+            <View style={styles.listItemContainer}>
+              <View style={[styles.iconContainer, { backgroundColor: '#5cb85c', paddingLeft: 14 }]}>
+                <Icon name="ios-document-outline" style={styles.sidebarIcon} />
+              </View>
+              <Text style={styles.text}>My Claims</Text>
+            </View>
+          </ListItem>
+
            <ListItem button iconLeft onPress={() => this.navigateTo('aeform')} >
             <View style={styles.listItemContainer}>
               <View style={[styles.iconContainer, { backgroundColor: '#5cb85c', paddingLeft: 14 }]}>
