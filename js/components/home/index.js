@@ -45,8 +45,9 @@ class Home extends Component { // eslint-disable-line
           
           <View >	
    
-          <Card style={styles.cardContainer}> 
-            
+          <View style={styles.cardContainer}> 
+
+           <View style={{justifyContent:'space-around', padding:2}}> 
             <CardItem style={styles.cardItems} onPress={() => this.navigateTo('mysummary')}>
                   <Text style={styles.cardText}>VIEW MY SUMMARY</Text>
             </CardItem>
@@ -54,7 +55,9 @@ class Home extends Component { // eslint-disable-line
             <CardItem style={styles.cardItems} onPress={() => this.navigateTo('finddoctor')}>
               <Text style={styles.cardText}>FIND A DOCTOR</Text>
             </CardItem>
-            
+            </View>
+
+            <View style={{justifyContent:'space-around', padding:2}}>
             <CardItem style={styles.cardItems} onPress={() => this.navigateTo('myclaim')}>
               <Text style={styles.cardText}>My Claims</Text>
             </CardItem>
@@ -62,9 +65,9 @@ class Home extends Component { // eslint-disable-line
             <CardItem style={styles.cardItems} onPress={() => this.navigateTo('mycoverage')}>
               <Text style={styles.cardText}>Coverage</Text>
             </CardItem>
-            
+            </View>
            
-          </Card>
+          </View>
        
 		   </View>
         </Image>

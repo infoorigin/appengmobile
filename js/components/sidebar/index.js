@@ -8,7 +8,7 @@ import navigateTo from '../../actions/sideBarNav';
 import sidebarTheme from './sidebar-theme';
 import styles from './style';
 
-const drawerCover = require('../../../img/drawer-cover.png');
+const drawerCover = require('../../../img/ecare_drawer-cover.png');
 const drawerImage = require('../../../img/logo-kitchen-sink.png');
 
 class SideBar extends Component {
@@ -36,11 +36,7 @@ class SideBar extends Component {
         style={styles.sidebar}
       >
         <Image source={drawerCover} style={styles.drawerCover}>
-          <Image
-            square
-            style={styles.drawerImage}
-            source={drawerImage}
-          />
+         
         </Image>
        
 		

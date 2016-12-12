@@ -31,11 +31,9 @@ export default class AEDropdown extends Component {
                         this.setState({text:option.label,value:option.key});
                         this.props.onInputChange(this.props.field.logicalColumn.jsonName, option.key);
                     }}>
-
-                       
                             <Text>{this.props.field.label}</Text>   
                                 <TextInput editable={false} underlineColorAndroid='transparent' 
-                                style={{borderWidth:1, borderColor:'#ccc', height:40, borderRadius: 10}}
+                                style={{borderWidth:1, borderColor:'#ccc', height:40, borderRadius: 10, padding:10}}
                                 value={this.state.text}
                                 />
                         

@@ -42,7 +42,7 @@ module.exports = StyleSheet.create({
   		backgroundColor: 'transparent',
   		flexDirection: 'row',
   		justifyContent: 'center',
-      flexWrap: 'wrap'
+     padding:5
   		
   },
   
@@ -51,15 +51,14 @@ module.exports = StyleSheet.create({
   		justifyContent: 'center',
   		alignItems: 'center',
   		flexDirection: 'row',
-  		
+  		margin:2,
   		backgroundColor: 'cyan',
   		width:vw(90) /2,
-		  height:vh(100) / 4,
-  		marginLeft:5,
-  		marginTop:5,
+		  height:vh(80) / 4,
+  	
   		borderRadius:10,
-  		padding:40,
-  		opacity:0.5,
+  		padding:30,
+  		
   },
   
   cardText: {
