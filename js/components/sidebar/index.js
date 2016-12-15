@@ -33,8 +33,7 @@ class SideBar extends Component {
     this.props.navigateTo(route, 'home');
   }
 
-  navigateAndRender(actionType, route){
-    const configId = "8505ee57-8b85-42e4-a3e7-2481e3371d62";
+  navigateAndRender(actionType, configId, route){
     this.props.renderAndNavigate(actionType,configId, route);
   }
   
@@ -60,7 +59,7 @@ class SideBar extends Component {
             </View>
           </ListItem>
 
-           <ListItem button iconLeft onPress={() => this.navigateAndRender(gridActions.RENDER_BASE_GRID,'datagrid')} >
+           <ListItem button iconLeft onPress={() => this.navigateAndRender(gridActions.RENDER_BASE_GRID,"b3aab205-85b1-4d26-97f0-78c9ab5c116f","datagrid")} >
             <View style={styles.listItemContainer}>
               <View style={[styles.iconContainer, { backgroundColor: '#5cb85c', paddingLeft: 14 }]}>
                 <Icon name="ios-document-outline" style={styles.sidebarIcon} />

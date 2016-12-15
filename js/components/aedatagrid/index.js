@@ -11,48 +11,10 @@ const contentscreenBg = require('../../../img/basescreen.png');
 const launchscreenBg = require('../../../img/launchscreen-bg.png');
 const launchscreenLogo = require('../../../img/logo-kitchen-sink.png');
 
-const configUrl = '/rest/md/';
-const dataUrl = '/rest/gridData/';
-
-
-const configRequestHeader = {
-	method: 'GET',
-	headers: {
-		'Accept': 'application/json',
-		'Content-Type': 'application/json',
-		'app-key': 'db6003e6-0093-4e3d-a8d0-d4ff26b750c2',
-		'mediaType': 'json'
-	}
-};
-
-const dataRequestHeader = {
-	method: 'POST',
-	headers: {
-		'Accept': 'application/json',
-		'Content-Type': 'application/json',
-		'app-key': 'db6003e6-0093-4e3d-a8d0-d4ff26b750c2',
-		'mediaType': 'json'
-	},
-	body: JSON.stringify({
-		baseEntity: {
-			name: "Business Process",
-			attributes: { APP_LOGGED_IN_PROJECT_ID: 0 },
-			childEntities: []
-								}
-				}),
-};
-
-
-
 class AEDataGrid extends Component {
-
-
-
 	static propTypes = {
 		config: React.PropTypes.object,
-		girdId: React.PropTypes.string,
-		nodeId: React.PropTypes.string,
-		baseUrl: React.PropTypes.string,
+		data: React.PropTypes.array,
 		onClick: React.PropTypes.func,
 		openDrawer: React.PropTypes.func,
 	}
@@ -60,14 +22,13 @@ class AEDataGrid extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			header: [],
-			dataList: []
+			header: []
 		};
 	}
 
 	render() {
 
-		if (this.state.header.length == 0 || this.state.dataList.length == 0) {
+		if (this.state.header.length == 0 || this.props.data.length == 0) {
 			return (<Text> Loading..... </Text>);
 		}
 		return (
@@ -87,7 +48,7 @@ class AEDataGrid extends Component {
 						<H3 style={styles.text}>{this.props.config.dataSet.name}</H3>
 					</View>
 					<Image source={contentscreenBg} style={styles.imageContainer}>
-						<List dataArray={this.state.dataList}
+						<List dataArray={this.props.data}
 							renderRow={(item, i, iteration) =>
 								<ListItem key={i}>
 									<GridRow rowData={item} rowDescription={this.state.header} />
@@ -104,12 +65,12 @@ class AEDataGrid extends Component {
 	}
 	componentDidMount() {
 		console.log("Config item from redux state :" + this.props.config);
-		this.loadData();
+		console.log("Config Init Grid Data[0] from redux state :", this.props.data[0]);
+		this.initGrid();
 	}
 
 
-	async loadData() {
-
+	initGrid() {
 		var headerdata = this.props.config.gridColumns;
 		headerdata = headerdata.filter(function (d) { return d.actionColoum == false; });
 		headerdata = headerdata.sort(function (d1, d2) {
@@ -121,16 +82,7 @@ class AEDataGrid extends Component {
 				return 0;
 			}
 		});
-		var dataCompleteUrl = this.props.baseUrl + dataUrl + this.props.nodeId;
 		this.setState({ header: headerdata });
-
-		await fetch(dataCompleteUrl, dataRequestHeader).then((response) => response.json()).then(
-			function (jsondata) {
-				var businessData = jsondata.returnData.data;
-				this.setState({ dataList: businessData });
-			}.bind(this)).catch(function (error) {
-				console.log('Request failure: ', error);
-			});
 	}
 
 }
@@ -144,6 +96,7 @@ function bindActions(dispatch) {
 const mapStateToProps = state => ({
 	navigation: state.cardNavigation,
 	config: state.ae.grid.config,
+	data: state.ae.grid.data ? state.ae.grid.data : [],
 });
 
 export default connect(mapStateToProps, bindActions)(AEDataGrid);

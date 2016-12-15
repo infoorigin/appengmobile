@@ -52,6 +52,8 @@ import SplashPage from './components/splashscreen/';
 import SideBar from './components/sidebar';
 import statusBarColor from './themes/base-theme';
 
+export const HOMEROUTE = 'home';
+
 const {
   popRoute,
 } = actions;

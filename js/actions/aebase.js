@@ -1,5 +1,4 @@
 
-
 export function renderAndNavigate(actionType,configId, route) {
   return{
     type: actionType,
