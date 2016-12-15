@@ -12,15 +12,15 @@ const initialState = {
   drawerDisabled: true,
 };
 
-export default function (state:State = initialState, action:Action): State {
-  if (action.type === OPEN_DRAWER) {
+export default function (state = initialState, action) {
+  if (action.type == OPEN_DRAWER) {
     return {
       ...state,
       drawerState: 'opened',
     };
   }
 
-  if (action.type === CLOSE_DRAWER) {
+  if (action.type == CLOSE_DRAWER) {
     return {
       ...state,
       drawerState: 'closed',

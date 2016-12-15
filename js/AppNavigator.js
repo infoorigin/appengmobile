@@ -73,6 +73,7 @@ class AppNavigator extends Component {
   }
 
   componentDidMount() {
+    console.log("PrintState State :",this.props.printState);
     BackAndroid.addEventListener('hardwareBackPress', () => {
       const routes = this.props.navigation.routes;
 
@@ -256,6 +257,13 @@ const bindAction = dispatch => ({
 const mapStateToProps = state => ({
   drawerState: state.drawer.drawerState,
   navigation: state.cardNavigation,
+  printState : printState(state),
 });
+
+const printState = (state) => {
+  // Uncomment following line to see redux state data
+  //console.log("All States :",JSON.stringify(state));
+  return "1";
+}
 
 export default connect(mapStateToProps, bindAction)(AppNavigator);

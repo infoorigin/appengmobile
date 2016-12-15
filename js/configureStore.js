@@ -6,17 +6,22 @@ import thunk from 'redux-thunk';
 import { persistStore } from 'redux-persist';
 import reducer from './reducers';
 import promise from './promise';
+import { sagas } from "./sagas/index";
+import createSagaMiddleware from "redux-saga";
 
 export default function configureStore(onCompletion:()=>void):any {
+  const sagaMiddleware = createSagaMiddleware();
+  
   const enhancer = compose(
-    applyMiddleware(thunk, promise),
+    applyMiddleware(sagaMiddleware, thunk, promise),
     devTools({
-      name: 'nativebasekitchensink', realtime: true,
+      name: 'appengmobile', realtime: true,
     }),
   );
 
   const store = createStore(reducer, enhancer);
   persistStore(store, { storage: AsyncStorage }, onCompletion);
-
+  sagaMiddleware.run(sagas);
+  
   return store;
 }

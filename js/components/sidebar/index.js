@@ -8,6 +8,9 @@ import navigateTo from '../../actions/sideBarNav';
 import sidebarTheme from './sidebar-theme';
 import styles from './style';
 
+import {renderAndNavigate} from '../../actions/aebase';
+import * as gridActions from '../../actions/grid';
+
 const drawerCover = require('../../../img/ecare_drawer-cover.png');
 const drawerImage = require('../../../img/logo-kitchen-sink.png');
 
@@ -15,6 +18,7 @@ class SideBar extends Component {
 
   static propTypes = {
     navigateTo: React.PropTypes.func,
+    renderAndNavigate : React.PropTypes.func,
   }
 
   constructor(props) {
@@ -28,6 +32,12 @@ class SideBar extends Component {
   navigateTo(route) {
     this.props.navigateTo(route, 'home');
   }
+
+  navigateAndRender(actionType, route){
+    const configId = "8505ee57-8b85-42e4-a3e7-2481e3371d62";
+    this.props.renderAndNavigate(actionType,configId, route);
+  }
+  
 
   render() {
     return (
@@ -50,7 +60,7 @@ class SideBar extends Component {
             </View>
           </ListItem>
 
-           <ListItem button iconLeft onPress={() => this.navigateTo('datagrid')} >
+           <ListItem button iconLeft onPress={() => this.navigateAndRender(gridActions.RENDER_BASE_GRID,'datagrid')} >
             <View style={styles.listItemContainer}>
               <View style={[styles.iconContainer, { backgroundColor: '#5cb85c', paddingLeft: 14 }]}>
                 <Icon name="ios-document-outline" style={styles.sidebarIcon} />
@@ -265,10 +275,12 @@ class SideBar extends Component {
   }
 }
 
+
 function bindAction(dispatch) {
   return {
     navigateTo: (route, homeRoute) => dispatch(navigateTo(route, homeRoute)),
-  };
+    renderAndNavigate : (actionType,configId, route) => dispatch(renderAndNavigate(actionType ,configId, route)),
+  }
 }
 
 const mapStateToProps = state => ({
