@@ -42,21 +42,20 @@ class AEDataGrid extends Component {
 
 				<Image source={launchscreenBg} style={styles.imageContainer}>
 
-					<View style={{ alignItems: 'center', marginBottom: 50, marginTop: 10 }}>
+					<View style={styles.gridHeaderSection}>
 						<H3 style={styles.text}>Robert's Claims</H3>
-						<View style={{ marginTop: 8 }} />
 						<H3 style={styles.text}>{this.props.config.dataSet.name}</H3>
 					</View>
-					<Image source={contentscreenBg} style={styles.imageContainer}>
+
+					<View source={contentscreenBg} style={styles.gridContainer}>
 						<List dataArray={this.props.data}
 							renderRow={(item, i, iteration) =>
-								<ListItem key={i}>
-									<GridRow rowData={item} rowDescription={this.state.header} />
-								</ListItem>
+								<GridRow  key={i} rowData={item} rowDescription={this.state.header} >
+								</GridRow>
 							}>
 						</List>
 
-					</Image>
+					</View>
 				</Image>
 			</Container>
 

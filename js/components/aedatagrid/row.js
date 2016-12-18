@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { Container,Content, Button, View, H3, Text,Header,Title,Icon, Card, CardItem, List, ListItem} from 'native-base';
 
 import { NumericCell,TextCell } from './cell.js';
+import styles from './styles';
+const rightArrowImage = require('../../../img/Icon-Arrow-Right.png');
 
 class GridRow extends Component{
 
@@ -13,6 +15,7 @@ class GridRow extends Component{
                 rowData:this.props.rowData, 
                 rowDescription:this.props.rowDescription,
         };
+        this.recordClicked = this.recordClicked.bind(this); 
     }
 
     
@@ -23,30 +26,44 @@ class GridRow extends Component{
  
     render(){
                 return (
-                    <TouchableOpacity onPress={this.recordClicked} style={{flex:1, flexDirection:'row'}}>
-                    <View>
+                  
+                   
+                     
+                     <View  style={styles.gridRow}>   
 
+                        <View style={styles.gridRowData}>
                         {this.state.rowDescription.map(function(cellDetail,key){
                            
                            switch(cellDetail.logicalColumn.datatype) {
                                 case 'NUMBER':
                                   
                                   return (
-                                    <Text key={key}>
-                                          {cellDetail.headerName}: {this.state.rowData[cellDetail.logicalColumn.dbColumn.code]}
-                                    </Text>
+                                    <View key={key} style={styles.girdCell}>
+                                         <Text style={styles.gridLabel}> {cellDetail.headerName}:</Text>
+                                         <Text style={styles.gridText}> {this.state.rowData[cellDetail.logicalColumn.dbColumn.code]}</Text>
+                                    </View>
                                   );
 
                                 default:
                                     return (
-                                        <Text key={key}>{cellDetail.headerName}: {this.state.rowData[cellDetail.logicalColumn.dbColumn.code]}</Text>
+                                        <View key={key} style={styles.girdCell}>
+                                         <Text style={styles.gridLabel}> {cellDetail.headerName}:</Text>
+                                         <Text style={styles.gridText}> {this.state.rowData[cellDetail.logicalColumn.dbColumn.code]}</Text>
+                                         </View>
                                     );
                            }   
 
                         }.bind(this))}
-				    </View>
-                    <Icon name="ios-arrow-forward"></Icon>
-                    </TouchableOpacity>
+                         </View>
+
+                         <TouchableOpacity style={styles.gridRowDetailLink} onPress={this.recordClicked}>
+                            <Image source={rightArrowImage} style={styles.gridRowDetailLinkImage}></Image>
+                         </TouchableOpacity>  
+                        
+                     </View> 
+                     
+				  
+                    
                 );
     }
 
