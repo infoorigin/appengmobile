@@ -5,15 +5,20 @@ import * as ceaction from '../actions/ce';
 const initialState = {
   menu: {},
   grid: {},
-  form: {},
+  form: {config:{},keyData:{},data:{}},
   ce: {},
-  cenode: {}
+  cenode: {},
 };
 
 
 export default function (state = initialState, action) {
 
   switch (action.type) {
+    case ceaction.OPEN_NODE_EDIT_FORM:
+    return{
+      ...state,
+      
+    };
     case gridaction.SAVE_GRID_CONFIG:
        return {
       ...state,
@@ -43,7 +48,22 @@ export default function (state = initialState, action) {
       ...state,
        cenode: {config:action.config},
       };
-    
+    case ceaction.PUT_NODE_EDIT_FORM_KEY:
+    return{
+      ...state,
+      form: {key:action.key,data:{},config:{}}
+    };
+    case ceaction.PUT_NODE_EDIT_FORM:
+    return{
+      ...state,
+      form: {key:state.form.key,data:{},config:action.config}
+    }; 
+    case ceaction.PUT_NODE_EDIT_FORM_DATA:
+    return{
+      ...state,
+      form: {key:state.form.key,config:Object.assign({}, state.form.config),data:action.data}
+    };
+
     default:
       return state;
   }

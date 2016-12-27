@@ -7,14 +7,18 @@ import {
   Input,
   TouchableHighlightS
 } from 'react-native';
-
+import { connect } from 'react-redux';
 import AEDropdown from './aedropdown.js';
 import AETextInput from './aetextinput.js';
 import AERadio from './aeradio.js';
 import AECheckbox from './aecheckbox.js';
 import AETextArea from './aetextarea.js';
+import {getPrivilege} from '../../services/usercontext.js';
 
-export default class AEFormSection extends Component {
+class AEFormSection extends Component {
+ static propTypes = {
+    getPrivilege:React.PropTypes.func,
+  }
 
 constructor(props) {
     super(props);
@@ -46,15 +50,26 @@ _onInputBlur(){
   //submit action here
 }  
 
+getElementsWithPrivilege(){
+    
+       let filteredFields = this.props.sectionItem.renderColumns.filter(function(rc){
+            if(this.props.getPrivilege(rc).privilegeType){
+                return true;
+            }
+        }.bind(this));
+        
+        return  filteredFields;
+  }
+
+
 render() {
 
   return(
  
     <View style={{padding:10}}>
       {
-        this.props.sectionItem.renderColumns.map(function(field, key){
-             console.log('------------------------------>');
-             console.log(field);
+        this.getElementsWithPrivilege().filter(function(rc){if(rc.type != 'Hiddenfield')return true;}).map(function(field, key){
+       
              switch(field.type) {
                                 case 'selectoption':
                                    return(
@@ -111,3 +126,14 @@ render() {
 }
 
 }
+
+function bindAction(dispatch) {
+  return {
+    getPrivilege:(configItem) => getPrivilege(configItem)
+  };
+}
+
+const mapStateToProps = state => ({
+});
+
+export default connect(mapStateToProps, bindAction)(AEFormSection);

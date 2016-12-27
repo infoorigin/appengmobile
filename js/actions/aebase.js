@@ -1,4 +1,14 @@
 
+
+
+export function renderEditForm(actionType,keyValue,route) {
+
+  return{
+    type: actionType,
+    key: keyValue,
+    navigationRoute: route
+  };
+}
 export function renderAndNavigate(actionType,configId, route) {
   return{
     type: actionType,

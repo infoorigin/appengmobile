@@ -61,7 +61,7 @@ class SideBar extends Component {
 
            <ListItem button iconLeft onPress={() =>
              
-              this.navigateAndRender(gridActions.RENDER_BASE_GRID,"b3aab205-85b1-4d26-97f0-78c9ab5c116f","datagrid")} >
+              this.navigateAndRender(gridActions.RENDER_BASE_GRID,"c40605f8-f935-451e-99c5-b782c21bc92f","datagrid")} >
 
             <View style={styles.listItemContainer}>
               <View style={[styles.iconContainer, { backgroundColor: '#5cb85c', paddingLeft: 14 }]}>

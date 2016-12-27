@@ -84,8 +84,8 @@ const styles = StyleSheet.create({
 
 export default class AccordionView extends Component {
   state = {
-    activeSection: false,
-    collapsed: true,
+    activeSection: true,
+    collapsed: false,
   };
 
   _toggleExpanded = () => {
@@ -124,6 +124,7 @@ export default class AccordionView extends Component {
           renderContent={this._renderContent}
           duration={400}
           onChange={this._setSection.bind(this)}
+          
         />
 
       </View>

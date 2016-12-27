@@ -10,10 +10,10 @@ import { HOMEROUTE } from '../AppNavigator';
 export function* renderBaseGrid(action) {
   try {
     //TODO Start Spinner
-
+    
     //Fetch and Set CE and Base Node Configs to state
     yield call(setCompositeEntity, action);
-   
+  
     let ceNode = yield select(getCompositeEntityNode);
    
     // Fetch and Set Grid Config to state
@@ -29,7 +29,7 @@ export function* renderBaseGrid(action) {
 
   }
   catch (error) {
-    console.log("Error in API Call for action", JSON.stringify(action), result.error);
+    console.log("Error in API Call for action", JSON.stringify(action), error);
     console.log("Re-Routing to home");
     put(navigateTo(HOMEROUTE, HOMEROUTE));
   }

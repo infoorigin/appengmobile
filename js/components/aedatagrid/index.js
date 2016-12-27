@@ -50,7 +50,7 @@ class AEDataGrid extends Component {
 					<View source={contentscreenBg} style={styles.gridContainer}>
 						<List dataArray={this.props.data}
 							renderRow={(item, i, iteration) =>
-								<GridRow  key={i} rowData={item} rowDescription={this.state.header} >
+								<GridRow  key={i} rowData={item} keyValue={item[this.state.primaryKeyDbCode]} rowDescription={this.state.header} >
 								</GridRow>
 							}>
 						</List>
@@ -81,7 +81,12 @@ class AEDataGrid extends Component {
 				return 0;
 			}
 		});
-		this.setState({ header: headerdata });
+		// primary key
+		var primaryKeyGridColumn = headerdata.filter(function(gc){ return gc.logicalColumn.dbColumn.primaryKey;})[0];
+		
+		// multiple key also need to be handled here
+		
+		this.setState({ header: headerdata,primaryKeyDbCode:primaryKeyGridColumn.logicalColumn.dbColumn.code });
 	}
 
 }

@@ -5,9 +5,20 @@ import { Container,Content, Button, View, H3, Text,Header,Title,Icon, Card, Card
 
 import { NumericCell,TextCell } from './cell.js';
 import styles from './styles';
+import {getPrivilege} from '../../services/usercontext.js';
+
+import {renderEditForm} from '../../actions/aebase';
+import * as ceActions from '../../actions/ce.js';
+
 const rightArrowImage = require('../../../img/Icon-Arrow-Right.png');
 
 class GridRow extends Component{
+    
+    static propTypes = {
+        keyValue:React.PropTypes.string,
+        renderCEEditForm : React.PropTypes.func,
+        getPrivilege:React.PropTypes.func
+    }
 
     constructor(props){
         super(props);
@@ -20,19 +31,29 @@ class GridRow extends Component{
 
     
 	recordClicked(){
-		console.log('Record Selected');
-		console.log(this.props.rowData);
+		console.log('Key Selected');
+		console.log(this.props.keyValue);
+        this.props.renderCEEditForm(ceActions.OPEN_NODE_EDIT_FORM,this.props.keyValue,'editform');
 	}
  
+    getElementsWithPrivilege(){
+    
+       let filteredColumns = this.props.rowDescription.filter(function(gcolumn){
+            if(this.props.getPrivilege(gcolumn).privilegeType){
+                return true;
+            }
+        }.bind(this));
+        
+        return  filteredColumns;
+    }
+    
     render(){
                 return (
-                  
-                   
-                     
+
                      <View  style={styles.gridRow}>   
 
                         <View style={styles.gridRowData}>
-                        {this.state.rowDescription.map(function(cellDetail,key){
+                        {this.getElementsWithPrivilege().map(function(cellDetail,key){
                            
                            switch(cellDetail.logicalColumn.datatype) {
                                 case 'NUMBER':
@@ -67,4 +88,17 @@ class GridRow extends Component{
                 );
     }
 
-}export default (GridRow);
+}
+
+
+function bindAction(dispatch) {
+  return {
+    renderCEEditForm : (actionType,keyValue, route) => dispatch(renderEditForm(actionType ,keyValue, route)),
+    getPrivilege: (configItem) => getPrivilege(configItem)
+  };
+}
+const mapStateToProps = state => ({
+  navigation: state.cardNavigation,
+});
+
+export default connect(mapStateToProps, bindAction) (GridRow);

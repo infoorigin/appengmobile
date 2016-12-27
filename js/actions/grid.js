@@ -20,6 +20,7 @@ export function saveGridConfigData(data, config) {
 }
 
 export function saveGridData(data) {
+  console.log('');
   return{
     type: SAVE_GRID_DATA,
     data: data,

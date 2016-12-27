@@ -1,7 +1,10 @@
 export const SAVE_CE_CONFIG = 'SAVE_CE_CONFIG';
 export const SAVE_CE_NODE_CONFIG = 'SAVE_CE_NODE_CONFIG';
 export const SET_CE_CONFIG = 'SET_CE_CONFIG';
-
+export const OPEN_NODE_EDIT_FORM='OPEN_NODE_EDIT_FORM';
+export const PUT_NODE_EDIT_FORM='PUT_NODE_EDIT_FORM';
+export const PUT_NODE_EDIT_FORM_KEY='PUT_NODE_EDIT_FORM_KEY';
+export const PUT_NODE_EDIT_FORM_DATA='PUT_NODE_EDIT_FORM_DATA';
 
 export function saveCEConfig(config) {
   return{
@@ -16,6 +19,30 @@ export function saveCENodeConfig(config) {
     config: config,
   };
 }
+
+export function putCENodeEditFormKeyData(keyData){
+  return{
+    type:PUT_NODE_EDIT_FORM_KEY,
+    key:keyData,
+  };
+}
+
+export function putCENodeEditForm(editForm){
+  return {
+    type:PUT_NODE_EDIT_FORM,
+    config:editForm,
+  } 
+}
+
+export function putCENodeEditFormData(editFormData){
+  return {
+    type:PUT_NODE_EDIT_FORM_DATA,
+    data:editFormData,
+  }
+}
+
+
+
 
 
 

@@ -9,6 +9,7 @@ import styles from './styles';
 
 import AccordionView from './aeaccordian.js';
 import AEFormSection from './aeformsection.js'
+import {getPrivilege} from '../../services/usercontext.js';
 
 const Item = Picker.Item;
 const camera = require('../../../img/camera.png');
@@ -29,6 +30,7 @@ class AEForm extends Component {
     openDrawer: React.PropTypes.func,
     formid:React.PropTypes.string,
     baseUrl: React.PropTypes.string,
+    getPrivilege:React.PropTypes.func,
   }
 
   constructor(props) {
@@ -44,9 +46,10 @@ class AEForm extends Component {
  
   }
 
-  _initialSectionData(sectionItem) {
+  _initialSectionData(sectionItem,data) {
       let initialData = {};
-      sectionItem.renderColumns.forEach(f => initialData[f.logicalColumn.jsonName] = f.defaultValue);
+      sectionItem.renderColumns
+      .filter(function(rc){if(rc.type != 'Hiddenfield')return true;}).forEach(f => initialData[f.logicalColumn.jsonName] = data[f.logicalColumn.jsonName]);
     return initialData;
   }
 
@@ -59,38 +62,38 @@ class AEForm extends Component {
       return section;
   }
 
+ getElementsWithPrivilege(){
+    
+       let filteredSection = this.props.formMD.sections.filter(function(section){
+            if(this.props.getPrivilege(section).privilegeType){
+                return true;
+            }
+        }.bind(this));
+        
+        return  filteredSection;
+  }
+
+
  async pullMD(){
-         var configCompleteUrl = this.props.baseUrl+configUrl+this.props.formid;
-         var formMD={};
-	       await fetch(configCompleteUrl,configRequestHeader).then((response)=> response.json()).then(
-	        function (jsondata) 
-          {  
-            formMD=jsondata.returnData.data;
 
-            let formData = new Object();
+          
+          var formMD=this.props.formMD;
+         
+          let formData = new Object();
 
-
-            formMD.sections.forEach(function(sf) {
-                formData[sf.name] = this._initialSectionData(sf);
-            }.bind(this)); 
-           
-
-
-            let sections = formMD.sections.map(function(sf){ 
-                            return this._buildSection(sf,formData[sf.name]);
-                          }.bind(this)); 
-
-//            this.state.formsections=sections;
- //           this.state.formdata=formData;             
-            this.setState({
-              formsections: sections,
-              formdata : formData
-            });
-
-				}.bind(this)).catch(function (error) {  
-  					console.log('Request failure: ', error);  
-				}); 
-        return formMD;
+          formMD.sections.forEach(function(sf) {
+              formData[sf.name] = this._initialSectionData(sf,this.props.data);
+          }.bind(this)); 
+          
+          let sections = this.getElementsWithPrivilege().map(function(sf){ 
+                          return this._buildSection(sf,formData[sf.name]);
+                        }.bind(this)); 
+      
+          this.setState({
+            formsections: sections,
+            formdata : formData
+          });
+      
   }
 
   componentDidMount() {
@@ -134,11 +137,15 @@ class AEForm extends Component {
 function bindAction(dispatch) {
   return {
     openDrawer: () => dispatch(openDrawer()),
+    getPrivilege:(configItem) => getPrivilege(configItem)
   };
 }
 
 const mapStateToProps = state => ({
-  navigation: state.cardNavigation,
+	navigation: state.cardNavigation,
+	formMD: state.ae.form.config,
+  data: state.ae.form.data ? state.ae.form.data.baseEntity.attributes : {},
 });
+
 
 export default connect(mapStateToProps, bindAction)(AEForm);
