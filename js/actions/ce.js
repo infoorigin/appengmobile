@@ -5,6 +5,7 @@ export const OPEN_NODE_EDIT_FORM='OPEN_NODE_EDIT_FORM';
 export const PUT_NODE_EDIT_FORM='PUT_NODE_EDIT_FORM';
 export const PUT_NODE_EDIT_FORM_KEY='PUT_NODE_EDIT_FORM_KEY';
 export const PUT_NODE_EDIT_FORM_DATA='PUT_NODE_EDIT_FORM_DATA';
+export const UPDATE_BASE_FORM_DATA='UPDATE_BASE_FORM_DATA';
 
 export function saveCEConfig(config) {
   return{
@@ -41,7 +42,12 @@ export function putCENodeEditFormData(editFormData){
   }
 }
 
-
+export function updateBaseForm(baseformData){
+    return {
+      type:UPDATE_BASE_FORM_DATA,
+      data:baseformData,
+    }
+}
 
 
 

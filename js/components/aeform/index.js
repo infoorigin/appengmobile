@@ -10,6 +10,7 @@ import styles from './styles';
 import AccordionView from './aeaccordian.js';
 import AEFormSection from './aeformsection.js'
 import {getPrivilege} from '../../services/usercontext.js';
+import {updateBaseForm} from '../../actions/ce.js';
 
 const Item = Picker.Item;
 const camera = require('../../../img/camera.png');
@@ -31,6 +32,7 @@ class AEForm extends Component {
     formid:React.PropTypes.string,
     baseUrl: React.PropTypes.string,
     getPrivilege:React.PropTypes.func,
+    updateBaseForm:React.PropTypes.func,
   }
 
   constructor(props) {
@@ -43,13 +45,14 @@ class AEForm extends Component {
     };
      this._onSectionDataChange = this._onSectionDataChange.bind(this);
      this._buildSection = this._buildSection.bind(this);
+     this.submit = this.submit.bind(this);
  
   }
 
   _initialSectionData(sectionItem,data) {
       let initialData = {};
-      sectionItem.renderColumns
-      .filter(function(rc){if(rc.type != 'Hiddenfield')return true;}).forEach(f => initialData[f.logicalColumn.jsonName] = data[f.logicalColumn.jsonName]);
+     //.filter(function(rc){if(rc.type != 'Hiddenfield')return true;})
+      sectionItem.renderColumns.forEach(f => initialData[f.logicalColumn.jsonName] = data[f.logicalColumn.jsonName]);
     return initialData;
   }
 
@@ -73,6 +76,16 @@ class AEForm extends Component {
         return  filteredSection;
   }
 
+  submit(){
+    console.log('form is getting submitted...');
+    let mergedFormData = {};
+    this.props.formMD.sections.forEach(function(section){
+      mergedFormData= Object.assign(mergedFormData,this.state.formdata[section.name]);
+    }.bind(this));
+    console.log('------------------------------->merged'+JSON.stringify(mergedFormData));
+    this.props.updateBaseForm(mergedFormData);
+    
+  }
 
  async pullMD(){
 
@@ -113,8 +126,7 @@ class AEForm extends Component {
 
   render() {
     return (
-      
-      
+
       <Container style={styles.container}>
         <Header>
           <Title>Form8</Title>
@@ -126,7 +138,7 @@ class AEForm extends Component {
 
         <Content>
           <AccordionView  sections = {this.state.formsections}/>
-          <Button primary> Primary </Button>
+          <Button primary style={{alignSelf:'center'}} onPress={this.submit}> Submit </Button>
         </Content>  
       </Container>
       
@@ -137,7 +149,8 @@ class AEForm extends Component {
 function bindAction(dispatch) {
   return {
     openDrawer: () => dispatch(openDrawer()),
-    getPrivilege:(configItem) => getPrivilege(configItem)
+    getPrivilege:(configItem) => getPrivilege(configItem),
+    updateBaseForm:(mergedFormData) => dispatch(updateBaseForm(mergedFormData)),
   };
 }
 
@@ -146,6 +159,5 @@ const mapStateToProps = state => ({
 	formMD: state.ae.form.config,
   data: state.ae.form.data ? state.ae.form.data.baseEntity.attributes : {},
 });
-
 
 export default connect(mapStateToProps, bindAction)(AEForm);

@@ -13,6 +13,30 @@ const defaultInput = {
 								}
 				};
 
+const config = {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'app-key': 'db6003e6-0093-4e3d-a8d0-d4ff26b750c2',
+      'mediaType': 'json'
+    }
+  };
+
+export function baseFormUpdate(ceid,beid,ceprimaryKey,formData){
+  
+    let payload = JSON.parse(JSON.stringify(defaultInput));
+    payload.baseEntity.attributes=formData;
+    payload.baseEntity.configId=beid;
+
+
+    console.log('url:::::::::::::'+ baseUrl+'/rest/'+ceid+'/'+ceprimaryKey);
+    console.log('payload:::::::::::::'+JSON.stringify(payload));
+    console.log('config:::::::::::::'+JSON.stringify(config));
+    return axios.patch(
+      baseUrl+'/rest/'+ceid+'/'+ceprimaryKey,payload,config
+    );
+}
+
 export function getConfig(configId) {
   return axios.get(baseUrl + '/rest/md/' + configId, {
     headers: {
@@ -23,8 +47,6 @@ export function getConfig(configId) {
     }
   });
 }
-
-
 
 export function getEditFormData(ceid,leid,key) {
   return axios.get(baseUrl + '/rest/'+ceid+'/'+leid+'/'+key,{
@@ -37,9 +59,6 @@ export function getEditFormData(ceid,leid,key) {
   });
 }
 
-
-
-
 export function getGridData(nodeId) {
   return axios.post(baseUrl + '/rest/gridData/' + nodeId, defaultInput, {
     headers: {
@@ -49,8 +68,5 @@ export function getGridData(nodeId) {
       'mediaType': 'json'
     }
   });
-
-
-
 
 }

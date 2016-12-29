@@ -18,7 +18,7 @@ export default class AETextInput extends Component {
 
     
     render() {
-        console.log("field name :",this.props.field.name);
+     
         return (
 
          <View>
@@ -28,7 +28,7 @@ export default class AETextInput extends Component {
                     multiline = {true}
                     numberOfLines = {4}
                     onChangeText={(text) => this.setState({text})}
-                    onBlur={(event) => this.props.onInputChange(this.props.field.name, this.state.text)}
+                    onBlur={(event) => this.props.onInputChange(this.props.field.logicalColumn.jsonName, this.state.text)}
                     value={this.state.text} />
             </InputGroup>   
         </View>
