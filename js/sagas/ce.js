@@ -55,8 +55,7 @@ export function* openEditForm(action){
 
 function* fetchFormConfig(formConfigId){
   let result = yield call(getConfig, formConfigId);
-   console.log('ok form-----------data returned :'+JSON.stringify(result));
-   yield Promise.resolve();
+   console.log('ok form- no promise-data returned :'+JSON.stringify(result));
    let configItem = result.data.returnData.data;
 
    yield put(putCENodeEditForm(configItem));
@@ -64,10 +63,10 @@ function* fetchFormConfig(formConfigId){
 
 function* fetchFormData(ceNode,key) {
   // call the api to get the grid config Item
+  console.log(" calling fetch data form");
   let result = yield call(getEditFormData, ceNode.compositeEntityId,ceNode.entityId,key);
-  console.log('ok-----------data returned :'+JSON.stringify(result));
-  yield Promise.resolve();
   let data = result.data.returnData.data;
+  console.log("status", result.data.status);
   yield put(putCENodeEditFormData(data));
 }
 
@@ -78,16 +77,15 @@ export function* updateBaseForm(action){
     let ceNode = yield select(getCompositeEntityNode);
     let formKey = yield select(getFormDataKey);
     let result = yield call(baseFormUpdate, ceNode.compositeEntityId,ceNode.entityId,formKey,action.data);
-    
-    if(result.data.staus){
-        cosnsole.log('=========================success=======================');
+    if( result.data.status){
+        console.log('=========================success=======================');
         yield call(fetchFormData, ceNode,formKey);
     }else{
-        cosnsole.log('=============================error===================');
-         yield put(putFormActionResponse(result.data));
+        console.log('=============================error===================');
+         yield put(putFormActionResponse(result.data)); 
     }
    
 
-    console.log('==============================>>'+JSON.stringify(result));
+    console.log('===============End Log statement===============>>');
 
 }
