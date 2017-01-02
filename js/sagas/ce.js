@@ -79,6 +79,13 @@ export function* updateBaseForm(action){
     let formKey = yield select(getFormDataKey);
     let result = yield call(baseFormUpdate, ceNode.compositeEntityId,ceNode.entityId,formKey,action.data);
     
+    if(result.data.staus){
+        cosnsole.log('=========================success=======================');
+        yield call(fetchFormData, ceNode,formKey);
+    }else{
+        cosnsole.log('=============================error===================');
+         yield put(putFormActionResponse(result.data));
+    }
    
 
     console.log('==============================>>'+JSON.stringify(result));
