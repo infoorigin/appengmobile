@@ -28,7 +28,8 @@ export default class AETextInput extends Component {
                     onChangeText={(text) => this.setState({text})}
                     onBlur={(event) => this.props.onInputChange(this.props.field.logicalColumn.jsonName, this.state.text)}
                     value={this.state.text} />
-            </InputGroup>   
+            </InputGroup>  
+            <Text>Validation message here!</Text> 
         </View>
         );
 

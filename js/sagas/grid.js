@@ -15,17 +15,17 @@ export function* renderBaseGrid(action) {
     yield call(setCompositeEntity, action);
   
     let ceNode = yield select(getCompositeEntityNode);
-   
+     console.log("--------------------------------GRID CALLS 1");
     // Fetch and Set Grid Config to state
     yield call(fetchGridConfig, ceNode.gridId);
-
+  console.log("--------------------------------GRID CALLS 2");
     // Fetch and Set Grid Data to state
     yield call(fetchGridData, ceNode.configObjectId);
-
+  console.log("--------------------------------GRID CALLS 3");
     // Navigate to target screen
     yield put(navigateTo(action.navigationRoute, HOMEROUTE));
 
-    //TODO Stop Spinner
+    console.log("--------------------------------GRID CALLS 4");
 
   }
   catch (error) {
@@ -40,6 +40,7 @@ export function* renderBaseGrid(action) {
 function* fetchGridConfig(gridConfigId) {
   // call the api to get the grid config Item
   let result = yield call(getConfig, gridConfigId);
+
   let configItem = result.data.returnData.data;
   yield put(saveGridConfig(configItem));
 }
@@ -47,6 +48,7 @@ function* fetchGridConfig(gridConfigId) {
 function* fetchGridData(nodeId) {
   // call the api to get the grid config Item
   let result = yield call(getGridData, nodeId);
+  
   let data = result.data.returnData.data;
   yield put(saveGridData(data));
 }

@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 //const baseUrl = "http://ec2-52-4-99-199.compute-1.amazonaws.com:9900/mconfig";
-const baseUrl = "http://ec2-52-4-99-199.compute-1.amazonaws.com:9800/featuremanagement";
+const baseUrl = "http://ec2-52-4-99-199.compute-1.amazonaws.com:9900/demoedi";
 
 // TO DO get from logged in user state
 const defaultInput = {
@@ -23,15 +23,9 @@ const config = {
   };
 
 export function baseFormUpdate(ceid,beid,ceprimaryKey,formData){
-  
     let payload = JSON.parse(JSON.stringify(defaultInput));
     payload.baseEntity.attributes=formData;
     payload.baseEntity.configId=beid;
-
-
-    console.log('url:::::::::::::'+ baseUrl+'/rest/'+ceid+'/'+ceprimaryKey);
-    console.log('payload:::::::::::::'+JSON.stringify(payload));
-    console.log('config:::::::::::::'+JSON.stringify(config));
     return axios.patch(
       baseUrl+'/rest/'+ceid+'/'+ceprimaryKey,payload,config
     );

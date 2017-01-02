@@ -6,6 +6,15 @@ export const PUT_NODE_EDIT_FORM='PUT_NODE_EDIT_FORM';
 export const PUT_NODE_EDIT_FORM_KEY='PUT_NODE_EDIT_FORM_KEY';
 export const PUT_NODE_EDIT_FORM_DATA='PUT_NODE_EDIT_FORM_DATA';
 export const UPDATE_BASE_FORM_DATA='UPDATE_BASE_FORM_DATA';
+export const FORM_ACTION_RESPONSE='FORM_ACTION_RESPONSE';
+
+
+export function putFormActionResponse(response){
+  return{
+     type:FORM_ACTION_RESPONSE,
+     data:response
+  }
+}
 
 export function saveCEConfig(config) {
   return{
@@ -27,6 +36,14 @@ export function putCENodeEditFormKeyData(keyData){
     key:keyData,
   };
 }
+
+export function putNavigationRoute(navigationRoute){
+  return{
+    type:PUT_NODE_EDIT_FORM_KEY,
+    key:keyData,
+  };
+}
+
 
 export function putCENodeEditForm(editForm){
   return {

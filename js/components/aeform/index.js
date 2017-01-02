@@ -33,6 +33,7 @@ class AEForm extends Component {
     baseUrl: React.PropTypes.string,
     getPrivilege:React.PropTypes.func,
     updateBaseForm:React.PropTypes.func,
+    messageData:React.PropTypes.Object,
   }
 
   constructor(props) {
@@ -41,13 +42,16 @@ class AEForm extends Component {
     this.state = {
       formMD:{},
       formsections : [],
-      formdata : []
+      formdata : [],
+      messageData:this.props.messageData,
     };
      this._onSectionDataChange = this._onSectionDataChange.bind(this);
      this._buildSection = this._buildSection.bind(this);
      this.submit = this.submit.bind(this);
- 
+     this.testRefresh=this.testRefresh.bind(this);
+     
   }
+  
 
   _initialSectionData(sectionItem,data) {
       let initialData = {};
@@ -74,6 +78,11 @@ class AEForm extends Component {
         }.bind(this));
         
         return  filteredSection;
+  }
+
+  testRefresh(){
+    console.log('------------------------------->testRefresh',JSON.stringify(this.state));
+   
   }
 
   submit(){
@@ -123,7 +132,10 @@ class AEForm extends Component {
     console.log("After FormData2 value :",JSON.stringify(formdata));
   }
   
-
+  componentWillReceiveProps(nextProps)
+  {
+    console.log('okok......'+JSON.stringify(nextProps.messageData));
+  }
   render() {
     return (
 
@@ -137,14 +149,17 @@ class AEForm extends Component {
         </Header>
 
         <Content>
+           <Text>{this.state.messageData.globalMessage}</Text>         
           <AccordionView  sections = {this.state.formsections}/>
           <Button primary style={{alignSelf:'center'}} onPress={this.submit}> Submit </Button>
+          <Button primary style={{alignSelf:'center'}} onPress={this.testRefresh}> Refresh </Button>
         </Content>  
       </Container>
       
     );
   }
 } 
+
 
 function bindAction(dispatch) {
   return {
@@ -158,6 +173,7 @@ const mapStateToProps = state => ({
 	navigation: state.cardNavigation,
 	formMD: state.ae.form.config,
   data: state.ae.form.data ? state.ae.form.data.baseEntity.attributes : {},
+  messageData:state.ae.form.messageData,
 });
 
 export default connect(mapStateToProps, bindAction)(AEForm);

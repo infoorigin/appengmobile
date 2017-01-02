@@ -1,6 +1,6 @@
 import { call, put,select } from "redux-saga/effects";
 import navigateTo from '../actions/sideBarNav';
-import {saveCEConfig, 
+import {saveCEConfig, putFormActionResponse,
     saveCENodeConfig,putCENodeEditForm,putCENodeEditFormKeyData,putCENodeEditFormData } from '../actions/ce';
 import { getConfig,getEditFormData ,baseFormUpdate} from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
@@ -12,6 +12,7 @@ export const getCompositeEntityNode = (state) => state.ae.cenode.config
 
 export const getFormDataKey=(state) =>state.ae.form.key
 
+export const geLastnavigation=(state)=>state.cardNavigation.routes[state.cardNavigation.routes.length-1].key;
 
 // fetch the Config Item
 export function* setCompositeEntity(action) {
@@ -56,9 +57,9 @@ function* fetchFormConfig(formConfigId){
   let result = yield call(getConfig, formConfigId);
    console.log('ok form-----------data returned :'+JSON.stringify(result));
    yield Promise.resolve();
-  let configItem = result.data.returnData.data;
+   let configItem = result.data.returnData.data;
 
-  yield put(putCENodeEditForm(configItem));
+   yield put(putCENodeEditForm(configItem));
 }
 
 function* fetchFormData(ceNode,key) {
@@ -77,7 +78,9 @@ export function* updateBaseForm(action){
     let ceNode = yield select(getCompositeEntityNode);
     let formKey = yield select(getFormDataKey);
     let result = yield call(baseFormUpdate, ceNode.compositeEntityId,ceNode.entityId,formKey,action.data);
-    yield Promise.resolve();
+    
+   
+
     console.log('==============================>>'+JSON.stringify(result));
 
 }
