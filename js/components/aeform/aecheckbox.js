@@ -16,10 +16,21 @@ export default class AECheckbox extends Component {
     super(props);
     var selectedValues =  this.props.value ? this.props.value :[];
     this.state = {
-      data: [{key:"Java",label:"Java"},{key:"C++",label:"C++"}],//this.props.data,
+      data: [],
       value:selectedValues,
     };
   }
+
+ componentDidMount(){
+   //static list
+   let data = this.props.field.metadataUISelectItems.filter(function(d){d["key"]=d["value"];return true;});
+
+       console.log('===============================================');
+      console.log(JSON.stringify(data));
+      console.log('===============================================');
+
+   this.setState({data:data});
+ }
 
  isChecked(key){
      return this.state.value.indexOf(key)!=-1;

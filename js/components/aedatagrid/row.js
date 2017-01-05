@@ -31,22 +31,38 @@ class GridRow extends Component{
 
     
 	recordClicked(){
-		console.log('Key Selected');
-		console.log(this.props.keyValue);
-        this.props.renderCEEditForm(ceActions.OPEN_NODE_EDIT_FORM,this.props.keyValue,'editform');
+        console.log('Key Selected----'+JSON.stringify(this.state.rowKeyData));
+        this.props.renderCEEditForm(ceActions.OPEN_NODE_EDIT_FORM,this.state.rowKeyData.primaryKey,'editform');
 	}
  
     getElementsWithPrivilege(){
-    
        let filteredColumns = this.props.rowDescription.filter(function(gcolumn){
             if(this.props.getPrivilege(gcolumn).privilegeType){
                 return true;
             }
         }.bind(this));
-        
         return  filteredColumns;
     }
     
+
+    componentDidMount(){
+        let keyCoulumns =   this.props.keyColunms.filter(function(gc){ 
+            return  gc.logicalColumn.dbColumn.key;
+        });
+        let primaryKeyColumn =   this.props.keyColunms.filter(function(gc){ 
+            return  gc.logicalColumn.dbColumn.primaryKey;
+        })[0];
+        let rowKeyData={"primaryKey":this.props.rowData[primaryKeyColumn.logicalColumn.dbColumn.code]};
+        if(keyCoulumns.length>0){
+            let keys={};
+            keyCoulumns.forEach(function(keyColunm){
+                    keys[keyColunm.logicalColumn.dbColumn.code]=this.props.rowData[primaryKeyColumn.logicalColumn.dbColumn.code];
+            });
+            rowKeyData["keys"]=keys;
+        }
+        this.setState({"rowKeyData":rowKeyData});
+    }
+
     render(){
                 return (
 

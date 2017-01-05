@@ -12,7 +12,7 @@ import AEDropdown from './aedropdown.js';
 import AETextInput from './aetextinput.js';
 import AERadio from './aeradio.js';
 import AECheckbox from './aecheckbox.js';
-import AETextArea from './aetextarea.js';
+//import AETextArea from './aetextarea.js';
 import {getPrivilege} from '../../services/usercontext.js';
 
 class AEFormSection extends Component {
@@ -24,7 +24,8 @@ constructor(props) {
     super(props);
     
     this.state = { 
-        data : props.sectionData
+        data : props.sectionData,
+        messageData:props.messageData
      };
      this._onInputChange2 = this._onInputChange2.bind(this);
      this._onInputBlur = this._onInputBlur.bind(this);
@@ -45,6 +46,13 @@ _onInputChange2(fieldName, value){
      this.props.onSectionDataChange(this.props.sectionItem.name, data);
 }
 
+ componentWillReceiveProps(nextProps)
+  {
+    //this.pullMD();
+    this.setState({messageData:nextProps.messageData});
+    console.log('nextProps of formsection ======================');
+  }
+
 _onInputBlur(){
   console.log("On Input Blur called");
   //submit action here
@@ -63,52 +71,83 @@ getElementsWithPrivilege(){
 
 
 render() {
-
+  console.log("Form Section rendered............................................");
   return(
  
     <View style={{padding:10}}>
       {
         this.getElementsWithPrivilege().filter(function(rc){if(rc.type != 'Hiddenfield')return true;}).map(function(field, key){
-       
+            
+            
+             let validationFlag="NOMESSAGE";
+             let validationMessage="";
+             
+             if(this.state.messageData.dataValidationMessages){
+               if(this.state.messageData.dataValidationMessages[field.logicalColumn.jsonName]){
+                 validationFlag="ERRORMESSAGE";
+                 validationMessage=this.props.messageData.dataValidationMessages[field.logicalColumn.jsonName];
+                 console.log("Validation message ================="+validationMessage);
+               }
+             }
+             console.log("field.type>>>>>>>>>>>>>>>>>>>>>>>>"+field.type);
+
+
+         
+            
              switch(field.type) {
-                                case 'selectoption':
+                                case 'SelectOption':
                                    return(
-                                          <AEDropdown key={key}
+                                          <AEDropdown key={key} 
+                                            validationFlag={validationFlag}
+                                            validationMessage={validationMessage}
                                             value={this.state.data[field.logicalColumn.jsonName]}
-                                              onInputChange={this._onInputChange2} 
+                                            onInputChange={this._onInputChange2} 
                                             field = {field}
                                           />
                                          );
-                                case 'checkbox':
+                                case 'CheckBox':
                                    return(
                                           <AECheckbox key={key}
-                                              value={this.state.data[field.logicalColumn.jsonName]}
+                                               validationFlag={validationFlag}
+                                               validationMessage={validationMessage}
+                                               
+                                               value={this.state.data[field.logicalColumn.jsonName]}
                                                 onInputChange={this._onInputChange2} 
                                               field = {field}
                                               itemsPerRow='4'
                                             />
                                           );
-                                case 'radiooption':
+                                case 'RadioButton':
                                    return(
                                           <AERadio key={key}
+                                            validationFlag={validationFlag}
+                                            validationMessage={validationMessage}
+
                                             value={this.state.data[field.logicalColumn.jsonName]}
                                               onInputChange={this._onInputChange2} 
                                             field = {field}
                                             itemsPerRow='4'
                                           />
                                         );
-                                case 'textarea':
+                              /**  case 'textarea':
                                      return(
                                         <AETextArea key={key}
+                                             validationFlag={validationFlag}
+                                             validationMessage={validationMessage}
+
                                             value={this.state.data[field.logicalColumn.jsonName]}
                                               onInputChange={this._onInputChange2} 
                                             field = {field}
                                             itemsPerRow='4'
                                           />
-                                     );
+                                     );**/
                                 default:
                                 return(
                                    <AETextInput key={key}
+                                    
+                                     validationFlag={validationFlag}
+                                     validationMessage={validationMessage}
+
                                     value={this.state.data[field.logicalColumn.jsonName]}
                                       onInputChange={this._onInputChange2} 
                                     field = {field}

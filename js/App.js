@@ -64,6 +64,7 @@ class App extends Component {
   }
 
   render() {
+    console.ignoredYellowBox = ['Warning: Failed prop type'];
 	  /*
     if (this.state.showDownloadingModal) {
       return (

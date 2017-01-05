@@ -16,16 +16,27 @@ export default class AEDropdown extends Component {
   constructor(props) {
     super(props);
     this.state = { text: props.field.placeholder,
-                   value:props.field.value };
+                   value: props.value , data:[],
+    }
   }
 
-  render() { 
+   componentDidMount(){
+   //static list
+   let data = this.props.field.metadataUISelectItems.filter(function(d){d["key"]=d["value"];return true;});
+  
+   let selected = data.filter(function(d){if(d["key"] == this.props.value){return true;}}.bind(this))[0];
+    
+   this.setState({data:data,text:selected.label, value:selected.key});
+      
+   }
 
+  render() { 
+    console.log("=-=-=-=-=-=-=-=-=-=:");
     return (
                 <View style={{flex:1, justifyContent:'space-around'}}>
                     
                     <ModalPicker
-                    data={[{label:"India",key:"India"},{label:"USA",key:"USA"},{label:"Germany",key:"Germany"}]}
+                    data={this.state.data}
                     initValue="Select something yummy!"
                     onChange={(option)=>{ 
                         this.setState({text:option.label,value:option.key});
