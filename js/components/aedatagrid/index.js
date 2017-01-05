@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { Image, TouchableHighlight, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Content, Button, Header, View, H3, Text, Title, Icon, InputGroup,Input, Card, CardItem, List, ListItem } from 'native-base';
+import { Container, Content, Button, View, H3, Text, Header, Title, Icon, Card, CardItem, List, ListItem } from 'native-base';
 import GridRow from './row.js';
 import myTheme from '../../themes/base-theme';
 import styles from './styles';
 import { openDrawer } from '../../actions/drawer';
-import { SearchBar } from 'react-native-elements';
 import AEContainer from '../../widgets/AEContainer';
 import AEHeader from '../../widgets/AEHeader';
-
 
 const contentscreenBg = require('../../../img/basescreen.png');
 const launchscreenBg = require('../../../img/launchscreen-bg.png');
@@ -26,57 +24,8 @@ class AEDataGrid extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			isSearchHeader : false,
 			header: []
 		};
-		this._renderTitleHeader = this._renderTitleHeader.bind(this);
-		this._renderSearchHeader = this._renderSearchHeader.bind(this);
-	}
-
-	_renderTitleHeader(){
-		return (
-
-			
-			
-				<AEHeader>
-					<Button transparent onPress={this.props.openDrawer}>
-						<Icon name="ios-menu" />
-					</Button>
-					<Title>E-Care2</Title>
-					<Button transparent>
-						<Icon name="ios-search" />
-					</Button>
-					<Button transparent>
-						<Icon name="md-add" />
-					</Button>
-				</AEHeader>
-		);
-	}
-
-	_onSearchInput(val){
-		console.log("Input changed");
-	}
-
-	_renderSearchHeader(){
-		return (
-/*
-			<SearchBar
-				onChangeText={this._onSearchInput}
-				placeholder='Type Here...' />
-*/
-
-			<AEHeader searchBar="true">
-				<InputGroup>
-					<Icon name="ios-search" />
-					<Input placeholder="Search" />
-				</InputGroup>
-				<Button transparent>
-					Search2
-				</Button>
-			</AEHeader>
-			
-			
-		);
 	}
 
 	render() {
@@ -84,25 +33,21 @@ class AEDataGrid extends Component {
 		if (this.state.header.length == 0 || this.props.data.length == 0) {
 			return (<Text> Loading..... </Text>);
 		}
-		else {
-			let header = this.state.isSearchHeader ? this._renderTitleHeader() : this._renderSearchHeader()  ;
 		return (
 			<AEContainer theme={myTheme}>
-				{header}
-			<SearchBar
-				onChangeText={this._onSearchInput}
-				placeholder='Type Here...' />
+				<AEHeader>
+					<Title>E-Care</Title>
+					<Button transparent onPress={this.props.openDrawer}>
+						<Icon name="ios-menu" />
+					</Button>
+				</AEHeader>
 
-				<View>
+				<Image source={launchscreenBg} style={styles.imageContainer}>
 
 					<View style={styles.gridHeaderSection}>
 						<H3 style={styles.text}>Robert's Claims</H3>
 						<H3 style={styles.text}>{this.props.config.dataSet.name}</H3>
 					</View>
-
-					<SearchBar
-				onChangeText={this._onSearchInput}
-				placeholder='Type Here...' />
 
 					<View source={contentscreenBg} style={styles.gridContainer}>
 						<List dataArray={this.props.data}
@@ -113,11 +58,10 @@ class AEDataGrid extends Component {
 						</List>
 
 					</View>
-				</View>
+				</Image>
 			</AEContainer>
 
 		);
-		}
 
 	}
 	componentDidMount() {
