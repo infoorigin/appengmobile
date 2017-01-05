@@ -23,4 +23,7 @@ module.exports = StyleSheet.create({
    aeradiorow: {flexDirection:'row'},
    aeradiocol: {flexDirection:'column', flex:1,padding:10},
 
+
+
+
 });

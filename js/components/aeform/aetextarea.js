@@ -9,7 +9,7 @@ import {
 
 
 
-export default class AETextInput extends Component {
+export default class AETextArea extends Component {
 
     constructor(props) {
         super(props);
@@ -26,7 +26,7 @@ export default class AETextInput extends Component {
             <InputGroup borderType='rounded'>
                 <TextInput
                     multiline = {true}
-                    numberOfLines = {4}
+                    numberOfLines = {10}
                     onChangeText={(text) => this.setState({text})}
                     onBlur={(event) => this.props.onInputChange(this.props.field.logicalColumn.jsonName, this.state.text)}
                     value={this.state.text} />
@@ -38,8 +38,3 @@ export default class AETextInput extends Component {
 
 }
 
-AETextInput.propTypes = {
-  value: React.PropTypes.string,
-  field: React.PropTypes.object.isRequired,
-  onInputChange:React.PropTypes.func.isRequired
-};

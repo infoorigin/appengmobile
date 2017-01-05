@@ -15,10 +15,20 @@ export default class AERadio extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [{key:"Java",label:"Java"},{key:"C++",label:"C++"},{key:"Python",label:"Python"},{key:"Java",label:"Java"},{key:"C++",label:"C++"},{key:"Python",label:"Python"}],//this.props.data,
+      data: [],//this.props.data,
       value: this.props.value,
     };
   }
+
+  componentDidMount(){
+   //static list
+   let data = this.props.field.metadataUISelectItems.filter(function(d){d["key"]=d["value"];return true;});
+   console.log('===============================================');
+      console.log(JSON.stringify(data));
+      console.log('===============================================');
+   this.setState({data:data});
+      
+   } 
 
  isSelected(key){
      return key == this.state.value;

@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Header, Title, Content, Button, Icon, List, ListItem, InputGroup, Input, Picker, Text, Thumbnail } from 'native-base';
+import { Container, Header, Title, Content, Button, Icon, List, ListItem, 
+  InputGroup, Input, Picker, Text, Thumbnail,View } from 'native-base';
 
 import { openDrawer } from '../../actions/drawer';
 import styles from './styles';
@@ -33,7 +34,7 @@ class AEForm extends Component {
     baseUrl: React.PropTypes.string,
     getPrivilege:React.PropTypes.func,
     updateBaseForm:React.PropTypes.func,
-    messageData:React.PropTypes.Object,
+    messageData:React.PropTypes.object,
   }
 
   constructor(props) {
@@ -43,7 +44,7 @@ class AEForm extends Component {
       formMD:{},
       formsections : [],
       formdata : [],
-      messageData:this.props.messageData,
+      messageData:this.props.messageData?this.props.messageData:{},
     };
      this._onSectionDataChange = this._onSectionDataChange.bind(this);
      this._buildSection = this._buildSection.bind(this);
@@ -61,10 +62,15 @@ class AEForm extends Component {
   }
 
   _buildSection(sectionItem, sectionData) {
-    console.log("sectionConfig :", JSON.stringify(sectionItem))
+    console.log("this.state.messageData :", JSON.stringify(this.state.messageData))
       let section = {
           title: sectionItem.name,
-          content: <AEFormSection onSectionDataChange={this._onSectionDataChange} sectionData={sectionData} sectionItem={sectionItem}> </AEFormSection>,
+          content: <AEFormSection 
+                    messageData={this.state.messageData}
+                    onSectionDataChange={this._onSectionDataChange} 
+                    sectionData={sectionData} 
+                    sectionItem={sectionItem}> 
+                    </AEFormSection>,
         };
       return section;
   }
@@ -82,7 +88,6 @@ class AEForm extends Component {
 
   testRefresh(){
     console.log('------------------------------->testRefresh',JSON.stringify(this.state));
-   
   }
 
   submit(){
@@ -96,11 +101,11 @@ class AEForm extends Component {
     
   }
 
- async pullMD(){
+ async prepareFormSections(){
 
           
           var formMD=this.props.formMD;
-         
+          
           let formData = new Object();
 
           formMD.sections.forEach(function(sf) {
@@ -117,9 +122,9 @@ class AEForm extends Component {
           });
       
   }
-
+  
   componentDidMount() {
-    this.pullMD();
+    this.prepareFormSections();
   }
 
   _onSectionDataChange(name, sectiondata) {
@@ -134,9 +139,12 @@ class AEForm extends Component {
   
   componentWillReceiveProps(nextProps)
   {
-    console.log('okok......'+JSON.stringify(nextProps.messageData));
+     this.state.messageData=nextProps.messageData;
+     this.prepareFormSections();
+     console.log('nextProps of form ======================');
   }
   render() {
+    console.log("Form............................................");
     return (
 
       <Container style={styles.container}>
@@ -149,10 +157,12 @@ class AEForm extends Component {
         </Header>
 
         <Content>
-           <Text>{this.state.messageData.globalMessage}</Text>         
+          <Text>{this.state.messageData.globalMessage}</Text>         
           <AccordionView  sections = {this.state.formsections}/>
+          <View style={{flexDirection:'row', flex:1,padding:10,justifyContent:'space-around'}}>
           <Button primary style={{alignSelf:'center'}} onPress={this.submit}> Submit </Button>
           <Button primary style={{alignSelf:'center'}} onPress={this.testRefresh}> Refresh </Button>
+          </View>
         </Content>  
       </Container>
       
