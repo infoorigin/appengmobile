@@ -23,13 +23,15 @@ export default class AETextArea extends Component {
 
          <View>
              <Text>{this.props.field.label}</Text>   
-            <InputGroup borderType='rounded'>
-                <TextInput
-                    multiline = {true}
+            <InputGroup borderType='rounded' style={{height:100,borderRadius:10}}>
+                <Input
+                    multiline={true}
                     numberOfLines = {10}
                     onChangeText={(text) => this.setState({text})}
                     onBlur={(event) => this.props.onInputChange(this.props.field.logicalColumn.jsonName, this.state.text)}
-                    value={this.state.text} />
+                    value={this.state.text} 
+                    style={{height:100, textAlignVertical:'top'}}
+                    />
             </InputGroup>   
         </View>
         );

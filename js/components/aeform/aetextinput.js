@@ -43,7 +43,7 @@ export default class AETextInput extends Component {
 
          <View>
              <Text style={mystyle.message[this.props.validationFlag]}>{this.props.field.label}</Text>   
-            <InputGroup borderType='rounded'>
+            <InputGroup borderType='rounded' style={{borderRadius:10}}>
                 <Input
                     keyboardType='default'
                     onChangeText={(text) => this.setState({text})}

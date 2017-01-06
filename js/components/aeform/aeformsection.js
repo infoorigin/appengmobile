@@ -13,6 +13,7 @@ import AETextInput from './aetextinput.js';
 import AERadio from './aeradio.js';
 import AECheckbox from './aecheckbox.js';
 import AEDatePicker from './aedatepicker';
+import AETextArea from './aetextarea';
 import {getPrivilege} from '../../services/usercontext.js';
 
 class AEFormSection extends Component {
@@ -131,9 +132,22 @@ render() {
                                         );
                                case 'DatePicker':
                                      return(
-                                        <AEDatePicker />
+                                        <AEDatePicker key={key} />
                                         
                                      );
+
+                                case 'TextArea':
+                                  return(
+                                      <AETextArea key={key}
+                                            validationFlag={validationFlag}
+                                            validationMessage={validationMessage}
+
+                                            value={this.state.data[field.logicalColumn.jsonName]}
+                                              onInputChange={this._onInputChange2} 
+                                            field = {field}
+                                      />
+                                  );
+
                                 default:
                                 return(
                                    <AETextInput key={key}
