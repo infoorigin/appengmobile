@@ -12,7 +12,7 @@ import AEDropdown from './aedropdown.js';
 import AETextInput from './aetextinput.js';
 import AERadio from './aeradio.js';
 import AECheckbox from './aecheckbox.js';
-//import AETextArea from './aetextarea.js';
+import AEDatePicker from './aedatepicker';
 import {getPrivilege} from '../../services/usercontext.js';
 
 class AEFormSection extends Component {
@@ -129,18 +129,11 @@ render() {
                                             itemsPerRow='4'
                                           />
                                         );
-                              /**  case 'textarea':
+                               case 'DatePicker':
                                      return(
-                                        <AETextArea key={key}
-                                             validationFlag={validationFlag}
-                                             validationMessage={validationMessage}
-
-                                            value={this.state.data[field.logicalColumn.jsonName]}
-                                              onInputChange={this._onInputChange2} 
-                                            field = {field}
-                                            itemsPerRow='4'
-                                          />
-                                     );**/
+                                        <AEDatePicker />
+                                        
+                                     );
                                 default:
                                 return(
                                    <AETextInput key={key}
