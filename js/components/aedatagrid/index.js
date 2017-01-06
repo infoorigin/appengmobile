@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Image, TouchableHighlight, Alert } from 'react-native';
+import { Modal, Image, TouchableHighlight, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Content, Button, View, H3, Text, Header, Title, Icon, Card, CardItem, List, ListItem } from 'native-base';
+import { Container, Content, Button, InputGroup, Input, View, H3, Text, Header, Title, Icon, Card, CardItem, List, ListItem } from 'native-base';
 import GridRow from './row.js';
 import myTheme from '../../themes/base-theme';
 import styles from './styles';
@@ -24,8 +24,61 @@ class AEDataGrid extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			isSearchHeader: false,
+			modalVisible: false,
 			header: []
 		};
+		this._renderSearchHeader = this._renderSearchHeader.bind(this);
+		this._renderTitleHeader = this._renderTitleHeader.bind(this);
+		this._filterGrid = this._filterGrid.bind(this);
+		this._setModalVisible = this._setModalVisible.bind(this);
+		this._onModalHide = this._onModalHide.bind(this);
+	}
+
+	_setModalVisible(visible) {
+		this.setState({ modalVisible: visible });
+	}
+
+	_onModalHide(hide){
+		console.log("received modal callback ",hide);
+		this.setState({ modalVisible: !hide });
+	}
+
+	_filterGrid(text) {
+		console.log('Search Text ', text);
+		this._setModalVisible(!this.state.modalVisible);
+	}
+
+	_renderSearchHeader() {
+		return (
+			<AEHeader searchBar="true">
+				<InputGroup>
+					<Icon name="ios-search" />
+					<Input placeholder="Search" onChangeText={this._filterGrid} />
+				</InputGroup>
+
+				<Button transparent onPress={() => this.setState({ isSearchHeader: false })}>
+					Cancel
+				</Button>
+			</AEHeader>
+		);
+	}
+
+	_renderTitleHeader() {
+		return (
+			<AEHeader>
+				<Button transparent onPress={this.props.openDrawer}>
+					<Icon name="ios-menu" />
+				</Button>
+				<Title>E-Care</Title>
+				<Button transparent onPress={() => this.setState({ isSearchHeader: true })}>
+					<Icon name="ios-search" />
+				</Button>
+				<Button transparent onPress={this.props.openDrawer}>
+					<Icon name="md-add" />
+				</Button>
+			</AEHeader>
+		);
 	}
 
 	render() {
@@ -33,35 +86,34 @@ class AEDataGrid extends Component {
 		if (this.state.header.length == 0 || this.props.data.length == 0) {
 			return (<Text> Loading..... </Text>);
 		}
-		return (
-			<AEContainer theme={myTheme}>
-				<AEHeader>
-					<Title>E-Care</Title>
-					<Button transparent onPress={this.props.openDrawer}>
-						<Icon name="ios-menu" />
-					</Button>
-				</AEHeader>
+		else {
+			let header = this.state.isSearchHeader ? this._renderSearchHeader() : this._renderTitleHeader();
+			return (
+				<AEContainer theme={myTheme}  modalVisible={this.state.modalVisible}  onModalHide={this._onModalHide}>
+					{header}
 
-				<Image source={launchscreenBg} style={styles.imageContainer}>
+					
+						<Image source={launchscreenBg} style={styles.imageContainer}>
+							<View style={styles.gridHeaderSection}>
+								<H3 style={styles.text}>Robert's Claims</H3>
+								<H3 style={styles.text}>{this.props.config.dataSet.name}</H3>
+							</View>
 
-					<View style={styles.gridHeaderSection}>
-						<H3 style={styles.text}>Robert's Claims</H3>
-						<H3 style={styles.text}>{this.props.config.dataSet.name}</H3>
-					</View>
+							<View source={contentscreenBg} style={styles.gridContainer}>
+								<List dataArray={this.props.data}
+									renderRow={(item, i, iteration) =>
+										<GridRow key={i} keyColunms={this.state.keyColunms} rowData={item} rowDescription={this.state.header} >
+										</GridRow>
+									}>
+								</List>
 
-					<View source={contentscreenBg} style={styles.gridContainer}>
-						<List dataArray={this.props.data}
-							renderRow={(item, i, iteration) =>
-								<GridRow  key={i} keyColunms={this.state.keyColunms} rowData={item} rowDescription={this.state.header} >
-								</GridRow>
-							}>
-						</List>
+							</View>
+						</Image>
+					
+				</AEContainer>
 
-					</View>
-				</Image>
-			</AEContainer>
-
-		);
+			);
+		}
 
 	}
 	componentDidMount() {
@@ -84,9 +136,9 @@ class AEDataGrid extends Component {
 			}
 		});
 
-		var keyColunms = headerdata.filter(function(gc){ return gc.logicalColumn.dbColumn.primaryKey | gc.logicalColumn.dbColumn.key;});
+		var keyColunms = headerdata.filter(function (gc) { return gc.logicalColumn.dbColumn.primaryKey | gc.logicalColumn.dbColumn.key; });
 
-		this.setState({ header: headerdata,keyColunms:keyColunms});
+		this.setState({ header: headerdata, keyColunms: keyColunms });
 	}
 
 }
