@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Container, Header, Title, Content, Button, Icon, List, ListItem, 
   InputGroup, Input, Picker, Text, Thumbnail,View } from 'native-base';
-
+import { actions } from 'react-native-navigation-redux-helpers';
 import { openDrawer } from '../../actions/drawer';
 import styles from './styles';
 
@@ -12,6 +12,11 @@ import AccordionView from './aeaccordian.js';
 import AEFormSection from './aeformsection.js'
 import {getPrivilege} from '../../services/usercontext.js';
 import {updateBaseForm} from '../../actions/ce.js';
+
+
+const {
+  popRoute,
+} = actions;
 
 const Item = Picker.Item;
 const camera = require('../../../img/camera.png');
@@ -35,6 +40,7 @@ class AEForm extends Component {
     getPrivilege:React.PropTypes.func,
     updateBaseForm:React.PropTypes.func,
     messageData:React.PropTypes.object,
+    popRoute: React.PropTypes.func,
   }
 
   constructor(props) {
@@ -144,26 +150,29 @@ class AEForm extends Component {
      console.log('nextProps of form ======================');
   }
   render() {
-    console.log("Form............................................");
+    console.log("Form Navigation Key.......", this.props.navigation.key);
+    console.log("Form Navigation Routes.......", this.props.navigation.routes);
     return (
 
       <Container style={styles.container}>
         <Header>
+          <Button transparent onPress={() => this.props.popRoute(this.props.navigation.key)}>
+            <Icon name="ios-arrow-back" />
+          </Button>
           <Title>Form8</Title>
-
-          <Button transparent onPress={this.props.openDrawer}>
-            <Icon name="ios-menu" />
+          <Button transparent onPress={this.submit}>
+            Save
           </Button>
         </Header>
 
         <Content>
-          <Text>{this.state.messageData.globalMessage}</Text>         
-          <AccordionView  sections = {this.state.formsections}/>
-          <View style={{flexDirection:'row', flex:1,padding:10,justifyContent:'space-around'}}>
-          <Button primary style={{alignSelf:'center'}} onPress={this.submit}> Submit </Button>
-          <Button primary style={{alignSelf:'center'}} onPress={this.testRefresh}> Refresh </Button>
+          <Text>{this.state.messageData.globalMessage}</Text>
+          <AccordionView sections={this.state.formsections} />
+          <View style={{ flexDirection: 'row', flex: 1, padding: 10, justifyContent: 'space-around' }}>
+            <Button primary style={{ alignSelf: 'center' }} onPress={this.submit}> Submit </Button>
+            <Button primary style={{ alignSelf: 'center' }} onPress={this.testRefresh}> Refresh </Button>
           </View>
-        </Content>  
+        </Content>
       </Container>
       
     );
@@ -176,6 +185,7 @@ function bindAction(dispatch) {
     openDrawer: () => dispatch(openDrawer()),
     getPrivilege:(configItem) => getPrivilege(configItem),
     updateBaseForm:(mergedFormData) => dispatch(updateBaseForm(mergedFormData)),
+    popRoute: key => dispatch(popRoute(key)),
   };
 }
 

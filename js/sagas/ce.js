@@ -49,7 +49,7 @@ export function* openEditForm(action){
      yield call(fetchFormData, ceNode,action.key);
      
     // Navigate to target screen 
-     yield put(navigateTo(action.navigationRoute, HOMEROUTE)); 
+     yield put(navigateTo(action.navigationRoute)); 
 
 }
 

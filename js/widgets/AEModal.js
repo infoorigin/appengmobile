@@ -11,6 +11,10 @@ import {
 
 import AEBaseComponent from './base/AEBaseComponent';
 
+
+/**
+ * Custom Modal class copied from https://github.com/bodyflex/react-native-simple-modal.git
+ */
 class AEModal extends Component {
    constructor() {
       super();
@@ -23,7 +27,6 @@ class AEModal extends Component {
       this._modalContent = this._modalContent.bind(this);
    }
    componentWillReceiveProps(props) {
-       console.log("componentWillReceiveProps", this.state.children);
       if (props.open && props.children !== this.state.children) {
          this.setState({children: props.children});
       }
@@ -100,7 +103,6 @@ class AEModal extends Component {
       if (!this.state.open) {
         containerStyles.push(styles.hidden);
       }
-      console.log('childdren state', this.state.children)
       return (
          <View
          pointerEvents={open ? 'auto' : 'none'}

@@ -60,8 +60,8 @@ export default class AERadio extends Component {
 
   render() {
     var groupedItems = this.arrangeItems(this.state.data,this.props.itemsPerRow);
-    console.log('total item per row'+this.props.itemsPerRow);
-    console.log(groupedItems);
+//    console.log('total item per row'+this.props.itemsPerRow);
+//    console.log(groupedItems);
     return (
         <View>
         <Text>{this.props.field.label}</Text>
