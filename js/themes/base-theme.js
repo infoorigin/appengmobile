@@ -131,10 +131,16 @@ export default {
 
 
   // InputGroup
-  inputFontSize: 15,
+  get infoFontSize() {
+    return this.fontSizeBase * 0.8;
+  },
+  inputFontWeight : '500',
   inputBorderColor: '#D9D5DC',
   inputSuccessBorderColor: '#2b8339',
   inputErrorBorderColor: '#ed2f2f',
+  inputDisableColor: '#777777',
+  inputDisableBackGroundColor: '#eeeeee',
+  inputErrorColor:'#a94442',
 
   get inputColor() {
     return this.textColor;

@@ -2,13 +2,17 @@
 import axios from 'axios';
 
 //const baseUrl = "http://ec2-52-4-99-199.compute-1.amazonaws.com:9900/mconfig";
-const baseUrl = "http://ec2-52-4-99-199.compute-1.amazonaws.com:9900/demoedi";
+const baseUrl = "http://ec2-52-4-99-199.compute-1.amazonaws.com:8888/companymanagement";
 
 // TO DO get from logged in user state
 const defaultInput = {
 		baseEntity: {
 			name: "",
-			attributes: { APP_LOGGED_IN_PROJECT_ID: 0 },
+			attributes: { 
+        APP_LOGGED_IN_PROJECT_ID: 0,
+        APP_LOGGED_IN_ROLE_ID : 16, 
+        APP_LOGGED_IN_USER_ID : 1111
+       },
 			childEntities: []
 								}
 				};

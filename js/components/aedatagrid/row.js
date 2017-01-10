@@ -7,7 +7,7 @@ import { NumericCell,TextCell } from './cell.js';
 import styles from './styles';
 import {getPrivilege} from '../../services/usercontext.js';
 
-import {renderEditForm} from '../../actions/aebase';
+import {RENDER_GRID_DETAIL, gridAction} from '../../actions/grid';
 import * as ceActions from '../../actions/ce.js';
 
 const rightArrowImage = require('../../../img/Icon-Arrow-Right.png');
@@ -32,7 +32,7 @@ class GridRow extends Component{
     
 	recordClicked(){
         console.log('Key Selected----'+JSON.stringify(this.state.rowKeyData));
-        this.props.renderCEEditForm(ceActions.OPEN_NODE_EDIT_FORM,this.state.rowKeyData.primaryKey,'editform');
+        this.props.gridAction(RENDER_GRID_DETAIL,this.state.rowKeyData.primaryKey);
 	}
  
     getElementsWithPrivilege(){
@@ -109,7 +109,7 @@ class GridRow extends Component{
 
 function bindAction(dispatch) {
   return {
-    renderCEEditForm : (actionType,keyValue, route) => dispatch(renderEditForm(actionType ,keyValue, route)),
+    gridAction :(actionType,keyValue) => dispatch(gridAction(actionType ,keyValue)),
     getPrivilege: (configItem) => getPrivilege(configItem)
   };
 }

@@ -9,6 +9,7 @@ import _ from 'lodash';
 import computeProps from '../utils/computeProps';
 import AEHeader from './AEHeader';
 import AEModal from './AEModal';
+import AECard from '../components/aecard'
 
 
 export default class AEContainer extends AEBaseComponent {

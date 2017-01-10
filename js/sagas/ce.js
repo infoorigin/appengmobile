@@ -32,7 +32,6 @@ export function* setCompositeEntity(action) {
 
 }
 
-
 export function* openEditForm(action){
     //Put keydata 
    console.log('data : '+ JSON.stringify(action));

@@ -6,6 +6,8 @@ import { Drawer } from 'native-base';
 import { actions } from 'react-native-navigation-redux-helpers';
 
 import { closeDrawer } from './actions/drawer';
+import AEGridLayout from  './components/gridlayout/';
+
 import MyMessage from './components/eccheckmessage/';
 import Coverage from './components/eccoverage/';
 import FindCare from './components/ecfindcare/';
@@ -127,10 +129,12 @@ class AppNavigator extends Component {
               formid='f8448ea6-440e-4624-905e-153ca8bf3a51' 
               baseUrl='http://ec2-52-4-99-199.compute-1.amazonaws.com:9900/mconfig'/>;
       
-
+       case 'gridlayout':
+          return <AEGridLayout />;   
+     
        case 'mycoverage':
 	    		return <MyCoverage />;
-       case 'detailClaim':
+        case 'detailClaim':
 	    		return <MyClaimDetail />;
 	    case 'support':
 	    		return <Support />;

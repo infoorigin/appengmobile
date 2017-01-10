@@ -2,7 +2,8 @@
 import { call, put, select } from "redux-saga/effects";
 import navigateTo from '../actions/sideBarNav';
 import { saveGridConfig, saveGridData } from '../actions/grid';
-import { setCompositeEntity, getCompositeEntityNode } from './ce';
+import { openEditForm, setCompositeEntity, getCompositeEntityNode } from './ce';
+import { openLayout } from './layout';
 import { getConfig, getGridData } from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
 
@@ -15,13 +16,10 @@ export function* renderBaseGrid(action) {
     yield call(setCompositeEntity, action);
   
     let ceNode = yield select(getCompositeEntityNode);
-     console.log("--------------------------------GRID CALLS 1");
     // Fetch and Set Grid Config to state
     yield call(fetchGridConfig, ceNode.gridId);
-  console.log("--------------------------------GRID CALLS 2");
     // Fetch and Set Grid Data to state
     yield call(fetchGridData, ceNode.configObjectId);
-  console.log("--------------------------------GRID CALLS 3");
     // Navigate to target screen
     yield put(navigateTo(action.navigationRoute, HOMEROUTE));
 
@@ -50,5 +48,19 @@ function* fetchGridData(nodeId) {
   let result = yield call(getGridData, nodeId);
   
   let data = result.data.returnData.data;
+  //console.log("grid data ", data.length)
   yield put(saveGridData(data));
 }
+
+
+export function* renderGridDetail(action){
+    let ceNode = yield select(getCompositeEntityNode);
+    if(ceNode.uiLayoutIds.mobile) { // If Mobile layout is set render layout
+         yield call(openLayout, action) ;
+    }
+    else {
+        yield call(openEditForm, action) ;
+    }
+
+}
+

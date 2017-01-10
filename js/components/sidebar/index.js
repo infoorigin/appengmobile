@@ -71,12 +71,13 @@ class SideBar extends Component {
             </View>
           </ListItem>
 
-           <ListItem button iconLeft onPress={() => this.navigateTo('aeform')} >
+           <ListItem button iconLeft onPress={() => 
+             this.navigateAndRender(gridActions.RENDER_BASE_GRID,"37b97d48-00bc-428c-b2e9-3087f175c479","datagrid")} >
             <View style={styles.listItemContainer}>
               <View style={[styles.iconContainer, { backgroundColor: '#5cb85c', paddingLeft: 14 }]}>
                 <Icon name="ios-home" style={styles.sidebarIcon} />
               </View>
-              <Text style={styles.text}>Form Test</Text>
+              <Text style={styles.text}>Task</Text>
             </View>
           </ListItem>
           
