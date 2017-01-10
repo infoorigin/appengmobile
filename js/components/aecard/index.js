@@ -7,8 +7,9 @@ import { CheckBox as NBCheckBox, Card as NBCard, CardItem as NBCardItem, Text as
 import AEBaseComponent from '../../widgets/base/AEBaseComponent';
 import AETextInput from '../../widgets/AETextInput';
 import AECheckboxGroup from '../../widgets/AECheckboxGroup';
-import AERadioButtonGroup from '../../widgets/AERadioButtonGroup'
-import AEDatePicker from '../../widgets/AEDatePicker'
+import AERadioButtonGroup from '../../widgets/AERadioButtonGroup';
+import AEDatePicker from '../../widgets/AEDatePicker';
+import AESelectPicker from '../../widgets/AESelectPicker';
 
 export default class  AECard extends AEBaseComponent {  // eslint-disable-line
 
@@ -33,6 +34,9 @@ export default class  AECard extends AEBaseComponent {  // eslint-disable-line
 
 
     render() {
+
+        const selectOptions = [{value:1, text:"one"}, {value:2, text:"two"}, {value:3, text:"three"}, {value:4, text:"four"}];
+
         return (
             <View>
                 
@@ -48,6 +52,11 @@ export default class  AECard extends AEBaseComponent {  // eslint-disable-line
 
                     <AEDatePicker hasError="true" error="Error message" label="Date Picker" value={new Date()}>
                     </AEDatePicker>
+                    
+                    
+                    <AESelectPicker hasError="true" error="Error message" label="Select Picker" value={new Date()}
+                        options={selectOptions} >
+                    </AESelectPicker>
                     
                     
                     <Text style={this.getInitialStyle().itemText}>
