@@ -1,11 +1,14 @@
 
 import React, { Component } from 'react';
-import { Text, View } from 'react-native'
+import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { FormLabel as REFormLabel, FormInput as REFormInput, Card as RECard, Button as REButton } from 'react-native-elements';
-import { Card as NBCard, CardItem as NBCardItem, Text as NBText } from 'native-base';
+import { CheckBox as NBCheckBox, Card as NBCard, CardItem as NBCardItem, Text as NBText } from 'native-base';
 import AEBaseComponent from '../../widgets/base/AEBaseComponent';
-import AETextInput from '../../widgets/AETextInput'
+import AETextInput from '../../widgets/AETextInput';
+import AECheckboxGroup from '../../widgets/AECheckboxGroup';
+import AERadioButtonGroup from '../../widgets/AERadioButtonGroup'
+import AEDatePicker from '../../widgets/AEDatePicker'
 
 export default class  AECard extends AEBaseComponent {  // eslint-disable-line
 
@@ -33,29 +36,24 @@ export default class  AECard extends AEBaseComponent {  // eslint-disable-line
         return (
             <View>
                 
-                <NBCard>
-                    <NBCardItem header>
-                        <NBText>NativeBase with Base</NBText>
-                    </NBCardItem>
-
-                    <NBCardItem>
-                        <NBText>
-                            React Native Base Components Card
-                        </NBText>
-                    </NBCardItem>
-
-                    <NBCardItem header>
-                        <NBText>GeekyAnts</NBText>
-                    </NBCardItem>
-                </NBCard>
-
                 <RECard containerStyle={{margin: 5}} titleStyle = {this.getInitialStyle().dividerItemText} 
                     title='React Native Element Card'>
                     <AETextInput hasError="true" error="Error message" label="Text Label" placeholder ="placeholder text">
                     </AETextInput>
+                    <AECheckboxGroup hasError="true" error="Error message" label="Checkbox Label">
+                    </AECheckboxGroup>
+                    
+                    <AERadioButtonGroup hasError="true" error="Error message" label="Radio Label">
+                    </AERadioButtonGroup>
+
+                    <AEDatePicker hasError="true" error="Error message" label="Date Picker" value={new Date()}>
+                    </AEDatePicker>
+                    
+                    
                     <Text style={this.getInitialStyle().itemText}>
                         The idea with React Native Elements is more about component structure than actual SB design.
                     </Text>
+                    
                     <REFormLabel>Name</REFormLabel>
                     <REFormInput />
 
