@@ -39,7 +39,6 @@ export default class AERadioButton extends Component {
       backgroundColor: innerColor
     }
 
-    console.log("Radio Button props",this.props);
     return (
       <TouchableOpacity style={[styles.radio, outerStyle]} onPress={onPress}>
         {isSelected ? <View style={innerStyle} {...this.props} /> : null}

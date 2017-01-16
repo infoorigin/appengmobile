@@ -21,7 +21,6 @@ export default class AEContainer extends AEBaseComponent {
   }
 
   renderHeader() {
-    console.log("renderHeader");
     if (Array.isArray(this.props.children)) {
       return _.find(this.props.children, function (item) {
         if (item && (_.get(item, 'type', null) == Header || _.get(item, 'type', null) == AEHeader)) {
@@ -37,7 +36,6 @@ export default class AEContainer extends AEBaseComponent {
     }
   }
   renderContent() {
-    console.log("renderContent");
     if (Array.isArray(this.props.children)) {
 
       return _.filter(this.props.children, function (item) {
@@ -59,7 +57,6 @@ export default class AEContainer extends AEBaseComponent {
     }
   }
   renderFooter() {
-    console.log("renderFooter");
     if (Array.isArray(this.props.children)) {
       return _.find(this.props.children, function (item) {
         if (item && _.get(item, 'type', null) == Footer) {
@@ -100,7 +97,6 @@ export default class AEContainer extends AEBaseComponent {
   }
 
   renderRegularScreen() {
-    console.log("renderRegularScreen");
     let header = this.renderHeader();
     return (
       <View ref={c => this._root = c} {...this.prepareRootProps() }>
@@ -122,8 +118,7 @@ export default class AEContainer extends AEBaseComponent {
   }
 
   render() {
-    console.log("Inside renderRegularScreen of AEContainer  :", this.props.modalVisible);
-    return this.renderRegularScreen();
+   return this.renderRegularScreen();
 
   }
 

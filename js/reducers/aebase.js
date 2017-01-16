@@ -2,6 +2,7 @@
 import * as gridaction from '../actions/grid';
 import * as ceaction from '../actions/ce';
 import * as layoutaction from '../actions/layout';
+import update from 'immutability-helper';
 
 const initialState = {
   sequence:0,
@@ -16,6 +17,7 @@ const initialState = {
         },
   ce: {},
   cenode: {},
+  nodeData :{},
   layout :{},
 };
 
@@ -89,12 +91,19 @@ export default function (state = initialState, action) {
       form: {key:state.form.key,data:{},messageData:{sequence:state.form.messageData.sequence},
              config:action.config}
     }; 
-    case ceaction.PUT_NODE_EDIT_FORM_DATA:
+
+    case ceaction.PUT_NODE_DATA:
     return{
       ...state,
-       form: {key:state.form.key,config:Object.assign({}, state.form.config),data:action.data,
-             messageData:{sequence:state.form.messageData.sequence}}
+       nodeData : action.data
     };
+
+    case ceaction.PUT_NODE_KEY:
+    return{
+      ...state,
+       cenode:  update(state.cenode, {$merge: {keys:action.keys}})
+    };
+
 
     case layoutaction.SAVE_LAYOUT_CONFIG:
     return{

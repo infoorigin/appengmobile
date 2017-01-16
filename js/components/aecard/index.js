@@ -10,9 +10,17 @@ import AECheckboxGroup from '../../widgets/AECheckboxGroup';
 import AERadioButtonGroup from '../../widgets/AERadioButtonGroup';
 import AEDatePicker from '../../widgets/AEDatePicker';
 import AESelectPicker from '../../widgets/AESelectPicker';
+import AEFormSection from '../aeformsection';
+import {getBindingIdByNodeId, getDataByBindingId} from '../../utils/uiData'
+
 
 export default class  AECard extends AEBaseComponent {  // eslint-disable-line
 
+constructor(props) {
+    super(props);
+
+    this._callBacks = this._callBacks.bind(this);
+  }
     getInitialStyle() {
         return {
             itemText: {
@@ -32,6 +40,38 @@ export default class  AECard extends AEBaseComponent {  // eslint-disable-line
         };
     }
 
+    _onUIDataChange(bindingId, updateData){
+        let nodeId = this.props.basenode.configObjectId;
+        this.props.onNodeDataChange(nodeId, bindingId, updateData);
+    }
+
+    _onUIBlur(bindingId, updateData){
+        let nodeId = this.props.basenode.configObjectId;
+        this.props.onUIBlur(nodeId, bindingId, updateData);
+    }
+
+    _callBacks(){
+        return {
+            onUIDataChange : this._onUIDataChange.bind(this),
+            onUIBlur : this._onUIBlur.bind(this),
+        };
+    }
+
+    _renderFormSection(section){
+        let nodeId = this.props.basenode.configObjectId;
+        let uiBindingId = getBindingIdByNodeId(this.props.data, nodeId);
+        let sectiondata = getDataByBindingId(this.props.data, nodeId, uiBindingId)
+        return (<AEFormSection key={uiBindingId+section.configObjectId} bindingId={uiBindingId} config={section} data={sectiondata} {...this._callBacks()}> </AEFormSection>);
+    }
+
+    _renderSingleForm(){ 
+        
+    }
+
+    _renderFormRepeatable(){ 
+        
+    }
+
 
     render() {
 
@@ -42,36 +82,21 @@ export default class  AECard extends AEBaseComponent {  // eslint-disable-line
                 
                 <RECard containerStyle={{margin: 5}} titleStyle = {this.getInitialStyle().dividerItemText} 
                     title='React Native Element Card'>
-                    <AETextInput hasError="true" error="Error message" label="Text Label" placeholder ="placeholder text">
-                    </AETextInput>
-                    <AECheckboxGroup hasError="true" error="Error message" label="Checkbox Label">
-                    </AECheckboxGroup>
-                    
-                    <AERadioButtonGroup hasError="true" error="Error message" label="Radio Label">
-                    </AERadioButtonGroup>
+                    {this.props.config.viewItems.map(function(item, i){
+                        switch(item.configObjectType){
+                            case "FormSection":
+                                return this._renderFormSection(item);
+                            case "Form" :
+                                break;
+                            case "Grid"  :
+                                break;
+                            default :
+                                console.log("Invalid or unsupported view Item Type in Card Renderer",item.configObjectType)    ;
+                        }
 
-                    <AEDatePicker hasError="true" error="Error message" label="Date Picker" value={new Date()}>
-                    </AEDatePicker>
-                    
-                    
-                    <AESelectPicker hasError="true" error="Error message" label="Select Picker" value={new Date()}
-                        options={selectOptions} >
-                    </AESelectPicker>
-                    
-                    
-                    <Text style={this.getInitialStyle().itemText}>
-                        The idea with React Native Elements is more about component structure than actual SB design.
-                    </Text>
-                    
-                    <REFormLabel>Name</REFormLabel>
-                    <REFormInput />
-
-                    <REButton
-                        raised
-                        icon={{ name: 'cached' }}
-                        title='BUTTON WITH ICON' />
-
-                </RECard>
+                    }.bind(this))}
+               
+               </RECard>
 
             </View>
         );

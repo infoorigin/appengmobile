@@ -46,7 +46,7 @@ export function getConfig(configId) {
   });
 }
 
-export function getEditFormData(ceid,leid,key) {
+export function getCENodeData(ceid,leid,key) {
   return axios.get(baseUrl + '/rest/'+ceid+'/'+leid+'/'+key,{
     headers: {
       'Accept': 'application/json',

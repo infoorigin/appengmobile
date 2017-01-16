@@ -1,12 +1,15 @@
 import { call, put,select } from "redux-saga/effects";
 import navigateTo from '../actions/sideBarNav';
 import {saveCEConfig, putFormActionResponse,
-    saveCENodeConfig,putCENodeEditForm,putCENodeEditFormKeyData,putCENodeEditFormData } from '../actions/ce';
-import { getConfig,getEditFormData ,baseFormUpdate} from '../services/api';
+    saveCENodeConfig,putCENodeEditForm,putCENodeEditFormKeyData,putCENodeData } from '../actions/ce';
+import { getConfig,getCENodeData ,baseFormUpdate} from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
+import {initCENodeDataMap, updateKeys} from '../utils/uiData'
 
 
 export const getCompositeEntity = (state) => state.ae.ce.config
+
+export const getCompositeEntityNodeData = (state) => state.ae.nodeData
 
 export const getCompositeEntityNode = (state) => state.ae.cenode.config
 
@@ -45,7 +48,7 @@ export function* openEditForm(action){
    
     // get the data for keyData
     // Fetch and Set Form Data to state
-     yield call(fetchFormData, ceNode,action.key);
+     yield call(fetchNodeData, ceNode,action.key);
      
     // Navigate to target screen 
      yield put(navigateTo(action.navigationRoute)); 
@@ -60,15 +63,21 @@ function* fetchFormConfig(formConfigId){
    yield put(putCENodeEditForm(configItem));
 }
 
-function* fetchFormData(ceNode,key) {
+export function* setNodeData(ceNode,keys) {
   // call the api to get the grid config Item
-  console.log(" calling fetch data form");
-  let result = yield call(getEditFormData, ceNode.compositeEntityId,ceNode.entityId,key);
-  let data = result.data.returnData.data;
-  console.log("status", result.data.status);
-  yield put(putCENodeEditFormData(data));
+  console.log("Getting Node Data for ",ceNode.compositeEntityId, ceNode.entityId,keys.primaryKey);
+  let result = yield call(getCENodeData, ceNode.compositeEntityId,ceNode.entityId,keys.primaryKey);
+  let responseData = result.data.returnData.data;
+  let nodeData = initCENodeDataMap(responseData);
+  yield put(putCENodeData(nodeData));
 }
 
+export function* setNodeKeys(ceNode,keys) {
+  
+  let nodeData = yield select(getCompositeEntityNodeData);
+  let nodeDataWithKeys = updateKeys(nodeData, ceNode.configObjectId, keys)
+  yield put(putCENodeData(nodeDataWithKeys));
+}
 
 export function* updateBaseForm(action){
     
@@ -78,7 +87,7 @@ export function* updateBaseForm(action){
     let result = yield call(baseFormUpdate, ceNode.compositeEntityId,ceNode.entityId,formKey,action.data);
     if( result.data.status){
         console.log('=========================success=======================');
-        yield call(fetchFormData, ceNode,formKey);
+        yield call(fetchNodeData, ceNode,formKey);
     }else{
         console.log('=============================error===================');
          yield put(putFormActionResponse(result.data)); 

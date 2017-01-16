@@ -3,6 +3,7 @@ import _ from 'lodash';
 import ReactNativePropRegistry from 'react-native/Libraries/Renderer/src/renderers/native/ReactNativePropRegistry';
 // For compatibility with RN 0.25
 // import ReactNativePropRegistry from "react-native/Libraries/ReactNative/ReactNativePropRegistry";
+//TODO provide option to ignore specific property e.g. config/data while cloning
 module.exports = function(incomingProps, defaultProps) {
     // External props has a higher precedence
     var computedProps = {};

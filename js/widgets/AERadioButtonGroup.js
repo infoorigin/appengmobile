@@ -112,9 +112,6 @@ export default class AERadioButtonGroup extends AEBaseComponent {
     render() {
 
         let styles = this.componentStyle();
-
-        console.log("styles.textStyle.normal :", styles.textStyle)
-
         let label = this.props.label ? <Text style={styles.controlLabelStyle}>{this.props.label}</Text> : null;
         let help = this.props.help ? <Text style={styles.helpBlockStyle}>{this.props.help}</Text> : null;
         let error = this.props.hasError && this.props.error ? <Text accessibilityLiveRegion="polite" style={styles.errorBlockStyle}>{this.props.error}</Text> : null;

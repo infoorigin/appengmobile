@@ -11,6 +11,8 @@
   "dependencies": {
     "axios": "^0.15.3",
     "color": "~0.11.1",
+    "immutability-helper": "^2.1.1",
+    "immutable": "^3.8.1",
     "lodash": "^4.13.1",
     "moment": "^2.13.0",
     "native-base": "0.5.18",
@@ -31,6 +33,7 @@
     "redux-saga": "^0.13.0",
     "redux-thunk": "^2.1.0",
     "remote-redux-devtools": "^0.3.3",
+    "uuid": "^3.0.1",
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {

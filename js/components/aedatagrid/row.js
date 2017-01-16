@@ -32,7 +32,7 @@ class GridRow extends Component{
     
 	recordClicked(){
         console.log('Key Selected----'+JSON.stringify(this.state.rowKeyData));
-        this.props.gridAction(RENDER_GRID_DETAIL,this.state.rowKeyData.primaryKey);
+        this.props.gridAction(RENDER_GRID_DETAIL,this.state.rowKeyData);
 	}
  
     getElementsWithPrivilege(){
@@ -109,7 +109,7 @@ class GridRow extends Component{
 
 function bindAction(dispatch) {
   return {
-    gridAction :(actionType,keyValue) => dispatch(gridAction(actionType ,keyValue)),
+    gridAction :(actionType,keys) => dispatch(gridAction(actionType ,keys)),
     getPrivilege: (configItem) => getPrivilege(configItem)
   };
 }

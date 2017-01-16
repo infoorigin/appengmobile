@@ -8,6 +8,11 @@ import computeProps from '../utils/computeProps';
 
 export default class AETextInput extends AEBaseComponent {
 
+constructor(props) {
+    super(props);
+    this._onBlur = this._onBlur.bind(this);
+    this._onChange = this._onChange.bind(this);
+}
 
 
     getInitialStyle() {
@@ -125,16 +130,40 @@ export default class AETextInput extends AEBaseComponent {
 
     prepareRootProps(textboxStyle) {
         var defaultProps = {
-            style: textboxStyle
+            style: textboxStyle,
+            placeholder : this.props.config.placeHolder ? this.props.config.placeHolder:"", 
+            value : this._getData(),
+            onChangeText: this._onChange,
+            onBlur : this._onBlur,
         }
-        return computeProps(this.props, defaultProps);
+       //return computeProps(this.props, defaultProps);
+       return defaultProps;
     }
 
-    render() {
+    _getData(){
+        let dbCode = this._fieldDBCode();
+       return this.props.data.get(dbCode) != null ?  this.props.data.get(dbCode)  :""; 
+    }
+
+    _onBlur(){
+        this.props.onBlur(this._fieldDBCode(),  this.refs.input.props.value);
+
+    }
+
+     _onChange(text){
+         this.props.onChange(this._fieldDBCode(), text);
+    }
+
+    _fieldDBCode(){
+        let logicalCol = this.props.config.logicalColumn;
+        return logicalCol.jsonName ? logicalCol.jsonName  : logicalCol.dbColumn.code;
+    }
+
+    render() { 
 
         var styles = this.componentStyle();
 
-        let label = this.props.label ? <Text style={styles.controlLabelStyle}>{this.props.label}</Text> : null;
+        let label = this.props.config.label ? <Text style={styles.controlLabelStyle}>{this.props.config.label}</Text> : null;
         let help = this.props.help ? <Text style={styles.helpBlockStyle}>{this.props.help}</Text> : null;
         let error = this.props.hasError && this.props.error ? <Text accessibilityLiveRegion="polite" style={styles.errorBlockStyle}>{this.props.error}</Text> : null;
 
