@@ -10,7 +10,7 @@ export default class AESelectPickerAndroid extends React.Component {
 
   render() {
 
-      var options = this.props.options.map(({value, text}) => <Picker.Item key={value} value={value} label={text} />);
+      var options = this.props.options.map(({value, label}) => <Picker.Item key={value} value={value} label={label} />);
 
     return (
       <Picker

@@ -79,12 +79,19 @@ constructor(props) {
                                 </AETextInput>);
                             case "Hiddenfield":
                             case "SelectOption":
+                                return (<AESelectPicker key={col.configObjectId} config={col} {...this._defaultFieldProps()} > </AESelectPicker>);
                             case "MultiSelect" :
                                 break;
                              default :
                                 log.console("Invalid or unspported Form field :",col.type) ;  
                           }
                     }.bind(this))
+
+                    /*
+                     <AESelectPicker hasError="true" error="Error message" label="Select Picker" value={new Date()}
+                        options={selectOptions} >
+                    </AESelectPicker>
+                    */
                  }
                     
                     <AECheckboxGroup hasError="true" error="Error message" label="Checkbox Label">
@@ -95,11 +102,6 @@ constructor(props) {
 
                     <AEDatePicker hasError="true" error="Error message" label="Date Picker" value={new Date()}>
                     </AEDatePicker>
-                    
-                    
-                    <AESelectPicker hasError="true" error="Error message" label="Select Picker" value={new Date()}
-                        options={selectOptions} >
-                    </AESelectPicker>
                     
                     
                     <Text style={this.getInitialStyle().itemText}>

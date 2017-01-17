@@ -40,7 +40,7 @@ export default class AESelectPickerIOS extends React.Component {
       }
     }
 
-    const options = this.props.options.map(({value, text}) => <Picker.Item key={value} value={value} label={text} />);
+    const options = this.props.options.map(({value, label}) => <Picker.Item key={value} value={value} label={label} />);
     const selectedOption = this.props.options.find(option => option.value === this.props.value);
 
     const height = (this.state.isCollapsed) ? 0 : UIPICKER_HEIGHT;
