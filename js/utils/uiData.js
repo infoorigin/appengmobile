@@ -17,7 +17,7 @@ import uuid from 'uuid';
  */
 
 export function initCENodeDataMap(apidata){
-     let data = {[uuid.v1()] :{ index : 0, keys:{}, attributes:apidata.baseEntity.attributes}};
+     let data = {[uuid.v1()] :{ index : 0, error:{}, keys:{}, attributes:apidata.baseEntity.attributes}};
      let nodeData = {[apidata.baseEntity.nodeId] : data};
     // let childData = initChildCENodeDataMap(apidata.baseEntity.childEntities);
      //Object.assign(nodeData, childData);
@@ -38,7 +38,7 @@ function initChildCENodeDataMap(childDataList){
     let nodeData = listByNodeId.map(function(datalist) {
         // datalist is list of records for each nodeId (used in repetable forms if more than 1)
         let nodedata = datalist.reduce(function(acc, x, i) {
-                        Object.assign(acc, {[uuid.v1()] :{ index : i, keys:{}, attributes:childData.attributes}});
+                        Object.assign(acc, {[uuid.v1()] :{ index : i,  error:{}, keys:{}, attributes:childData.attributes}});
                     },  {});
             
          return nodedata
@@ -62,6 +62,25 @@ export function updateApiData(apidata, stateMapData){
     let updateMap = initCENodeDataMap(apidata);
     // merge and created new immutable Map
     return stateMapData.merge(updateMap);
+    
+}
+
+export function createAPIRequestData(stateMapData, userattrbs, ceNode, bindingId){
+     if(! isBindingIdExists(stateMapData, ceNode.configObjectId, bindingId)){
+        // throw exception
+        return {};
+    }
+
+    let attributesMap = stateMapData.get(ceNode.configObjectId).get(bindingId).get("attributes");
+    let attributes = attributesMap.toJS();
+    let keysMap = stateMapData.get(ceNode.configObjectId).get(bindingId).get("keys")
+                             .filter((v,k) => k !== "primaryKey");
+    let keys = keysMap.toJS();
+
+    Object.assign(attributes, userattrbs);
+    Object.assign(attributes, keys);
+    let apiData = { baseEntity : { configId:ceNode.entityId, attributes:attributes, childEntities: [] }};
+    return apiData;
     
 }
 
@@ -92,6 +111,40 @@ export function updateKeys(stateMapData, nodeId, keys, bindingId){
     console.log("updatePath :",updatePath)
     let newStateMapData = stateMapData.mergeIn(updatePath, keys);
     return newStateMapData;
+}
+
+export function getKeys(stateMapData, nodeId,  bindingId){
+    if( isBindingIdExists(stateMapData, nodeId, bindingId)){
+        return stateMapData.get(nodeId).get(bindingId).get("keys")
+    }
+    else   
+        return Map();
+}
+
+export function getError(stateMapData, nodeId,  bindingId){
+    if( isBindingIdExists(stateMapData, nodeId, bindingId)){
+        return stateMapData.get(nodeId).get(bindingId).get("error")
+    }
+    else   
+        return Map();
+}
+
+export function updateError(stateMapData, nodeId,  bindingId, error){
+    if(isBindingIdExists(stateMapData, nodeId, bindingId)){
+        let updatePath = [nodeId,bindingId, "error"]
+        let newStateMapData = stateMapData.mergeIn(updatePath, error);
+        return newStateMapData;
+    }
+    return stateMapData;
+}
+
+export function clearError(stateMapData, nodeId,  bindingId) {
+     if(isBindingIdExists(stateMapData, nodeId, bindingId)){
+        let updatePath = [nodeId,bindingId, "error"]
+        let newStateMapData = stateMapData.setIn(updatePath, Map());
+        return newStateMapData;
+    }
+    return stateMapData;
 }
 
 export function isBindingIdExists(mapData, nodeId, bindingId){

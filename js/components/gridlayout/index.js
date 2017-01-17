@@ -6,7 +6,7 @@ import { Grid, Col, Row } from 'react-native-easy-grid';
 import AEContainer from '../../widgets/AEContainer';
 import AEHeader from '../../widgets/AEHeader';
 import AECard from '../aecard';
-import {putCENodeData } from '../../actions/ce';
+import {putCENodeData , submitNodeData} from '../../actions/ce';
 import {updateAttributes} from '../../utils/uiData'
 
 import { openDrawer } from '../../actions/drawer';
@@ -19,11 +19,6 @@ class AEGridLayout extends Component {  // eslint-disable-line
 
   constructor(props) {
     super(props);
-
-// Antipattern ?? http://stackoverflow.com/questions/28785106/reactjs-why-is-passing-the-component-initial-state-a-prop-an-anti-pattern
-    this.state = {
-      data:this.props.data,
-    }
 
     this._callBacks = this._callBacks.bind(this);
   }
@@ -42,7 +37,7 @@ class AEGridLayout extends Component {  // eslint-disable-line
      _onUIBlur(nodeId, bindingId, updateData){
         console.log("layoutchange _onUIBlur",nodeId, bindingId, updateData);
         let nodeData = updateAttributes(this.props.data, nodeId, bindingId, updateData);
-        this.props.updateNodeData(nodeData);
+        this.props.submitNodeData(nodeId, bindingId,nodeData);
     }
 
     _callBacks(){
@@ -89,7 +84,8 @@ class AEGridLayout extends Component {  // eslint-disable-line
 function bindAction(dispatch) {
   return {
     openDrawer: () => dispatch(openDrawer()),
-    updateNodeData: (nodeData) => dispatch(putCENodeData(nodeData))
+    updateNodeData: (nodeData) => dispatch(putCENodeData(nodeData)),
+    submitNodeData: (nodeId, bindigId, nodeData) => dispatch(submitNodeData(nodeId, bindigId, nodeData))
   };
 }
 

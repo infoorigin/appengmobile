@@ -12,6 +12,8 @@ constructor(props) {
     super(props);
     this._onBlur = this._onBlur.bind(this);
     this._onChange = this._onChange.bind(this);
+    this._hasError = this._hasError.bind(this);
+    this._error = this._error.bind(this);
 }
 
 
@@ -106,7 +108,7 @@ constructor(props) {
     }
 
     componentStyle() {
-        const isError = this.props.hasError;
+        const isError = this._hasError();
         const initialStyle = this.getInitialStyle();
 
         let textboxStyle = isError ? initialStyle.textbox.error : initialStyle.textbox.normal;
@@ -159,13 +161,20 @@ constructor(props) {
         return logicalCol.jsonName ? logicalCol.jsonName  : logicalCol.dbColumn.code;
     }
 
-    render() { 
+    _hasError(){
+        return this.props.error.has(this._fieldDBCode());
+    }
 
-        var styles = this.componentStyle();
+    _error(){
+        return this._hasError() ? this.props.error.get(this._fieldDBCode()) :"";
+    }
+
+    render() { 
+       var styles = this.componentStyle();
 
         let label = this.props.config.label ? <Text style={styles.controlLabelStyle}>{this.props.config.label}</Text> : null;
         let help = this.props.help ? <Text style={styles.helpBlockStyle}>{this.props.help}</Text> : null;
-        let error = this.props.hasError && this.props.error ? <Text accessibilityLiveRegion="polite" style={styles.errorBlockStyle}>{this.props.error}</Text> : null;
+        let error = this._hasError() ? <Text accessibilityLiveRegion="polite" style={styles.errorBlockStyle}>{this._error()}</Text> : null;
 
         return (
             <View style={styles.formGroupStyle}>

@@ -7,6 +7,7 @@ export const PUT_NODE_EDIT_FORM_KEY='PUT_NODE_EDIT_FORM_KEY';
 export const PUT_NODE_DATA='PUT_NODE_DATA';
 export const PUT_NODE_KEY='PUT_NODE_KEY';
 export const UPDATE_BASE_FORM_DATA='UPDATE_BASE_FORM_DATA';
+export const SUBMIT_NODE_DATA='SUBMIT_NODE_DATA';
 export const FORM_ACTION_RESPONSE='FORM_ACTION_RESPONSE';
 
 
@@ -68,6 +69,16 @@ export function putCENodKey(nodeKey){
 }
 
 
+export function submitNodeData(nodeId, bindingId, nodeData){
+    return {
+      type:SUBMIT_NODE_DATA,
+      data:{
+        nodeData :nodeData,
+        nodeId : nodeId,
+        bindingId :bindingId,
+    }
+}
+}
 
 export function updateBaseForm(baseformData){
     return {

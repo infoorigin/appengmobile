@@ -46,6 +46,13 @@ export function getConfig(configId) {
   });
 }
 
+
+export function submitNodeData(ceid,keys, apiRequest){
+    return axios.patch(
+      baseUrl+'/rest/'+ceid+'/'+keys.primaryKey,apiRequest,config
+    );
+}
+
 export function getCENodeData(ceid,leid,key) {
   return axios.get(baseUrl + '/rest/'+ceid+'/'+leid+'/'+key,{
     headers: {

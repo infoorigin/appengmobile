@@ -4,8 +4,16 @@ import * as ceaction from '../actions/ce';
 import * as layoutaction from '../actions/layout';
 import update from 'immutability-helper';
 
+// TO DO populate default user details by login saga
 const initialState = {
   sequence:0,
+  user : {
+    attributes: { 
+        APP_LOGGED_IN_PROJECT_ID: 0,
+        APP_LOGGED_IN_ROLE_ID : 16, 
+        APP_LOGGED_IN_USER_ID : 1111
+       }
+  },
   menu: {},
   grid: {},
   form: {config:{},

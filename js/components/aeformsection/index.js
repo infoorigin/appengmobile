@@ -10,6 +10,7 @@ import AECheckboxGroup from '../../widgets/AECheckboxGroup';
 import AERadioButtonGroup from '../../widgets/AERadioButtonGroup';
 import AEDatePicker from '../../widgets/AEDatePicker';
 import AESelectPicker from '../../widgets/AESelectPicker';
+import { Map } from 'immutable';
 
 export default class  AEFormSection extends AEBaseComponent {  // eslint-disable-line
 
@@ -56,6 +57,8 @@ constructor(props) {
         return {
             onChange : this._onFieldChange.bind(this),
             onBlur : this._onFieldBlur.bind(this),
+            data : this.props.data.get("attributes") ? this.props.data.get("attributes") : Map() ,
+            error : this.props.data.get("error") ? this.props.data.get("error") : Map() ,
        }
     }
 
@@ -69,11 +72,10 @@ constructor(props) {
                 
                  {
                      this.props.config.renderColumns.map(function(col, i){
-                          let attrbdata  = this.props.data.get("attributes") ? this.props.data.get("attributes") :{};
+                          
                           switch(col.type){
                             case "TextBox":
-                                return (<AETextInput key={col.configObjectId} hasError="true" config={col} data={attrbdata} 
-                                error="Error message" {...this._defaultFieldProps()} >
+                                return (<AETextInput key={col.configObjectId} config={col} {...this._defaultFieldProps()} >
                                 </AETextInput>);
                             case "Hiddenfield":
                             case "SelectOption":

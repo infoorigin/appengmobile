@@ -117,8 +117,6 @@ class AEDataGrid extends Component {
 
 	}
 	componentDidMount() {
-		console.log("Config item from redux state :" + this.props.config);
-		console.log("Config Init Grid Data[0] from redux state :", this.props.data[0]);
 		this.initGrid();
 	}
 
@@ -135,9 +133,8 @@ class AEDataGrid extends Component {
 				return 0;
 			}
 		});
-
-		var keyColunms = headerdata.filter(function (gc) { return gc.logicalColumn.dbColumn.primaryKey | gc.logicalColumn.dbColumn.key; });
-
+		let keyColunms = this.props.config.gridColumns.filter(function (gc) { return gc.logicalColumn.dbColumn.primaryKey | gc.logicalColumn.dbColumn.key; });
+		console.log("keyColunms :",keyColunms);
 		this.setState({ header: headerdata, keyColunms: keyColunms });
 	}
 
