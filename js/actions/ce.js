@@ -9,7 +9,7 @@ export const PUT_NODE_KEY='PUT_NODE_KEY';
 export const UPDATE_BASE_FORM_DATA='UPDATE_BASE_FORM_DATA';
 export const SUBMIT_NODE_DATA='SUBMIT_NODE_DATA';
 export const FORM_ACTION_RESPONSE='FORM_ACTION_RESPONSE';
-
+export const PUT_ACTIVE_NODE_CONFIG = 'PUT_ACTIVE_NODE_CONFIG';
 
 export function putFormActionResponse(response){
   return{
@@ -84,6 +84,13 @@ export function updateBaseForm(baseformData){
     return {
       type:UPDATE_BASE_FORM_DATA,
       data:baseformData,
+    }
+}
+
+export function putActiveNodeConfig(nodeConfig){
+  return {
+      type:PUT_ACTIVE_NODE_CONFIG,
+      config:nodeConfig,
     }
 }
 

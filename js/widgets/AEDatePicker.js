@@ -6,9 +6,10 @@ import AEBaseComponent from './base/AEBaseComponent';
 import computeProps from '../utils/computeProps';
 import AEDatePickerIOS from './AEDatePickerIOS';
 import AEDatePickerAndroid from './AEDatePickerAndroid';
+import AEBaseWidget from './base/AEBaseWidget';
 
 
-export default class AEDatePicker extends AEBaseComponent {
+export default class AEDatePicker extends AEBaseWidget {
 
     constructor(props) {
 		super(props);
@@ -117,23 +118,42 @@ export default class AEDatePicker extends AEBaseComponent {
 
     }
 
-    _renderIOSDatePicker(label, help, error, styles){
+    _renderIOSDatePicker(baseRender, styles){
         return (
             <View style={styles.formGroupStyle}>
-                {label}
-                <AEDatePickerIOS {...this.props} styles = {styles}/>
-                {help}
-                {error}
+                {baseRender.label}
+                <AEDatePickerIOS {...this.defaultProps()} styles = {styles}/>
+                {baseRender.help}
+                {baseRender.error}
              </View>
         );
     }
 
-    _renderAndroidDatePicker(label, help, error, styles){
+    _onChange(text) {
+        this.props.onBlur(this._fieldDBCode(), text);
+    }
+
+    defaultProps() {
+        return {
+            placeholder: this.props.config.placeHolder ? this.props.config.placeHolder : "",
+            value: this._getData(),
+            onChange: this._onChange,
+            mode : this.props.config.type === "DatePicker"? "date" : "time",
+        };
+    }
+
+    _
+
+    _mode(){
+        return this.props.config.type === "DatePicker"? "date" : "time";
+    }
+
+    _renderAndroidDatePicker(baseRender, styles){
         return (
             <View style={styles.formGroupStyle}>
-                <AEDatePickerAndroid {...this.props} label={label} styles = {styles}  />
-                {help}
-                {error}
+                <AEDatePickerAndroid  {...this.defaultProps()} label={baseRender.label} styles = {styles}  />
+                {baseRender.help}
+                {baseRender.error}
              </View>
         );
     }
@@ -141,16 +161,14 @@ export default class AEDatePicker extends AEBaseComponent {
     render() {
 
         const styles = this.componentStyle();
-
-        const label = this.props.label ? <Text style={styles.controlLabelStyle}>{this.props.label}</Text> : null;
-        const help = this.props.help ? <Text style={styles.helpBlockStyle}>{this.props.help}</Text> : null;
-        const error = this.props.hasError && this.props.error ? <Text accessibilityLiveRegion="polite" style={styles.errorBlockStyle}>{this.props.error}</Text> : null;
+        const baseRender = this._baseRender(styles);
         let datepicker =  null;
+
         if(Platform.OS === 'ios'){
-            datepicker =  this._renderIOSDatePicker(label, help, error, styles);
+            datepicker =  this._renderIOSDatePicker(baseRender, styles);
         }
         else { // android
-            datepicker =  this._renderAndroidDatePicker(label, help, error, styles);
+            datepicker =  this._renderAndroidDatePicker(baseRender, styles);
         }
 
         return datepicker ;

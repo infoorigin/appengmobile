@@ -7,6 +7,7 @@ import { actions } from 'react-native-navigation-redux-helpers';
 
 import { closeDrawer } from './actions/drawer';
 import AEGridLayout from  './components/gridlayout/';
+import AETabLayout from './components/tablayout/';
 
 import MyMessage from './components/eccheckmessage/';
 import Coverage from './components/eccoverage/';
@@ -131,7 +132,8 @@ class AppNavigator extends Component {
       
        case 'gridlayout':
           return <AEGridLayout />;   
-     
+      case 'tablayout':
+          return <AETabLayout />; 
        case 'mycoverage':
 	    		return <MyCoverage />;
         case 'detailClaim':

@@ -152,6 +152,7 @@ export default {
   inputGroupMarginBottom: 10,
   inputHeightBase: 40,
   inputPaddingLeft: 5,
+  inuputTextAreaHeightBase : 40,
 
   get inputPaddingLeftIcon() {
     return this.inputPaddingLeft * 8;

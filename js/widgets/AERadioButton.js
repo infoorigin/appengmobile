@@ -1,13 +1,14 @@
 import React, { Component, PropTypes } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import {View} from 'react-native-animatable';
+import AEBaseComponent from './base/AEBaseComponent';
 
 const DEFAULT_SIZE_MULTIPLIER = 0.7
 const DEFAULT_OUTER_BORDER_WIDTH_MULTIPLIER = 0.2
 
-export default class AERadioButton extends Component {
+export default class AERadioButton extends AEBaseComponent {
   static propTypes = {
-    size: PropTypes.number,
+    size: PropTypes.number, 
     innerColor: PropTypes.string,
     outerColor: PropTypes.string,
     isSelected: PropTypes.bool,
@@ -15,16 +16,17 @@ export default class AERadioButton extends Component {
   }
 
   static defaultProps = {
-    size: 16,
+    size: 12,
     innerColor: 'dodgerblue',
     outerColor: 'dodgerblue',
     isSelected: false,
     onPress: () => null
   }
-
+ 
   render () {
-    const { size, innerColor, outerColor, isSelected, onPress } = this.props
-    const outerStyle = {
+    const {  innerColor, outerColor, isSelected, onPress } = this.props
+    const size =  this.getTheme().fontSizeBase;
+    const outerStyle = { 
       borderColor: outerColor,
       width: size + size * DEFAULT_SIZE_MULTIPLIER,
       height: size + size * DEFAULT_SIZE_MULTIPLIER,

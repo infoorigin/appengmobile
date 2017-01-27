@@ -6,6 +6,7 @@ import update from 'immutability-helper';
 
 // TO DO populate default user details by login saga
 const initialState = {
+  error :{},
   sequence:0,
   user : {
     attributes: { 
@@ -27,7 +28,23 @@ const initialState = {
   cenode: {},
   nodeData :{},
   layout :{},
+  activenode :{}
 };
+
+//activenode
+//  -- config
+//  -- ce (only if CE is diff than base CE)
+//  --   config
+//  -- grid
+//        -- config
+//        -- data
+//        -- keys
+//
+
+//activeGrid
+//    -- config
+//    -- data
+//    -- keys
 
 
 export default function (state = initialState, action) {
@@ -117,6 +134,24 @@ export default function (state = initialState, action) {
     return{
       ...state,
       layout: {config:action.config},
+    };
+
+    case ceaction.PUT_ACTIVE_NODE_CONFIG:
+    return{
+      ...state,
+      activenode: {config:action.config},
+    };
+
+    case gridaction.PUT_ACTIVE_NODE_GRID_CONFIG:
+    return{
+      ...state,
+      activenode: update(state.activenode, { grid : {$set: {config:action.config}}})
+    };
+
+    case gridaction.PUT_ACTIVE_NODE_GRID_DATA:
+    return{
+      ...state,
+      activenode: update(state.activenode, { grid : {$set: {data:action.data}}})
     };
 
     default:

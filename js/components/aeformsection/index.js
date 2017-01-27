@@ -75,33 +75,49 @@ constructor(props) {
                           
                           switch(col.type){
                             case "TextBox":
-                                return (<AETextInput key={col.configObjectId} config={col} {...this._defaultFieldProps()} >
+                            case "Password":
+                            case "TextArea":
+                            case "LabelField":
+                                return (<AETextInput key={col.configObjectId} config={col}  {...this._defaultFieldProps()} >
                                 </AETextInput>);
-                            case "Hiddenfield":
                             case "SelectOption":
                                 return (<AESelectPicker key={col.configObjectId} config={col} {...this._defaultFieldProps()} > </AESelectPicker>);
-                            case "MultiSelect" :
+                            case "RadioButton":
+                                return (<AERadioButtonGroup key={col.configObjectId} config={col} {...this._defaultFieldProps()} > </AERadioButtonGroup>);
+                            case "CheckBox" :
+                                return (<AECheckboxGroup key={col.configObjectId} config={col} {...this._defaultFieldProps()} > </AECheckboxGroup>);
+                            case "DatePicker" :
+                            case "TimePicker" :
+                                return (<AEDatePicker key={col.configObjectId} config={col} {...this._defaultFieldProps()} ></AEDatePicker>);
+                            case "Hiddenfield":
                                 break;
                              default :
-                                log.console("Invalid or unspported Form field :",col.type) ;  
+                                console.log("Invalid or unspported Form field :",col.type) ;  
                           }
-                    }.bind(this))
+                    }.bind(this)) 
 
-                    /*
+                    /* 
                      <AESelectPicker hasError="true" error="Error message" label="Select Picker" value={new Date()}
                         options={selectOptions} >
                     </AESelectPicker>
-                    */
-                 }
-                    
+
+                     <AERadioButtonGroup hasError="true" error="Error message" label="Radio Label">
+                    </AERadioButtonGroup>
+
                     <AECheckboxGroup hasError="true" error="Error message" label="Checkbox Label">
                     </AECheckboxGroup>
-                    
-                    <AERadioButtonGroup hasError="true" error="Error message" label="Radio Label">
-                    </AERadioButtonGroup>
 
                     <AEDatePicker hasError="true" error="Error message" label="Date Picker" value={new Date()}>
                     </AEDatePicker>
+                    */
+                 }
+                    
+                    
+                    
+                    
+                   
+
+                    
                     
                     
                     <Text style={this.getInitialStyle().itemText}>

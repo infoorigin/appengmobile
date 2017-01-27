@@ -1,6 +1,7 @@
 import { call, put, select } from "redux-saga/effects";
 import navigateTo from '../actions/sideBarNav';
 import {
+    putActiveNodeConfig,
     saveCEConfig, putFormActionResponse,
     saveCENodeConfig, putCENodeEditForm, putCENodeEditFormKeyData, putCENodeData
 } from '../actions/ce';
@@ -15,6 +16,8 @@ export const getCompositeEntity = (state) => state.ae.ce.config
 export const getCompositeEntityNodeData = (state) => state.ae.nodeData
 
 export const getCompositeEntityNode = (state) => state.ae.cenode.config
+
+export const getActiveCompositeEntityNode = (state) => state.ae.activenode.config
 
 export const getFormDataKey = (state) => state.ae.form.key
 
@@ -55,14 +58,12 @@ export function* openEditForm(action) {
 
     // Navigate to target screen 
     yield put(navigateTo(action.navigationRoute));
-
 }
 
 function* fetchFormConfig(formConfigId) {
     let result = yield call(getConfig, formConfigId);
     console.log('ok form- no promise-data returned :' + JSON.stringify(result));
     let configItem = result.data.returnData.data;
-
     yield put(putCENodeEditForm(configItem));
 }
 
@@ -76,15 +77,22 @@ export function* setNodeData(ceNode, keys) {
 }
 
 export function* setNodeKeys(ceNode, keys) {
-
     let nodeData = yield select(getCompositeEntityNodeData);
     let nodeDataWithKeys = updateKeys(nodeData, ceNode.configObjectId, keys)
     yield put(putCENodeData(nodeDataWithKeys));
 }
 
+export function* setActiveNode(action) {
+    // Get the node from CENodeTree
+   let ceNode = findNodeFromCETree(action.configId);
+   if(ceNode == null) { // ceNode is part of other CE
+      const result = yield call(getConfig, action.configId);
+      ceNode = result.data.returnData.data;
+   }
+   yield put(putActiveNodeConfig(config));
+}
 
 export function* findNodeFromCETree(nodeId) {
-
     let ce = yield select(getCompositeEntity);
     let cetree = ce.treeModel;
     let basenode = cetree.node;
@@ -93,7 +101,6 @@ export function* findNodeFromCETree(nodeId) {
     else
         return yield select(findNodeFromChildTreeNodes, node[i].children, nodeId);
 }
-
 
 export function* submitNodeDataToDB(action) {
 
@@ -112,19 +119,26 @@ export function* submitNodeDataToDB(action) {
     let apiRequest = yield call(createAPIRequestData, action.data.nodeData, user.attributes, ceNode, action.data.bindingId);
 
     // call backend service
-    let result = yield call(submitNodeData, ceNode.compositeEntityId, keys, apiRequest);
+    console.log(" submitNodeDataToDB calling api");
+    try {
+        let result = yield call(submitNodeData, ceNode.compositeEntityId, keys, apiRequest);
+        if (result.data.status) {
+            console.log('=========================success=======================');
+            let nodeDataWithNoError = yield call(clearError, action.data.nodeData, action.data.nodeId, action.data.bindingId);
+            yield put(putCENodeData(nodeDataWithNoError));
 
+        } else {
+            console.log('=============================error===================');
+            let nodeDataWithError = yield call(updateError, action.data.nodeData, action.data.nodeId, action.data.bindingId, result.data.message);
+            yield put(putCENodeData(nodeDataWithError));
+        }
 
-    if (result.data.status) {
-        console.log('=========================success=======================');
-        let nodeDataWithNoError = yield call(clearError, action.data.nodeData, action.data.nodeId, action.data.bindingId);
-        yield put(putCENodeData(nodeDataWithNoError));
-
-    } else {
-        console.log('=============================error===================');
-        let nodeDataWithError = yield call(updateError, action.data.nodeData, action.data.nodeId, action.data.bindingId, result.data.message);
-        yield put(putCENodeData(nodeDataWithError));
+    } catch (error) {
+        console.log("Api called failed");
+        console.log(error);
     }
+
+
 
 }
 

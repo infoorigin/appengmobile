@@ -2,18 +2,15 @@
 
 import React from 'react';
 import {View, TextInput, Text, Platform} from 'react-native';
-import AEBaseComponent from './base/AEBaseComponent';
+import AEBaseOptionsWidget from './base/AEBaseOptionsWidget';
 import computeProps from '../utils/computeProps';
 import AERadioButton from './AERadioButton';
 
-export default class AERadioButtonGroup extends AEBaseComponent {
+export default class AERadioButtonGroup extends AEBaseOptionsWidget {
 
    constructor(props) {
 		super(props);
-		this.state = {
-			radioSelected: false,
-			
-		};
+		
    }
 
     getInitialStyle() {
@@ -25,7 +22,7 @@ export default class AERadioButtonGroup extends AEBaseComponent {
                 error: {
                     marginBottom: 10
                 }
-            },
+            }, 
             controlLabel: {
                 normal: {
                     color: this.getContextForegroundColor(),
@@ -108,26 +105,35 @@ export default class AERadioButtonGroup extends AEBaseComponent {
 
     }
 
+    _renderOptions(styles){
+        let radioOptions = this.state.options.map(function(option, i){
+                return ( 
+                    <View style={{flexDirection:'row' , margin :5}}>
+                    <AERadioButton  animation={'bounceIn'}
+                            isSelected={this._getData() == option.value}
+                        onPress={() => this._onChange(option.value)}
+                    />
+                <Text style={styles.textStyle}>{option.label}</Text>
+                </View>
+                )
+        }.bind(this));
+        return radioOptions;
+    }
+
 
     render() {
 
-        let styles = this.componentStyle();
-        let label = this.props.label ? <Text style={styles.controlLabelStyle}>{this.props.label}</Text> : null;
-        let help = this.props.help ? <Text style={styles.helpBlockStyle}>{this.props.help}</Text> : null;
-        let error = this.props.hasError && this.props.error ? <Text accessibilityLiveRegion="polite" style={styles.errorBlockStyle}>{this.props.error}</Text> : null;
+        const styles = this.componentStyle();
+        const baseRender = this._baseRender(styles);
 
         return (
             <View style={styles.formGroupStyle}>
-                {label}
-                 <View  key="1" style={{flexDirection:'row' , margin :5}} >
-                    <AERadioButton  animation={'bounceIn'}
-                                    isSelected={this.state.radioSelected}
-                             onPress={() => this.setState({radioSelected:!this.state.radioSelected})}
-                            />
-                     <Text style={styles.textStyle}>RAdio Button With State</Text>
+                {baseRender.label}
+                 <View  key="1" style={{flexDirection:'row' , margin :10}} >
+                   {this._renderOptions(styles)}                    
                  </View>
-                {help}
-                {error}
+                {baseRender.help}
+                {baseRender.error}
             </View>
         );
     }

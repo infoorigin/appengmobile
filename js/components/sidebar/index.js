@@ -61,13 +61,13 @@ class SideBar extends Component {
 
            <ListItem button iconLeft onPress={() =>
              
-              this.navigateAndRender(gridActions.RENDER_BASE_GRID,"a58ff0ca-294a-4b19-80c4-7d586776a522","datagrid")} >
+              this.navigateAndRender(gridActions.RENDER_BASE_GRID,"ade23b49-e77c-4fbd-bcda-2c901e1a8fa2","datagrid")} >
 
             <View style={styles.listItemContainer}>
               <View style={[styles.iconContainer, { backgroundColor: '#5cb85c', paddingLeft: 14 }]}>
                 <Icon name="ios-document-outline" style={styles.sidebarIcon} />
               </View>
-              <Text style={styles.text}>My Claims</Text>
+              <Text style={styles.text}>Sample Renderer</Text>
             </View>
           </ListItem>
 

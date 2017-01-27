@@ -16,7 +16,15 @@ import {getBindingIdByNodeId, getDataByBindingId} from '../../utils/uiData'
 
 export default class  AECard extends AEBaseComponent {  // eslint-disable-line
 
-constructor(props) {
+static propTypes = {
+    type: React.PropTypes.string,
+    configId:React.PropTypes.string,
+    uiItems: React.PropTypes.array,
+    nodeId:React.PropTypes.string,
+    data:React.PropTypes.object,
+  }
+  
+  constructor(props) {
     super(props);
 
     this._callBacks = this._callBacks.bind(this);
@@ -41,13 +49,11 @@ constructor(props) {
     }
 
     _onUIDataChange(bindingId, updateData){
-        let nodeId = this.props.basenode.configObjectId;
-        this.props.onNodeDataChange(nodeId, bindingId, updateData);
+        this.props.onNodeDataChange(this.props.nodeId, bindingId, updateData);
     }
 
     _onUIBlur(bindingId, updateData){
-        let nodeId = this.props.basenode.configObjectId;
-        this.props.onUIBlur(nodeId, bindingId, updateData);
+        this.props.onUIBlur(this.props.nodeId, bindingId, updateData);
     }
 
     _callBacks(){
@@ -58,9 +64,15 @@ constructor(props) {
     }
 
     _renderFormSection(section){
-        let nodeId = this.props.basenode.configObjectId;
-        let uiBindingId = getBindingIdByNodeId(this.props.data, nodeId);
-        let sectiondata = getDataByBindingId(this.props.data, nodeId, uiBindingId)
+        let uiBindingId = getBindingIdByNodeId(this.props.data, this.props.nodeId);
+        let sectiondata = getDataByBindingId(this.props.data, this.props.nodeId, uiBindingId)
+        return (<AEFormSection key={uiBindingId+section.configObjectId} bindingId={uiBindingId} config={section} data={sectiondata} {...this._callBacks()}> </AEFormSection>);
+    }
+
+    _renderForm(form){
+        let uiBindingId = getBindingIdByNodeId(this.props.data, this.props.nodeId);
+        let sectiondata = getDataByBindingId(this.props.data, this.props.nodeId, uiBindingId)
+        let section = form.sections[0];
         return (<AEFormSection key={uiBindingId+section.configObjectId} bindingId={uiBindingId} config={section} data={sectiondata} {...this._callBacks()}> </AEFormSection>);
     }
 
@@ -82,14 +94,14 @@ constructor(props) {
                 
                 <RECard containerStyle={{margin: 5}} titleStyle = {this.getInitialStyle().dividerItemText} 
                     title='React Native Element Card'>
-                    {this.props.config.viewItems.map(function(item, i){
+                    {this.props.uiItems.map(function(item, i){
                         switch(item.configObjectType){
                             case "FormSection":
                                 return this._renderFormSection(item);
                             case "Form" :
-                                break;
-                            case "Grid"  :
-                                break;
+                                return this._renderForm(item);
+                            case "DataGrid"  :
+                                console.log("Did I received activiteNode "+activeNode.config)
                             default :
                                 console.log("Invalid or unsupported view Item Type in Card Renderer",item.configObjectType)    ;
                         }

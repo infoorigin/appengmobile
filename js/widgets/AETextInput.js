@@ -29,7 +29,7 @@ constructor(props) {
                 normal: {
                     color: this.getTheme().inputColor,
                     fontSize: this.getTheme().fontSizeBase,
-                    height: this.getTheme().inputHeightBase,
+                    height: this._isTextArea() ? this.getTheme().inuputTextAreaHeightBase :  this.getTheme().inputHeightBase ,
                     padding: 7,
                     borderRadius: 4,
                     borderColor: this.getTheme().inputBorderColor,
@@ -68,7 +68,7 @@ constructor(props) {
         const initialStyle = this.getInitialStyle();
 
         let textboxStyle = isError ? initialStyle.textbox.error : initialStyle.textbox.normal;
-        if (this.props.editable === false) {
+        if (! this._editable()) {
             textboxStyle = initialStyle.textbox.notEditable;
         }
         
@@ -80,16 +80,35 @@ constructor(props) {
 
     }
 
+    _editable(){
+        return this.props.config.type !== "LabelField" ;
+    }
+
     prepareRootProps(textboxStyle) {
         var defaultProps = {
             style: textboxStyle,
             placeholder : this.props.config.placeHolder ? this.props.config.placeHolder:"", 
             value : this._getData(),
+            secureTextEntry : this.props.config.type == "Password",
             onChangeText: this._onChange,
             onBlur : this._onBlur,
+            editable : this._editable(),
+            ...this._multilineProps()
         }
        //return computeProps(this.props, defaultProps);
        return defaultProps;
+    }
+
+    _isTextArea(){
+        return this.props.config.type == "TextArea";
+    }
+
+    _multilineProps(){
+        if(this._isTextArea())
+            return {multiline : true, numberOfLines : 2};
+        else 
+            return {multiline : false};
+        
     }
 
    

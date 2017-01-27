@@ -2,11 +2,11 @@
 
 import React from 'react';
 import {View, TextInput, Text, Platform} from 'react-native';
-import AEBaseComponent from './base/AEBaseComponent';
+import AEBaseOptionsWidget from './base/AEBaseOptionsWidget';
 import computeProps from '../utils/computeProps';
 import { CheckBox as NBCheckBox } from 'native-base';
 
-export default class AECheckboxGroup extends AEBaseComponent {
+export default class AECheckboxGroup extends AEBaseOptionsWidget {
 
 
 
@@ -102,25 +102,35 @@ export default class AECheckboxGroup extends AEBaseComponent {
 
     }
 
+     _renderOptions(styles){
+        let radioOptions = this.state.options.map(function(option, i){
+                return ( 
+                    <View style={{flexDirection:'row' , margin :5}}>
+                     <NBCheckBox   
+                        checked={this._getData() == option.value}
+                        onPress={() => this._onChange(option.value)}
+                     />
+                <Text style={styles.textStyle}>{option.label}</Text>
+                </View>
+                )
+        }.bind(this));
+        return radioOptions;
+    }
+
 
     render() {
 
-        let styles = this.componentStyle();
-
-        let label = this.props.label ? <Text style={styles.controlLabelStyle}>{this.props.label}</Text> : null;
-        let help = this.props.help ? <Text style={styles.helpBlockStyle}>{this.props.help}</Text> : null;
-        let error = this.props.hasError && this.props.error ? <Text accessibilityLiveRegion="polite" style={styles.errorBlockStyle}>{this.props.error}</Text> : null;
-
+        const styles = this.componentStyle();
+        const baseRender = this._baseRender(styles);
+        
         return (
             <View style={styles.formGroupStyle}>
-                {label}
+                {baseRender.label}
                  <View  key="1" style={{flexDirection:'row' , margin :5}} >
-                    <NBCheckBox   
-                        checked="true"  />
-                     <Text style={styles.textStyle}>Check Box Text 2</Text>
+                    {this._renderOptions(styles)}                    
                  </View>
-                {help}
-                {error}
+                {baseRender.help}
+                {baseRender.error}
             </View>
         );
     }

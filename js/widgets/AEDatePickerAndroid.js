@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import moment from 'moment';
 import { View, Text, DatePickerAndroid, TimePickerAndroid, TouchableNativeFeedback  } from 'react-native';
 
 
@@ -10,25 +11,43 @@ export default class AEDatePickerAndroid extends React.Component {
     
   }
 
+  _onChangeTime(time){
+    //TODO use date format provided in this.props.config.format
+    let momentTime = moment().hour(time.hour).minute(time.minute) ;
+    console.log(" updated time :",momentTime.format('hh:mm a'));
+    this.props.onChange(momentTime.format('hh:mm a').toString());
+    
+  }
+
+  _onChangeDate(newDate){
+    //TODO use date format provided in this.props.config.format
+    let momentDate = moment(newDate).format('YYYY-MM-DD');
+    console.log(" updated date :",momentDate.toString());
+    this.props.onChange(momentDate.toString());
+    
+  }
+
+
+
   render() {
 
 // Setup the picker mode
-  var datePickerMode = 'date';
+  let datePickerMode = 'date';
   if (this.props.mode === 'date' || this.props.mode === 'time') {
     datePickerMode = this.props.mode;
   }
 
-    var formattedValue = String(this.props.value);
-    var background = TouchableNativeFeedback.SelectableBackground(); // eslint-disable-line new-cap
-    if (this.props.config) {
-    if (this.props.config.format) {
-      formattedValue = this.props.config.format(this.props.value);
-    }
-    if (this.props.config.background) {
-      background = this.props.config.background;
-    }
+  const background = TouchableNativeFeedback.SelectableBackground(); // eslint-disable-line new-cap
+  const textValue = this.props.value ? <Text style={this.props.styles.dateValueStyle}>{this.props.value}</Text> : null;
+  let datetimevalue = null;
+  if(datePickerMode === 'date') {
+    //TODO use date format provided in this.props.config.format
+    datetime = moment(this.props.value).isValid() ?  moment(this.props.value): moment.utc().local();
   }
-  var value = this.props.value ? <Text style={this.props.styles.dateValueStyle}>{formattedValue}</Text> : null;
+  else {
+    datetime = moment(this.props.value, 'hh:mm a').isValid() ?  moment(this.props.value, 'hh:mm a'):moment.utc().local();
+  }
+  
     return (
       <TouchableNativeFeedback
         accessible={true}
@@ -36,18 +55,15 @@ export default class AEDatePickerAndroid extends React.Component {
         background={background}
         onPress={function () {
           if (datePickerMode === 'time') {
-            TimePickerAndroid.open({is24Hour: true})
+            TimePickerAndroid.open({hour:datetime.hour(), minute: datetime.minute(), is24Hour: false})
             .then(function (time) {
               if (time.action !== TimePickerAndroid.dismissedAction) {
-                const newTime = new Date();
-                newTime.setHours(time.hour);
-                newTime.setMinutes(time.minute);
-                this.props.onChange(newTime);
+                this._onChangeTime(time);
               }
-            });
+            }.bind(this));
           } else {
             let config = {
-              date: this.props.value || new Date()
+              date: datetime.toDate() 
             };
             if (this.props.minimumDate) {
               config.minDate = this.props.minimumDate;
@@ -58,15 +74,14 @@ export default class AEDatePickerAndroid extends React.Component {
             DatePickerAndroid.open(config)
             .then(function (date) {
               if (date.action !== DatePickerAndroid.dismissedAction) {
-                var newDate = new Date(date.year, date.month, date.day);
-                this.props.onChange(newDate);
+                this._onChangeDate(date);
               }
-            });
+            }.bind(this));
           }
         }.bind(this) } >
         <View>
           {this.props.label}
-          {value}
+          {textValue}
         </View>
       </TouchableNativeFeedback>
     );

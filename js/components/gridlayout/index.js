@@ -49,7 +49,14 @@ class AEGridLayout extends Component {  // eslint-disable-line
 
   _renderUICards() {
     let uiCards = this.props.config.uicard.map(function(card){
-        return (<AECard key={card.configObjectId} basenode={this.props.basenode}  config={card} data={this.props.data} {...this._callBacks()}> </AECard>);
+        return (<AECard key={card.configObjectId} 
+                      type="Card"
+                      configObjectId={card.configObjectId} 
+                      uiItems={card.viewItems} 
+                      nodeId={card.nodeId}
+                      data={this.props.data} 
+                      {...this._callBacks()}> 
+                  </AECard>);
      }.bind(this))
    return uiCards;
   }
