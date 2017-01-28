@@ -1,7 +1,7 @@
 
 import { call, put, select } from "redux-saga/effects";
 import navigateTo from '../actions/sideBarNav';
-import { saveGridConfig, saveGridData, putActiveNodeGridConfig } from '../actions/grid';
+import { saveGridConfig, saveGridData, putActiveNodeGridConfig, putActiveNodeGridData } from '../actions/grid';
 import {  setNodeData, setNodeKeys, openEditForm, setCompositeEntity, getCompositeEntity, getCompositeEntityNode,
           getActiveCompositeEntityNode, setActiveNode, findNodeFromCETree } from './ce';
 import { putCENodKey} from '../actions/ce';
@@ -10,12 +10,19 @@ import { getConfig, getGridData } from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
 
 export function* activeNodeGrid(action) {
-   yield call (setActiveNode, action);
+  try {
+   yield call(setActiveNode, action);
    let ceNode = yield select(getActiveCompositeEntityNode);
+   
    // Fetch and Set Grid Config to state
    yield call(fetchNodeActiveGridConfig, ceNode.gridId);
+   console.log("inside activeNodeGrid cenode :", ceNode)
   // Fetch and set Active Grid node data 
   yield call(fetchNodeActiveGridData, ceNode.configObjectId, action.keys);
+  }
+  catch (error) {
+    console.log("Error in activeNodeGrid", JSON.stringify(action), error);
+  }
 }
 
 // fetch the Config Item
@@ -35,6 +42,7 @@ export function* renderBaseGrid(action) {
     yield put(navigateTo(action.navigationRoute, HOMEROUTE));
 
     console.log("--------------------------------GRID CALLS 4");
+    
 
   }
   catch (error) {
@@ -63,7 +71,7 @@ function* fetchNodeActiveGridData(nodeId, keys) {
   let result = yield call(getGridData, nodeId, keys);
   let data = result.data.returnData.data;
   //console.log("grid data ", data.length)
-  yield put(saveGridData(data));
+  yield put(putActiveNodeGridData(data));
 }
 
 function* fetchGridData(nodeId) {

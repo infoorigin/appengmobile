@@ -15,6 +15,14 @@ export function saveGridConfig(config) {
   };
 }
 
+export function activeNodeGrid(configId, keys) {
+  return{
+    type: ACTIVE_NODE_GRID,
+    configId: configId,
+    keys :keys,
+  };
+}
+
 export function putActiveNodeGridConfig(config) {
   return{
     type: PUT_ACTIVE_NODE_GRID_CONFIG,

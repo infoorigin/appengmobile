@@ -84,22 +84,32 @@ export function* setNodeKeys(ceNode, keys) {
 
 export function* setActiveNode(action) {
     // Get the node from CENodeTree
-   let ceNode = findNodeFromCETree(action.configId);
+   
+   let ceNode = yield call(findNodeFromCETree,action.configId);
+   console.log("ceNode setActiveNode::",ceNode);
+
    if(ceNode == null) { // ceNode is part of other CE
       const result = yield call(getConfig, action.configId);
       ceNode = result.data.returnData.data;
    }
-   yield put(putActiveNodeConfig(config));
+   yield put(putActiveNodeConfig(ceNode));
 }
 
 export function* findNodeFromCETree(nodeId) {
+     console.log("ceNode findNodeFromCETree::",nodeId);
     let ce = yield select(getCompositeEntity);
     let cetree = ce.treeModel;
     let basenode = cetree.node;
     if (basenode.configObjectId == nodeId)
         return cetree.node;
-    else
-        return yield select(findNodeFromChildTreeNodes, node[i].children, nodeId);
+    else {
+        console.log("ceNode findNodeFromCETree:childNode:",nodeId);
+        let childNode = yield call(findNodeFromChildTreeNodes, cetree.children, nodeId);
+        console.log("ceNode findNodeFromCETree:childNode:after:",childNode);
+        return childNode;
+
+    }
+        
 }
 
 export function* submitNodeDataToDB(action) {
@@ -160,13 +170,13 @@ export function* updateBaseForm(action) {
 
 }
 
-function findNodeFromChildTreeNodes(nodes, nodeId) {
+function* findNodeFromChildTreeNodes(nodes, nodeId) {
     for (i = 0; i < nodes.length; i++) {
-        if (node[i].configObjectId == nodeId) {
-            return node[i];
+        if (nodes[i].node.configObjectId == nodeId) {
+            return nodes[i].node;
         }
         else {
-            let result = findNodeFromChildTreeNodes(node[i].children, nodeId);
+            let result = findNodeFromChildTreeNodes(nodes[i].children, nodeId);
             if (result) return result;
         }
         return null;

@@ -113,6 +113,11 @@ export function updateKeys(stateMapData, nodeId, keys, bindingId){
     return newStateMapData;
 }
 
+export function getKeysByNode(stateMapData, nodeId){
+    let defaultBindigId = getBindingIdByNodeId(stateMapData, nodeId);
+    return  getKeys(stateMapData, nodeId,  defaultBindigId);
+}
+
 export function getKeys(stateMapData, nodeId,  bindingId){
     if( isBindingIdExists(stateMapData, nodeId, bindingId)){
         return stateMapData.get(nodeId).get(bindingId).get("keys")

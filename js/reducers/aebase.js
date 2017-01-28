@@ -151,7 +151,7 @@ export default function (state = initialState, action) {
     case gridaction.PUT_ACTIVE_NODE_GRID_DATA:
     return{
       ...state,
-      activenode: update(state.activenode, { grid : {$set: {data:action.data}}})
+      activenode: update(state.activenode, { grid : {$merge: {data:action.data}}})
     };
 
     default:

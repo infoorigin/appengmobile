@@ -46,20 +46,25 @@ class GridRow extends Component{
     
 
     componentDidMount(){
-        let keyCoulumns =   this.props.keyColunms.filter(function(gc){ 
-            return  gc.logicalColumn.dbColumn.key;
-        });
-        let primaryKeyColumn =   this.props.keyColunms.filter(function(gc){ 
-            return  gc.logicalColumn.dbColumn.primaryKey;
-        })[0];
-        let rowKeyData={"primaryKey":this.props.rowData[primaryKeyColumn.logicalColumn.dbColumn.code]};
-        if(keyCoulumns.length>0){
-            let keys={};
-            keyCoulumns.forEach(function(keyColunm){
-                    keys[keyColunm.logicalColumn.dbColumn.code]=this.props.rowData[primaryKeyColumn.logicalColumn.dbColumn.code];
-            });
-            rowKeyData["keys"]=keys;
-        }
+       
+        let rowKeyData =  this.props.keyColunms
+                                        .filter(function(gc){ 
+                                                return  gc.logicalColumn.dbColumn.primaryKey;
+                                        })
+                                        .map(function(gc){ 
+                                                let val = this.props.rowData[gc.logicalColumn.dbColumn.code];
+                                                return  {primaryKey : val, [gc.logicalColumn.dbColumn.code] : val }
+                                        }.bind(this));
+         rowKeyData = rowKeyData.length ? rowKeyData[0] : {};
+         let keyCoulumns =   this.props.keyColunms
+                                        .filter(function(gc){ 
+                                            return  gc.logicalColumn.dbColumn.key;
+                                        })
+                                        .forEach(function(gc){ 
+                                             let newKey = {[gc.logicalColumn.dbColumn.code] :this.props.rowData[gc.logicalColumn.dbColumn.code]}
+                                             Object.assign(rowKeyData, newKey) ;
+                                        }.bind(this));
+        console.log("rowKeyData :",rowKeyData);
         this.setState({"rowKeyData":rowKeyData});
 
     }
