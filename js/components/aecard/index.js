@@ -87,21 +87,21 @@ static propTypes = {
 
     render() {
 
-        const selectOptions = [{value:1, text:"one"}, {value:2, text:"two"}, {value:3, text:"three"}, {value:4, text:"four"}];
-
-        return (
+         return (
             <View>
                 
                 <RECard containerStyle={{margin: 5}} titleStyle = {this.getInitialStyle().dividerItemText} 
                     title='React Native Element Card'>
                     {this.props.uiItems.map(function(item, i){
+                        console.log("item.configObjectType :",item.configObjectType);
                         switch(item.configObjectType){
                             case "FormSection":
                                 return this._renderFormSection(item);
                             case "Form" :
                                 return this._renderForm(item);
                             case "DataGrid"  :
-                                console.log("Did I received activiteNode "+activeNode.config)
+                                console.log("Data in Data Grid ",this.props.data);
+                                return (<Text> Data Grid  </Text>);
                             default :
                                 console.log("Invalid or unsupported view Item Type in Card Renderer",item.configObjectType)    ;
                         }

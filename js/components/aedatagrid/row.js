@@ -8,6 +8,7 @@ import styles from './styles';
 import {getPrivilege} from '../../services/usercontext.js';
 
 import {RENDER_GRID_DETAIL, gridAction} from '../../actions/grid';
+import {RENDER_LAYOUT} from '../../actions/layout';
 import * as ceActions from '../../actions/ce.js';
 
 const rightArrowImage = require('../../../img/Icon-Arrow-Right.png');
@@ -32,7 +33,7 @@ class GridRow extends Component{
     
 	recordClicked(){
         console.log('Key Selected----'+JSON.stringify(this.state.rowKeyData));
-        this.props.gridAction(RENDER_GRID_DETAIL,this.state.rowKeyData);
+        this.props.gridAction(RENDER_LAYOUT,this.state.rowKeyData);
 	}
  
     getElementsWithPrivilege(){

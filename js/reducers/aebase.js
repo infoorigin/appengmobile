@@ -28,17 +28,32 @@ const initialState = {
   cenode: {},
   nodeData :{},
   layout :{},
-  activenode :{}
+  activenode :{ config :{}, ui: {}},
+  cards :[]
 };
+/*
+cards[
+  card{
+    activeTab{} // only for tab based layout
+    ui{
+      config{} // default to intial viewitem in card or tab
+      data{} // 
+    }
+    node{} // if card or tab is bound to node
+  }
+]
+
+*/
 
 //activenode
 //  -- config
 //  -- ce (only if CE is diff than base CE)
 //  --   config
-//  -- grid
+// -- keys
+//  -- ui
 //        -- config
 //        -- data
-//        -- keys
+//        
 //
 
 //activeGrid
@@ -74,8 +89,14 @@ export default function (state = initialState, action) {
     case ceaction.OPEN_NODE_EDIT_FORM:
     return{
       ...state,
-      
     };
+    
+    case layoutaction.PUT_CARDS_DATA:
+    return {
+      ...state,
+      cards: action.cards,
+      };
+
     case gridaction.SAVE_GRID_CONFIG:
        return {
       ...state,
@@ -105,6 +126,14 @@ export default function (state = initialState, action) {
       ...state,
        cenode: {config:action.config},
       };
+
+      case ceaction.PUT_BASE_NODE_KEYS :
+    return{
+      ...state,
+      cenode: update(state.cenode, {$merge: {keys:action.keys}})
+    };
+
+
     case ceaction.PUT_NODE_EDIT_FORM_KEY:
     return{
       ...state,
@@ -139,19 +168,19 @@ export default function (state = initialState, action) {
     case ceaction.PUT_ACTIVE_NODE_CONFIG:
     return{
       ...state,
-      activenode: {config:action.config},
+      activenode: update(state.activenode, { $merge: {config:action.config}}),
     };
 
     case gridaction.PUT_ACTIVE_NODE_GRID_CONFIG:
     return{
       ...state,
-      activenode: update(state.activenode, { grid : {$set: {config:action.config}}})
+      activenode: update(state.activenode, { ui : {$set: {config:action.config}}})
     };
 
     case gridaction.PUT_ACTIVE_NODE_GRID_DATA:
     return{
       ...state,
-      activenode: update(state.activenode, { grid : {$merge: {data:action.data}}})
+      activenode: update(state.activenode, { ui : {$merge: {data:action.data}}})
     };
 
     default:

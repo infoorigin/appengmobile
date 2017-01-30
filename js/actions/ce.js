@@ -1,6 +1,5 @@
 export const SAVE_CE_CONFIG = 'SAVE_CE_CONFIG';
 export const SAVE_CE_NODE_CONFIG = 'SAVE_CE_NODE_CONFIG';
-export const SET_CE_CONFIG = 'SET_CE_CONFIG';
 export const OPEN_NODE_EDIT_FORM='OPEN_NODE_EDIT_FORM';
 export const PUT_NODE_EDIT_FORM='PUT_NODE_EDIT_FORM';
 export const PUT_NODE_EDIT_FORM_KEY='PUT_NODE_EDIT_FORM_KEY';
@@ -10,6 +9,7 @@ export const UPDATE_BASE_FORM_DATA='UPDATE_BASE_FORM_DATA';
 export const SUBMIT_NODE_DATA='SUBMIT_NODE_DATA';
 export const FORM_ACTION_RESPONSE='FORM_ACTION_RESPONSE';
 export const PUT_ACTIVE_NODE_CONFIG = 'PUT_ACTIVE_NODE_CONFIG';
+export const PUT_BASE_NODE_KEYS = 'PUT_BASE_NODE_KEYS';
 
 export function putFormActionResponse(response){
   return{
@@ -91,6 +91,13 @@ export function putActiveNodeConfig(nodeConfig){
   return {
       type:PUT_ACTIVE_NODE_CONFIG,
       config:nodeConfig,
+    }
+}
+
+export function putBaseNodeKeys(keys){
+  return {
+      type:PUT_BASE_NODE_KEYS,
+      keys:keys,
     }
 }
 

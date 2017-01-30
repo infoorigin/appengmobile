@@ -106,10 +106,8 @@ class AEDataGrid extends Component {
 										</GridRow>
 									}>
 								</List>
-
 							</View>
 						</Image>
-					
 				</AEContainer>
 
 			);

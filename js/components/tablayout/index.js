@@ -1,17 +1,20 @@
 
 import React, { Component } from 'react';
+import { View} from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Header, Title, Content, Footer, FooterTab, Button, Icon, Badge, Text } from 'native-base';
+import { Container, Title, Content, Footer, FooterTab, Button, Icon, Badge, Text } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import AEContainer from '../../widgets/AEContainer';
 import AEHeader from '../../widgets/AEHeader';
 import AETabNavigator from './AETabNavigator' ;
 import AECard from '../aecard';
 import { putCENodeData, submitNodeData } from '../../actions/ce';
+import {renderTabAction} from '../../actions/layout';
 import {activeNodeGrid} from '../../actions/grid';
 import { updateAttributes, getKeysByNode } from '../../utils/uiData'
-
 import { openDrawer } from '../../actions/drawer';
+
+import _ from 'lodash';
 
 class AETabLayout extends Component {  // eslint-disable-line
 
@@ -21,36 +24,17 @@ class AETabLayout extends Component {  // eslint-disable-line
 
     constructor(props) {
         super(props);
-        this.state = {
-            activeTab : null,
-        };
         this._renderHeaderAndScene = this._renderHeaderAndScene.bind(this);
-        this._activetUITab = this._activetUITab.bind(this);
-        this._uiTabCard = this._uiTabCard.bind(this);
         this._setDataForScene = this._setDataForScene.bind(this);
-
-
-    }
-
-    _activetUITab() {
-        if( this.state.activeTab)
-            return this.state.activeTab 
-        else {
-            let uiCard = this._uiTabCard();
-            return uiCard.uitabs[0] ;
-        }    
-    }
-
-    _uiTabById(tabConfigId){
-         let uiCard = this._uiTabCard();
-        return uiCard.uitabs.find((t) => t.configObjectId === tabConfigId)
     }
 
     componentDidMount() {
-       this.setState({
-           activeTab : this._activetUITab()
-       });
+      
     }
+
+    componentWillReceiveProps(nextProps) {
+     console.log("** received new props ** :", nextProps);
+  }
 
     _submitData() {
 
@@ -58,38 +42,8 @@ class AETabLayout extends Component {  // eslint-disable-line
 
     _setDataForScene(tabConfigId){
         console.log("OnTabSelect :",tabConfigId);
-         // First fetch the data required for the rendering of this Tabs
-        let uiTab = this._uiTabById(tabConfigId);
-        let nodeId = uiTab.compositeEntityNode ? uiTab.compositeEntityNode.configObjectId :"";
-        let data = {};
-        let baseNodeKeys = getKeysByNode(this.props.baseNodeData, this.props.basenode.configObjectId).toJS();
-
-        switch(uiTab.viewType){
-            case "DataGrid" :
-                if(nodeId){ // Grid for the node
-                    console.log("send action to load griddata from node ");
-                    this.props.activeNodeGrid(nodeId,baseNodeKeys )
-                }
-                else{ // Grid without node
-                    // send action to load griddata by gridId
-                }
-                break;
-            case "Form" :
-            case "FormSection" :
-                if(nodeId){
-                    if(nodeId == this.props.basenode.configObjectId){
-                        //do nothing basenode data already avlbl during mounting
-                    }
-                    else {
-                        //send  action to get childnodedata
-                    }
-                }
-                    break;
-            default :
-              console.log("Invalid or unsupported card viewtype :",uiTab.viewType);
-        }
-
-    }
+        this.props.renderTabAction(tabConfigId, this.props.baseNodeKeys)
+   }
 
    
 
@@ -110,52 +64,29 @@ class AETabLayout extends Component {  // eslint-disable-line
              </AEHeader>
         )
     }
-
-    _isBaseNodeId(nodeId){
-        console.log("_isBaseNodeId :",nodeId === this.props.basenode.configObjectId,nodeId,this.props.basenode.configObjectId)
-        return  nodeId === this.props.basenode.configObjectId ;
-    }
-
-    _getData(uiTab){
-        switch(uiTab.viewType){
-            case "DataGrid":
-                return this.props.activeNode.grid.data;
-            case "Form":
-             let nodeId = uiTab.compositeEntityNode.configObjectId;
-             if(this._isBaseNodeId(nodeId))
-                return  this.props.baseNodeData;
-             else
-                return this.props.activeNode.data;   
-        }
-
-    }
-
+ 
     _renderScene(){
-        let uiTab = this.state.activeTab;
-        if (uiTab) {
+        let card = this.props.card;
+        let uiTab = card.activeTab;
+        if(uiTab) {
             return (
                 <Content>
-                    <Text> Tabs Layout :{uiTab.configObjectId} </Text>
-                    <Text> Node :{ uiTab.compositeEntityNode.configObjectId} </Text>
                     <AECard key={uiTab.configObjectId} 
                         type="Card"
                         configObjectId={uiTab.configObjectId} 
-                        uiItems={uiTab.uiItems} 
-                        uiCard={this._uiTabCard()}
+                        uiItems={card.ui.config} 
+                        uiCard={card.config}
                         nodeId={uiTab.compositeEntityNode ? uiTab.compositeEntityNode.configObjectId :"" }
-                        data={this._getData(uiTab)} 
+                        data={card.ui.data} 
                         {...this._callBacks()}> 
                     </AECard>
                 </Content>
             );
         }
         else {
-            return (
-                <Content>
-                    <Text> ......loading </Text>
-                </Content> 
-            );  
+            return (<Content> <Text> ..... loading </Text> </Content>); 
         }
+        
 
            
     }
@@ -181,29 +112,34 @@ class AETabLayout extends Component {  // eslint-disable-line
         };
     }
 
-   _uiTabCard(){
-        let card = this.props.config.uicard.find(function (card, i) {
-            return card.viewType === "Tabs";
-        });
-        return card;
-    }
-
-
     render() {
-        console.log(" using AETabNavigator ");
-        return <AETabNavigator 
-                    uiCard={this._uiTabCard()}
-                    activeTab={this.state.activeTab}
-                    onTabActive={this._setDataForScene}
-                    renderHeaderAndScene={this._renderHeaderAndScene}>  
-                </AETabNavigator>
+        console.log("this.props.card "+this.props.card.config);
+        if(this.props.card.config) {
+            console.log(" rendering AETabNavigator ... ")
+            return (<AETabNavigator 
+                        uiCard={this.props.card.config}
+                        activeTab={this.props.card.activeTab}
+                        onTabActive={this._setDataForScene}
+                        renderHeaderAndScene={this._renderHeaderAndScene}>  
+                    </AETabNavigator>
+            );
+        }
+        else {
+            console.log(" rendering loading ... ")
+             return (<AEContainer>
+                
+                <Content> <View> </View> </Content>
+                <Footer ></Footer>
+            </AEContainer>
+             );
+        }
     }
 }
 
 function bindAction(dispatch) {
     return {
         openDrawer: () => dispatch(openDrawer()),
-        activeNodeGrid :(nodeId, keys) => dispatch(activeNodeGrid(nodeId, keys))
+        renderTabAction :(tabConfigId, keys) => dispatch(renderTabAction(tabConfigId, keys))
 
     };
 }
@@ -212,12 +148,8 @@ const mapStateToProps = state => ({
     navigation: state.cardNavigation,
     config: state.ae.layout.config,
     basenode : state.ae.cenode.config,
-    baseNodeData: state.ae.nodeData,
-    activeNode : state.ae.activenode,
-    // activenode : config
-    //             : grid
-    //                  :config
-    //                   :data
+    baseNodeKeys : state.ae.cenode.keys,
+    card : state.ae.cards.length ? state.ae.cards[0] : {},
 });
 
 export default connect(mapStateToProps, bindAction)(AETabLayout); 

@@ -54,8 +54,7 @@ export default class AETabNavigator extends AEBaseComponent {
     render() {
         let headerandscene = this.props.renderHeaderAndScene();
         console.log("headerandscene length", headerandscene.length);
-
-        return (
+         return (
             <AEContainer>
                 {headerandscene[0]}
 

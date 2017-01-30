@@ -27,6 +27,10 @@ class AEGridLayout extends Component {  // eslint-disable-line
     console.log("data :" + this.props.data);
   }
 
+  componentWillReceiveProps(nextProps) {
+     console.log("** received new props ** :", nextProps);
+  }
+
    _onNodeDataChange(nodeId, bindingId, updateData){
         console.log("layoutchange _onNodeDataChange ",nodeId, bindingId, updateData);
         let nodeData = updateAttributes(this.props.data, nodeId, bindingId, updateData);

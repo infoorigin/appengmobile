@@ -76,10 +76,29 @@ export function* setNodeData(ceNode, keys) {
     yield put(putCENodeData(nodeData));
 }
 
+export function* queryNodeData(ceNode, keys) {
+    // call the api to get the grid config Item
+    console.log("Getting Node Data for ", ceNode.compositeEntityId, ceNode.entityId, keys.primaryKey);
+    let result = yield call(getCENodeData, ceNode.compositeEntityId, ceNode.entityId, keys.primaryKey);
+    let responseData = result.data.returnData.data;
+    let nodeData = initCENodeDataMap(responseData);
+    return nodeData;
+}
+
 export function* setNodeKeys(ceNode, keys) {
     let nodeData = yield select(getCompositeEntityNodeData);
     let nodeDataWithKeys = updateKeys(nodeData, ceNode.configObjectId, keys)
     yield put(putCENodeData(nodeDataWithKeys));
+}
+
+export function* getNodeById(nodeId) {
+    // Get the node from CENodeTree
+   let ceNode = yield call(findNodeFromCETree, nodeId);
+   if(ceNode == null) { // ceNode is part of other CE
+      const result = yield call(getConfig, action.configId);
+      ceNode = result.data.returnData.data;
+   }
+   return ceNode;
 }
 
 export function* setActiveNode(action) {
