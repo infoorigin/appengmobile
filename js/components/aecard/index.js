@@ -11,7 +11,9 @@ import AERadioButtonGroup from '../../widgets/AERadioButtonGroup';
 import AEDatePicker from '../../widgets/AEDatePicker';
 import AESelectPicker from '../../widgets/AESelectPicker';
 import AEFormSection from '../aeformsection';
+import AECardGrid from '../aetabgrid'
 import {getBindingIdByNodeId, getDataByBindingId} from '../../utils/uiData'
+
 
 
 export default class  AECard extends AEBaseComponent {  // eslint-disable-line
@@ -21,7 +23,7 @@ static propTypes = {
     configId:React.PropTypes.string,
     uiItems: React.PropTypes.array,
     nodeId:React.PropTypes.string,
-    data:React.PropTypes.object,
+
   }
   
   constructor(props) {
@@ -56,10 +58,20 @@ static propTypes = {
         this.props.onUIBlur(this.props.nodeId, bindingId, updateData);
     }
 
+    _onGridDetail(keys){
+        this.props.onGridDetail(keys);
+    }
+
     _callBacks(){
         return {
             onUIDataChange : this._onUIDataChange.bind(this),
             onUIBlur : this._onUIBlur.bind(this),
+        };
+    }
+
+    _gridCallBacks(){
+        return {
+            onGridDetail : this._onGridDetail.bind(this),
         };
     }
 
@@ -74,6 +86,10 @@ static propTypes = {
         let sectiondata = getDataByBindingId(this.props.data, this.props.nodeId, uiBindingId)
         let section = form.sections[0];
         return (<AEFormSection key={uiBindingId+section.configObjectId} bindingId={uiBindingId} config={section} data={sectiondata} {...this._callBacks()}> </AEFormSection>);
+    }
+
+    _renderGrid(grid){
+       return (<AECardGrid key={grid.configObjectId}config={grid} data={this.props.data} {...this._gridCallBacks()}> </AECardGrid>);
     }
 
     _renderSingleForm(){ 
@@ -101,7 +117,7 @@ static propTypes = {
                                 return this._renderForm(item);
                             case "DataGrid"  :
                                 console.log("Data in Data Grid ",this.props.data);
-                                return (<Text> Data Grid  </Text>);
+                                return this._renderGrid(item);
                             default :
                                 console.log("Invalid or unsupported view Item Type in Card Renderer",item.configObjectType)    ;
                         }

@@ -107,11 +107,11 @@ export function* renderActiveTab(action) {
         let layout = yield select(getLayout);
         let tabCard = yield call(getTabCard, layout);
         let activeTab = yield call(findTabById, tabCard, action.tabConfigId);
-        let cardState = createCardState(tabCard, activeTab, action);
+        let cardState = yield call(createCardState,tabCard, activeTab, action);
         yield put(putCardsData([cardState]));
     }
     catch (error) {
-        console.log("Error in activeNodeGrid", JSON.stringify(action), error);
+        console.log("Error in renderActiveTab", JSON.stringify(action), error);
     }
 }
 

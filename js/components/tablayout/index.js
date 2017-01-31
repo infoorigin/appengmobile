@@ -33,7 +33,7 @@ class AETabLayout extends Component {  // eslint-disable-line
     }
 
     componentWillReceiveProps(nextProps) {
-     console.log("** received new props ** :", nextProps);
+     
   }
 
     _submitData() {
@@ -105,10 +105,15 @@ class AETabLayout extends Component {  // eslint-disable-line
        // this.props.submitNodeData(nodeId, bindingId,nodeData);
     }
 
+    _onGridDetail(keys){
+        console.log(" _onGridDetail keys ", keys);
+    }
+
     _callBacks(){
         return {
             onNodeDataChange : this._onNodeDataChange.bind(this),
             onUIBlur : this._onUIBlur.bind(this),
+            onGridDetail : this._onGridDetail.bind(this),
         };
     }
 
@@ -125,12 +130,16 @@ class AETabLayout extends Component {  // eslint-disable-line
             );
         }
         else {
-            console.log(" rendering loading ... ")
+            console.log(" rendering loading without space ... ")
              return (<AEContainer>
-                
-                <Content> <View> </View> </Content>
-                <Footer ></Footer>
-            </AEContainer>
+                          <AEHeader></AEHeader> 
+                          <Content>
+                            <View>
+                                <Text>Loading ..</Text>
+                            </View>
+                        </Content>
+                        <Footer></Footer>
+                    </AEContainer>
              );
         }
     }
