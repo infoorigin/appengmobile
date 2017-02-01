@@ -58,9 +58,9 @@ static propTypes = {
         this.props.onUIBlur(this.props.nodeId, bindingId, updateData);
     }
 
-    _onGridDetail(keys){
-        this.props.onGridDetail(keys);
-    }
+    _onGridDetail(keys, gridConfigId){
+       this.props.onGridDetail( keys, gridConfigId, this.props.nodeId);
+     }
 
     _callBacks(){
         return {
@@ -89,7 +89,7 @@ static propTypes = {
     }
 
     _renderGrid(grid){
-       return (<AECardGrid key={grid.configObjectId}config={grid} data={this.props.data} {...this._gridCallBacks()}> </AECardGrid>);
+       return (<AECardGrid key={grid.configObjectId} config={grid} data={this.props.data} {...this._gridCallBacks()}> </AECardGrid>);
     }
 
     _renderSingleForm(){ 

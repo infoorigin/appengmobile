@@ -10,7 +10,7 @@ import AETabNavigator from './AETabNavigator' ;
 import AECard from '../aecard';
 import { putCENodeData, submitNodeData } from '../../actions/ce';
 import {renderTabAction} from '../../actions/layout';
-import {activeNodeGrid} from '../../actions/grid';
+import {gridDetailAction} from '../../actions/grid';
 import { updateAttributes, getKeysByNode } from '../../utils/uiData'
 import { openDrawer } from '../../actions/drawer';
 
@@ -76,7 +76,7 @@ class AETabLayout extends Component {  // eslint-disable-line
                         configObjectId={uiTab.configObjectId} 
                         uiItems={card.ui.config} 
                         uiCard={card.config}
-                        nodeId={uiTab.compositeEntityNode ? uiTab.compositeEntityNode.configObjectId :"" }
+                        nodeId={uiTab.compositeEntityNode ? uiTab.compositeEntityNode.configObjectId :null }
                         data={card.ui.data} 
                         {...this._callBacks()}> 
                     </AECard>
@@ -105,8 +105,10 @@ class AETabLayout extends Component {  // eslint-disable-line
        // this.props.submitNodeData(nodeId, bindingId,nodeData);
     }
 
-    _onGridDetail(keys){
-        console.log(" _onGridDetail keys ", keys);
+    _onGridDetail(keys, gridConfigId, nodeId){
+        let cardConfigId = this.props.card.config.configObjectId ;
+        this.props.gridDetailAction(keys, cardConfigId, gridConfigId, nodeId);
+        console.log(" _onGridDetail params ", keys, cardConfigId, gridConfigId, nodeId);
     }
 
     _callBacks(){
@@ -148,6 +150,7 @@ class AETabLayout extends Component {  // eslint-disable-line
 function bindAction(dispatch) {
     return {
         openDrawer: () => dispatch(openDrawer()),
+        gridDetailAction : (keys, cardConfigId, gridConfigId, nodeId) => dispatch(gridDetailAction(keys, cardConfigId, gridConfigId, nodeId)),
         renderTabAction :(tabConfigId, keys) => dispatch(renderTabAction(tabConfigId, keys))
 
     };

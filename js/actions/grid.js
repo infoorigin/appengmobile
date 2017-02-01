@@ -59,5 +59,16 @@ export function putActiveNodeGridData(data) {
   };
 }
 
+export function gridDetailAction(keys, cardConfigId, gridConfigId, nodeId){
+   return{
+    type: RENDER_GRID_DETAIL,
+    keys: keys,
+    cardConfigId:cardConfigId,
+    gridConfigId:gridConfigId,
+    nodeId:nodeId
+
+  };
+}
+
 
 

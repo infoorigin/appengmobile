@@ -1,6 +1,7 @@
 
 import navigateTo from '../actions/sideBarNav';
 import { call, put, select } from "redux-saga/effects";
+import update from 'immutability-helper';
 import { getCompositeEntity, setActiveNode, getActiveCompositeEntityNode, getNodeById, queryNodeData } from './ce';
 import { putBaseNodeKeys } from '../actions/ce';
 import { fetchNodeActiveGridData, queryNodeGridData } from './grid';
@@ -13,6 +14,22 @@ import { putActiveNodeGridConfig } from '../actions/grid';
 export const getLayout = (state) => state.ae.layout.config
 
 export const getCards = (state) => state.ae.cards
+
+export function* findCardByIdFromState(cardConfigId){
+    let cards = yield select(getCards);
+    return cards.find((c) => c.config.configObjectId === cardConfigId)
+}
+
+export function* updateCardState(newCard){
+    console.log("newCard :",newCard);
+    let cards = yield select(getCards);
+    let index =  cards.findIndex((c) => c.config.configObjectId === newCard.config.configObjectId);
+    console.log(" found card index :",index);
+    if(index !== -1){
+        newCards = update(cards, {$splice:[[index, 1, newCard]]})
+        yield put(putCardsData(newCards));
+    }
+}
 
 export function* renderLayout(action) {
     try {

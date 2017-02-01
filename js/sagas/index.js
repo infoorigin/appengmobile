@@ -15,6 +15,6 @@ export function* sagas() {
     fork(takeLatest, SUBMIT_NODE_DATA, submitNodeDataToDB),
     fork(takeLatest, RENDER_ACTIVE_TAB, renderActiveTab),
     fork(takeLatest, RENDER_LAYOUT, renderLayout),
-   
+    fork(takeLatest, RENDER_GRID_DETAIL , renderGridDetail),
   ];
 }

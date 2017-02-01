@@ -28,6 +28,7 @@ export default class GridRow extends Component {
     recordClicked() {
         let keys = this._keys();
         console.log('Key Selected----', keys);
+        this.props.onGridDetail(keys);
     }
 
     getElementsWithPrivilege() {

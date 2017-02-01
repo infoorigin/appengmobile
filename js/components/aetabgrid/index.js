@@ -15,8 +15,8 @@ export default class AECardGrid extends AEBaseComponent  {
 	constructor(props) {
 		super(props);
 		this.state = {
-			
 		};
+        this._onGridDetail = this._onGridDetail.bind(this);
 	}
 
     _gridHeader(){
@@ -40,27 +40,21 @@ export default class AECardGrid extends AEBaseComponent  {
                             });
          return  keyColunms;                
 	}
+
+    _onGridDetail(keys){
+        this.props.onGridDetail(keys, this.props.config.configObjectId);
+    }
     
 
 	render() {
         let header = this._gridHeader();
         let keyColumns = this._keyColumns();
-         
-        /*
-         <List dataArray={this.props.data}
-                        renderRow={(item, i, iteration) =>
-                            <GridRow key={i} keyColunms={this.state.keyColunms} rowData={item} rowDescription={this.state.header} >
-                            </GridRow>
-                        }>
-                </List>
-                TODO
-                let header = this.state.isSearchHeader ? this._renderSearchHeader() : this._renderTitleHeader();
-          */      
+       
         return (
             <List dataArray={this.props.data}
                     renderRow={(item, i) =>
                     <ListItem>
-                        <GridRow key={i} keyColumns={keyColumns} data={item} header={header} >
+                        <GridRow key={i} keyColumns={keyColumns} data={item} header={header} onGridDetail={this._onGridDetail} >
                         </GridRow>
                     </ListItem>
                 }>

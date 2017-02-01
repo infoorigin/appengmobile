@@ -9,7 +9,7 @@ import {
 } from './ce';
 import { putCENodKey } from '../actions/ce';
 import { putCardsData } from '../actions/layout';
-import { openLayout, getCards } from './layout';
+import { openLayout, findCardByIdFromState, updateCardState } from './layout';
 import { getConfig, getGridData } from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
 
@@ -93,21 +93,25 @@ function* fetchGridData(nodeId) {
   yield put(saveGridData(data));
 }
 
-
-
-export function* renderTabGridDetail(action) {
-  let ceNode = getNodeById(action.nodeId);
-  let formresult = yield call(getConfig, ceNode.editFormId);
-  let form = formresult.data.returnData.data;
-  let nodeData = yield call(queryNodeData, ceNode, action.keys);
-  let cards = getCards();
-  if (cards && cards.length) {
-    let newCard = update(cards[0], { $merge: { node: ceNode, ui: { data: nodeData, config: [form] } } });
-    yield put(putCardsData([cardState]));
+export function* renderGridDetail(action) {
+  try {
+  if(action.nodeId){
+    // If NodeId is present render child data grid . No navigation routing is required. Replace existing card or grid
+    yield call (renderNodeGridDetail, action);
+  }
+  else{
+    console.log("Direct Grid Rendering without nodeId Not supported yet");
+  }
+  }
+  catch (error) {
+    console.log("Error in renderGridDetail for action", JSON.stringify(action), error);
   }
 }
 
+
+
 export function* renderBaseGridDetail(action) {
+  try {
   let ceNode = yield select(getCompositeEntityNode);
   yield call(setNodeData, ceNode, action.keys);
   yield call(setNodeKeys, ceNode, action.keys);
@@ -119,6 +123,23 @@ export function* renderBaseGridDetail(action) {
   else {
     yield call(openEditForm, action);
   }
+  }
+  catch (error) {
+    console.log("Error in renderBaseGridDetail for action", JSON.stringify(action), error);
+  }
 
+}
+
+export function* renderNodeGridDetail(action) {
+  let activeNode = yield call(getNodeById,action.nodeId);
+  let nodeData = yield call(queryNodeData, activeNode, action.keys);
+  let result = yield call(getConfig, activeNode.editFormId);
+  let formconfig = result.data.returnData.data;
+  let cardState = yield call(findCardByIdFromState, action.cardConfigId );
+  if (cardState != null) {
+    let newCardState = update(cardState, {$merge: {node : activeNode, ui: { data: nodeData, config: [formconfig] }}})
+    
+    yield call(updateCardState, newCardState);
+  }
 }
 
