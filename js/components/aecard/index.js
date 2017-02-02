@@ -116,7 +116,6 @@ static propTypes = {
                             case "Form" :
                                 return this._renderForm(item);
                             case "DataGrid"  :
-                                console.log("Data in Data Grid ",this.props.data);
                                 return this._renderGrid(item);
                             default :
                                 console.log("Invalid or unsupported view Item Type in Card Renderer",item.configObjectType)    ;

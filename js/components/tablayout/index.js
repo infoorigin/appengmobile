@@ -2,16 +2,18 @@
 import React, { Component } from 'react';
 import { View} from 'react-native';
 import { connect } from 'react-redux';
+import update from 'immutability-helper';
 import { Container, Title, Content, Footer, FooterTab, Button, Icon, Badge, Text } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import AEContainer from '../../widgets/AEContainer';
 import AEHeader from '../../widgets/AEHeader';
 import AETabNavigator from './AETabNavigator' ;
 import AECard from '../aecard';
-import { putCENodeData, submitNodeData } from '../../actions/ce';
-import {renderTabAction} from '../../actions/layout';
+import AETabLayoutHeader from './AETabLayoutHeader';
+import { putCENodeData, submitNodeData, submitCardNodeDataAction } from '../../actions/ce';
+import {renderTabAction, updateCardUIDataAction} from '../../actions/layout';
 import {gridDetailAction} from '../../actions/grid';
-import { updateAttributes, getKeysByNode } from '../../utils/uiData'
+import { updateAttributes, getKeysByNode, getBindingIdByNodeId } from '../../utils/uiData'
 import { openDrawer } from '../../actions/drawer';
 
 import _ from 'lodash';
@@ -32,10 +34,7 @@ class AETabLayout extends Component {  // eslint-disable-line
       
     }
 
-    componentWillReceiveProps(nextProps) {
-     
-  }
-
+   
     _submitData() {
 
     }
@@ -55,14 +54,9 @@ class AETabLayout extends Component {  // eslint-disable-line
     }
 
     _renderHeader(sceneprops){
-        return (
-            <AEHeader>
-                    <Title>Test Header</Title>
-                    <Button transparent onPress={this.props.openDrawer}>
-                        <Icon name="ios-menu" />
-                    </Button>
-             </AEHeader>
-        )
+        // TO do chnage the API of CE Node for display name 
+        let title = this.props.card.node.name ? this.props.card.node.name :"";
+        return (<AETabLayoutHeader card={this.props.card} {...this._headerCallBacks()}></AETabLayoutHeader>);
     }
  
     _renderScene(){
@@ -94,21 +88,50 @@ class AETabLayout extends Component {  // eslint-disable-line
 
     _onNodeDataChange(nodeId, bindingId, updateData){
         console.log("layoutchange _onNodeDataChange ",nodeId, bindingId, updateData);
-        //let nodeData = updateAttributes(this.props.data, nodeId, bindingId, updateData);
-       // this.props.updateNodeData(nodeData);
+        let nodeData = updateAttributes(this.props.card.ui.data, nodeId, bindingId, updateData);
+        this.props.updateCardUIData(this.props.card.config.configObjectId , nodeData);
         
     }
 
      _onUIBlur(nodeId, bindingId, updateData){
         console.log("layoutchange _onUIBlur",nodeId, bindingId, updateData);
-       // let nodeData = updateAttributes(this.props.data, nodeId, bindingId, updateData);
-       // this.props.submitNodeData(nodeId, bindingId,nodeData);
+        let nodeData = updateAttributes(this.props.card.ui.data, nodeId, bindingId, updateData);
+        this.props.updateCardUIData(this.props.card.config.configObjectId , nodeData);
+        //TODO condition for inline save 
+        if(!this.props.card.node.editFormId){
+            this.props.submitCardNodeData(this.props.card.config.configObjectId, nodeId, bindingId);
+        }
+        
+
     }
 
     _onGridDetail(keys, gridConfigId, nodeId){
         let cardConfigId = this.props.card.config.configObjectId ;
-        this.props.gridDetailAction(keys, cardConfigId, gridConfigId, nodeId);
-        console.log(" _onGridDetail params ", keys, cardConfigId, gridConfigId, nodeId);
+        let mergedKeys = update(this.props.baseNodeKeys, {$merge : keys});
+        this.props.gridDetailAction(mergedKeys, cardConfigId, gridConfigId, nodeId);
+   }
+
+    _headerCallBacks(){
+        return {
+            onGridSearch : this._onGridSearch.bind(this),
+            onAdd : this._onAdd.bind(this),
+            onSave : this._onSave.bind(this),
+            openMenu : this.props.openDrawer,
+        };
+    }
+
+    _onGridSearch(searchText){
+             console.log(" _onGridSearch called ", searchText);
+    }
+
+    _onAdd(){
+             console.log(" _onAdd called ");
+    }
+
+    _onSave(){
+             console.log(" _onSave called ");
+             let cardConfigId = this.props.card.config.configObjectId ;
+             this.props.submitCardNodeData(cardConfigId, this.props.card.node.configObjectId,null );
     }
 
     _callBacks(){
@@ -151,8 +174,9 @@ function bindAction(dispatch) {
     return {
         openDrawer: () => dispatch(openDrawer()),
         gridDetailAction : (keys, cardConfigId, gridConfigId, nodeId) => dispatch(gridDetailAction(keys, cardConfigId, gridConfigId, nodeId)),
-        renderTabAction :(tabConfigId, keys) => dispatch(renderTabAction(tabConfigId, keys))
-
+        renderTabAction :(tabConfigId, keys) => dispatch(renderTabAction(tabConfigId, keys)),
+        updateCardUIData : (cardConfigId, data) => dispatch(updateCardUIDataAction(cardConfigId, data)),
+        submitCardNodeData :(cardConfigId, nodeId, bindingId) =>  dispatch(submitCardNodeDataAction(cardConfigId, nodeId, bindingId)),
     };
 }
 

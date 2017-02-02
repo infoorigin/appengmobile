@@ -21,7 +21,6 @@ export function* findCardByIdFromState(cardConfigId){
 }
 
 export function* updateCardState(newCard){
-    console.log("newCard :",newCard);
     let cards = yield select(getCards);
     let index =  cards.findIndex((c) => c.config.configObjectId === newCard.config.configObjectId);
     console.log(" found card index :",index);
@@ -29,6 +28,12 @@ export function* updateCardState(newCard){
         newCards = update(cards, {$splice:[[index, 1, newCard]]})
         yield put(putCardsData(newCards));
     }
+}
+
+export function* updateCardUIData(action){
+    let card = yield call(findCardByIdFromState, action.cardConfigId);
+    let newCard = update(card, {ui : {$merge :{ data : action.data} }});
+    yield call(updateCardState, newCard);
 }
 
 export function* renderLayout(action) {
@@ -92,8 +97,6 @@ function* createCardState(tabCard, activeTab, action) {
     switch (activeTab.viewType) {
         case "Form":
         case "FormSection":
-            console.log("Inside Form :",cardState.node);
-
             if (cardState.node) { // Node setup is mandatory for Form or Formsection
                 nodeData = yield call(queryNodeData, cardState.node, action.keys);
             }

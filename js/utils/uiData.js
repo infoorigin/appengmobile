@@ -178,3 +178,8 @@ export function getBindingIdByNodeId(mapData, nodeId, index){
     }
 }
 
+export function getAllBindingIdsForNodeId(mapData, nodeId){
+    if(!isNodeDataExists(mapData, nodeId)) return [];
+    return mapData.get(nodeId).keySeq().toJS() ;
+}
+

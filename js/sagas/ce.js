@@ -1,5 +1,6 @@
 import { call, put, select } from "redux-saga/effects";
 import navigateTo from '../actions/sideBarNav';
+import update from 'immutability-helper';
 import {
     putActiveNodeConfig,
     saveCEConfig, putFormActionResponse,
@@ -7,8 +8,9 @@ import {
 } from '../actions/ce';
 import { getConfig, getCENodeData, submitNodeData, baseFormUpdate } from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
-import { initCENodeDataMap, updateKeys, createAPIRequestData, getKeys, updateError, clearError } from '../utils/uiData';
+import { initCENodeDataMap, updateKeys, createAPIRequestData, getKeys, updateError, clearError, getAllBindingIdsForNodeId } from '../utils/uiData';
 import { getCurrentUser } from './user';
+import { updateCardState, findCardByIdFromState } from './layout';
 
 
 export const getCompositeEntity = (state) => state.ae.ce.config
@@ -82,7 +84,8 @@ export function* queryNodeData(ceNode, keys) {
     let result = yield call(getCENodeData, ceNode.compositeEntityId, ceNode.entityId, keys.primaryKey);
     let responseData = result.data.returnData.data;
     let nodeData = initCENodeDataMap(responseData);
-    return nodeData;
+    let nodeDataWithKeys = updateKeys(nodeData, ceNode.configObjectId, keys)
+    return nodeDataWithKeys;
 }
 
 export function* setNodeKeys(ceNode, keys) {
@@ -93,42 +96,84 @@ export function* setNodeKeys(ceNode, keys) {
 
 export function* getNodeById(nodeId) {
     // Get the node from CENodeTree
-   let ceNode = yield call(findNodeFromCETree, nodeId);
-   if(ceNode == null) { // ceNode is part of other CE
-      const result = yield call(getConfig, action.configId);
-      ceNode = result.data.returnData.data;
-   }
-   return ceNode;
+    let ceNode = yield call(findNodeFromCETree, nodeId);
+    if (ceNode == null) { // ceNode is part of other CE
+        const result = yield call(getConfig, action.configId);
+        ceNode = result.data.returnData.data;
+    }
+    return ceNode;
 }
 
 export function* setActiveNode(action) {
     // Get the node from CENodeTree
-   
-   let ceNode = yield call(findNodeFromCETree,action.configId);
-   console.log("ceNode setActiveNode::",ceNode);
 
-   if(ceNode == null) { // ceNode is part of other CE
-      const result = yield call(getConfig, action.configId);
-      ceNode = result.data.returnData.data;
-   }
-   yield put(putActiveNodeConfig(ceNode));
+    let ceNode = yield call(findNodeFromCETree, action.configId);
+    console.log("ceNode setActiveNode::", ceNode);
+
+    if (ceNode == null) { // ceNode is part of other CE
+        const result = yield call(getConfig, action.configId);
+        ceNode = result.data.returnData.data;
+    }
+    yield put(putActiveNodeConfig(ceNode));
 }
 
 export function* findNodeFromCETree(nodeId) {
-     console.log("ceNode findNodeFromCETree::",nodeId);
+    console.log("ceNode findNodeFromCETree::", nodeId);
     let ce = yield select(getCompositeEntity);
     let cetree = ce.treeModel;
     let basenode = cetree.node;
     if (basenode.configObjectId == nodeId)
         return cetree.node;
     else {
-        console.log("ceNode findNodeFromCETree:childNode:",nodeId);
+        console.log("ceNode findNodeFromCETree:childNode:", nodeId);
         let childNode = yield call(findNodeFromChildTreeNodes, cetree.children, nodeId);
-        console.log("ceNode findNodeFromCETree:childNode:after:",childNode);
+        console.log("ceNode findNodeFromCETree:childNode:after:", childNode);
         return childNode;
 
     }
-        
+
+}
+
+function* submitCardNodeDataToDBByBindingId(card, ceNode, user, bindingId) {
+    console.log(" submitNodeDataToDB calling api");
+    let keysMap = yield call(getKeys, card.ui.data, ceNode.configObjectId, bindingId);
+    let keys = keysMap.toJS();
+    console.log("** keys **",keys);
+    // Get API Request Data 
+    let apiRequest = yield call(createAPIRequestData, card.ui.data, user.attributes, ceNode, bindingId);
+    // call backend service
+    let result = yield call(submitNodeData, ceNode.compositeEntityId, keys, apiRequest);
+    if (result.data.status) {
+        console.log('=========================success=======================');
+        let nodeDataWithNoError = yield call(clearError, card.ui.data, ceNode.configObjectId, bindingId);
+        card = update(card, { ui: { $merge: { data: nodeDataWithNoError } } });
+
+    } else {
+        console.log('=============================error===================');
+        let nodeDataWithError = yield call(updateError, card.ui.data, ceNode.configObjectId, bindingId, result.data.message);
+        card = update(card, { ui: { $merge: { data: nodeDataWithError } } });
+    }
+    yield call(updateCardState, card);
+}
+
+export function* submitCardNodeDataToDB(action) {
+    try {
+        // Get current logged in user
+        let user = yield select(getCurrentUser);
+        // Get the card 
+        let card = yield call(findCardByIdFromState, action.cardConfigId);
+        let ceNode = card.node;
+
+        if (action.bindingId != null) {
+            yield call(submitCardNodeDataToDBByBindingId, card, ceNode, user, action.bindingId)
+        }
+        else {
+            let allbindIds = getAllBindingIdsForNodeId(card.ui.data, ceNode.configObjectId);
+            yield allbindIds.map((bindingId) => call (submitCardNodeDataToDBByBindingId, card, ceNode, user, bindingId));
+        }
+    } catch (error) {
+        console.log("submitCardNodeData failed", action, error);
+    }
 }
 
 export function* submitNodeDataToDB(action) {

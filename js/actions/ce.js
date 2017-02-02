@@ -10,6 +10,7 @@ export const SUBMIT_NODE_DATA='SUBMIT_NODE_DATA';
 export const FORM_ACTION_RESPONSE='FORM_ACTION_RESPONSE';
 export const PUT_ACTIVE_NODE_CONFIG = 'PUT_ACTIVE_NODE_CONFIG';
 export const PUT_BASE_NODE_KEYS = 'PUT_BASE_NODE_KEYS';
+export const SUBMIT_CARD_NODE_DATA = 'SUBMIT_CARD_NODE_DATA';
 
 export function putFormActionResponse(response){
   return{
@@ -99,6 +100,15 @@ export function putBaseNodeKeys(keys){
       type:PUT_BASE_NODE_KEYS,
       keys:keys,
     }
+}
+
+export function submitCardNodeDataAction(cardConfigId, nodeId, bindingId){
+  return {
+    type : SUBMIT_CARD_NODE_DATA,
+    cardConfigId:cardConfigId,
+    nodeId:nodeId,
+    bindingId:bindingId,
+  }
 }
 
 

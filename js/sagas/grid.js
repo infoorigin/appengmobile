@@ -136,7 +136,7 @@ export function* renderNodeGridDetail(action) {
   let result = yield call(getConfig, activeNode.editFormId);
   let formconfig = result.data.returnData.data;
   let cardState = yield call(findCardByIdFromState, action.cardConfigId );
-  if (cardState != null) {
+  if (cardState != null && cardState.config) {
     let newCardState = update(cardState, {$merge: {node : activeNode, ui: { data: nodeData, config: [formconfig] }}})
     
     yield call(updateCardState, newCardState);

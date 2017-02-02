@@ -49,7 +49,7 @@ export default class AECardGrid extends AEBaseComponent  {
 	render() {
         let header = this._gridHeader();
         let keyColumns = this._keyColumns();
-       
+        console.log("this.props.data :",this.props.data);
         return (
             <List dataArray={this.props.data}
                     renderRow={(item, i) =>

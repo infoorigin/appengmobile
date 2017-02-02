@@ -9,7 +9,8 @@ import _ from 'lodash';
 import computeProps from '../utils/computeProps';
 import AEHeader from './AEHeader';
 import AEModal from './AEModal';
-import AECard from '../components/aecard'
+import AECard from '../components/aecard';
+import AETabLayoutHeader from '../components/tablayout/AETabLayoutHeader';
 
 
 export default class AEContainer extends AEBaseComponent {
@@ -24,7 +25,8 @@ export default class AEContainer extends AEBaseComponent {
     console.log("Render Header");
     if (Array.isArray(this.props.children)) {
       return _.find(this.props.children, function (item) {
-        if (item && (_.get(item, 'type', null) == Header || _.get(item, 'type', null) == AEHeader)) {
+        if (item && (_.get(item, 'type', null) == Header || _.get(item, 'type', null) == AEHeader
+        || _.get(item, 'type', null) == AETabLayoutHeader )) {
           return true;
         }
       });
@@ -37,7 +39,6 @@ export default class AEContainer extends AEBaseComponent {
     }
   }
   renderContent() {
-    console.log("Render Content");
     if (Array.isArray(this.props.children)) {
 
       return _.filter(this.props.children, function (item) {
