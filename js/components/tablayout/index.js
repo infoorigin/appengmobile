@@ -41,7 +41,8 @@ class AETabLayout extends Component {  // eslint-disable-line
 
     _setDataForScene(tabConfigId){
         console.log("OnTabSelect :",tabConfigId);
-        this.props.renderTabAction(tabConfigId, this.props.baseNodeKeys)
+        let cardConfigId = this.props.card.config.configObjectId ;
+        this.props.renderTabAction(cardConfigId, tabConfigId, this.props.baseNodeKeys)
    }
 
    
@@ -174,7 +175,7 @@ function bindAction(dispatch) {
     return {
         openDrawer: () => dispatch(openDrawer()),
         gridDetailAction : (keys, cardConfigId, gridConfigId, nodeId) => dispatch(gridDetailAction(keys, cardConfigId, gridConfigId, nodeId)),
-        renderTabAction :(tabConfigId, keys) => dispatch(renderTabAction(tabConfigId, keys)),
+        renderTabAction :(cardConfigId, tabConfigId, keys) => dispatch(renderTabAction(cardConfigId, tabConfigId, keys)),
         updateCardUIData : (cardConfigId, data) => dispatch(updateCardUIDataAction(cardConfigId, data)),
         submitCardNodeData :(cardConfigId, nodeId, bindingId) =>  dispatch(submitCardNodeDataAction(cardConfigId, nodeId, bindingId)),
     };

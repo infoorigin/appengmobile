@@ -2,13 +2,14 @@
 import navigateTo from '../actions/sideBarNav';
 import { call, put, select } from "redux-saga/effects";
 import update from 'immutability-helper';
-import { getCompositeEntity, setActiveNode, getActiveCompositeEntityNode, getNodeById, queryNodeData } from './ce';
+import { getCompositeEntity, setActiveNode, getActiveCompositeEntityNode, getNodeById, queryNodeData, findParentNode } from './ce';
 import { putBaseNodeKeys } from '../actions/ce';
 import { fetchNodeActiveGridData, queryNodeGridData } from './grid';
 import { getConfig, getGridData } from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
 import { saveLayoutConfig, putCardsData } from '../actions/layout';
 import { putActiveNodeGridConfig } from '../actions/grid';
+import {isNodeDataExists} from '../utils/uiData' ;
 
 
 export const getLayout = (state) => state.ae.layout.config
@@ -92,43 +93,64 @@ function* createCardState(tabCard, activeTab, action) {
         let activeNode = yield call(getNodeById,activeTab.compositeEntityNode.configObjectId);
         Object.assign(cardState, { node: activeNode });
     }
-
-    let nodeData = {};
-    switch (activeTab.viewType) {
-        case "Form":
-        case "FormSection":
-            if (cardState.node) { // Node setup is mandatory for Form or Formsection
-                nodeData = yield call(queryNodeData, cardState.node, action.keys);
-            }
-            break;
-
-        case "DataGrid":
-            if (cardState.node) { // setup grid if based on NodeId
-                nodeData = yield call(queryNodeGridData, cardState.node.configObjectId, action.keys);
-            }
-            else {
-                //TODO for Grid withouyt nodeID
-            }
-            break;
-        default:
-            console.log("Invalid or unsupported uiconfig type");
-    }
+    let nodeData = yield call(tabNodeData, cardState, activeTab, action) ;
+    
     Object.assign(cardState, { ui: { data: nodeData, config: activeTab.uiItems } });
     return cardState;
 }
 
+function* tabNodeData(cardState, activeTab, action){
+    switch (activeTab.viewType) {
+        case "Form":
+        case "FormSection":
+            if (cardState.node ) { // Node setup is mandatory for Form or Formsection
+               if(cardState.ui && cardState.ui.data 
+                        && isNodeDataExists(cardState.ui.data, cardState.node.configObjectId)) {
+                        // If Data already present in card check if node data is also present    
+                       return cardState.ui.data;     
+                }
+               else {
+                   //check if nodeId is linked to parent display
+                   let node = cardState.node;
+                   if(cardState.node.addToParentDisplay) {
+                       node = yield call(findParentNode,cardState.node.configObjectId) ;
+                   } 
+                   console.log(" queryNodeData node :",node.configObjectId);
+                   return yield call(queryNodeData, node, action.keys);
+               }
+            }
+            return {}
 
-function* findTabById(tabCard, tabConfigId) {
-    return tabCard.uitabs.find((t) => t.configObjectId === tabConfigId)
+        case "DataGrid":
+            if (cardState.node) { // setup grid if based on NodeId
+                return yield call(queryNodeGridData, cardState.node.configObjectId, action.keys);
+            }
+            else {
+                return {};
+            }
+            
+        default:
+            console.log("Invalid or unsupported uiconfig type");
+            return {};
+    }
+    
+}
+
+
+function* findTabById(cardConfig, tabConfigId) {
+    return cardConfig.uitabs.find((t) => t.configObjectId === tabConfigId)
 }
 
 export function* renderActiveTab(action) {
     try {
-        let layout = yield select(getLayout);
-        let tabCard = yield call(getTabCard, layout);
-        let activeTab = yield call(findTabById, tabCard, action.tabConfigId);
-        let cardState = yield call(createCardState,tabCard, activeTab, action);
-        yield put(putCardsData([cardState]));
+        let card = yield call(findCardByIdFromState, action.cardConfigId);
+        let activeTab = yield call(findTabById, card.config, action.tabConfigId);
+        let activeNode = yield call(getNodeById,activeTab.compositeEntityNode.configObjectId);
+        card = update(card,  { $merge : { node: activeNode}});
+        
+        let nodeData = yield call(tabNodeData, card, activeTab, action) ;
+        card = update(card,  { $merge : { activeTab: activeTab, ui:  {data: nodeData, config: activeTab.uiItems }}});
+        yield put(putCardsData([card]));
     }
     catch (error) {
         console.log("Error in renderActiveTab", JSON.stringify(action), error);

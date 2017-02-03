@@ -60,7 +60,6 @@ export function getCENodeData(ceid, leid, key) {
 export function getGridData(nodeId, keys) {
   // merge keys to attributes
   let inputData = keys ? update(defaultInput(), {baseEntity: {attributes :{$merge : keys}}}) : defaultInput();
-  console.log("getGridData submit :",nodeId, inputData)
   return axios.post(baseUrl + '/rest/gridData/' + nodeId, inputData, getHeaders('db6003e6-0093-4e3d-a8d0-d4ff26b750c2'));
 
 }

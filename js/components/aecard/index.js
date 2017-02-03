@@ -12,7 +12,7 @@ import AEDatePicker from '../../widgets/AEDatePicker';
 import AESelectPicker from '../../widgets/AESelectPicker';
 import AEFormSection from '../aeformsection';
 import AECardGrid from '../aetabgrid'
-import {getBindingIdByNodeId, getDataByBindingId} from '../../utils/uiData'
+import {getBindingIdByNodeId, getDataByBindingId, getAllBindingIdsForNodeId} from '../../utils/uiData'
 
 
 
@@ -82,10 +82,13 @@ static propTypes = {
     }
 
     _renderForm(form){
-        let uiBindingId = getBindingIdByNodeId(this.props.data, this.props.nodeId);
-        let sectiondata = getDataByBindingId(this.props.data, this.props.nodeId, uiBindingId)
-        let section = form.sections[0];
-        return (<AEFormSection key={uiBindingId+section.configObjectId} bindingId={uiBindingId} config={section} data={sectiondata} {...this._callBacks()}> </AEFormSection>);
+        let uiBindingIds = getAllBindingIdsForNodeId(this.props.data, this.props.nodeId);
+        let forms = uiBindingIds.map(function(uiBindingId){
+            let sectiondata = getDataByBindingId(this.props.data, this.props.nodeId, uiBindingId)
+            let section = form.sections[0];
+            return (<AEFormSection key={uiBindingId+section.configObjectId} bindingId={uiBindingId} config={section} data={sectiondata} {...this._callBacks()}> </AEFormSection>);
+        }.bind(this))
+        return forms;
     }
 
     _renderGrid(grid){

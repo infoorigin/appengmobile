@@ -8,7 +8,7 @@ import {
 } from '../actions/ce';
 import { getConfig, getCENodeData, submitNodeData, baseFormUpdate } from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
-import { initCENodeDataMap, updateKeys, createAPIRequestData, getKeys, updateError, clearError, getAllBindingIdsForNodeId } from '../utils/uiData';
+import { findNodeFromCETreeModel, keyColumns, initCENodeDataMap, updateKeys, createAPIRequestData, getKeys, updateError, clearError, getAllBindingIdsForNodeId } from '../utils/uiData';
 import { getCurrentUser } from './user';
 import { updateCardState, findCardByIdFromState } from './layout';
 
@@ -24,6 +24,9 @@ export const getActiveCompositeEntityNode = (state) => state.ae.activenode.confi
 export const getFormDataKey = (state) => state.ae.form.key
 
 export const geLastnavigation = (state) => state.cardNavigation.routes[state.cardNavigation.routes.length - 1].key;
+
+
+
 
 // fetch the Config Item
 export function* setCompositeEntity(action) {
@@ -69,6 +72,7 @@ function* fetchFormConfig(formConfigId) {
     yield put(putCENodeEditForm(configItem));
 }
 
+/*
 export function* setNodeData(ceNode, keys) {
     // call the api to get the grid config Item
     console.log("Getting Node Data for ", ceNode.compositeEntityId, ceNode.entityId, keys.primaryKey);
@@ -77,15 +81,17 @@ export function* setNodeData(ceNode, keys) {
     let nodeData = initCENodeDataMap(responseData);
     yield put(putCENodeData(nodeData));
 }
+*/
 
 export function* queryNodeData(ceNode, keys) {
     // call the api to get the grid config Item
     console.log("Getting Node Data for ", ceNode.compositeEntityId, ceNode.entityId, keys.primaryKey);
     let result = yield call(getCENodeData, ceNode.compositeEntityId, ceNode.entityId, keys.primaryKey);
     let responseData = result.data.returnData.data;
-    let nodeData = initCENodeDataMap(responseData);
-    let nodeDataWithKeys = updateKeys(nodeData, ceNode.configObjectId, keys)
-    return nodeDataWithKeys;
+    let ce = yield select(getCompositeEntity);
+    let cetree = ce.treeModel;
+    let nodeData = initCENodeDataMap(responseData, keys, cetree);
+    return nodeData;
 }
 
 export function* setNodeKeys(ceNode, keys) {
@@ -117,21 +123,35 @@ export function* setActiveNode(action) {
     yield put(putActiveNodeConfig(ceNode));
 }
 
+export function* findParentNode(nodeId) {
+    console.log("ceNode findParentNode::", nodeId);
+    let ce = yield select(getCompositeEntity);
+    let cetree = ce.treeModel;
+    let parent = findParentNodeById(nodeId, cetree.children, cetree.node);
+    return parent;
+}
+
+function findParentNodeById(nodeId, nodes, parent ){
+    nodes = nodes &&  nodes.length ? nodes : [];
+    console.log(" nodes ", nodes.length);
+    for (i = 0; i < nodes.length; i++) {
+        if (nodes[i].node.configObjectId == nodeId) {
+            return parent;
+        }
+        else {
+            let result = findParentNodeById(nodeId, nodes[i].children, nodes[i]);
+            if (result) return result;
+        }
+    }
+    return null;
+}
+
 export function* findNodeFromCETree(nodeId) {
     console.log("ceNode findNodeFromCETree::", nodeId);
     let ce = yield select(getCompositeEntity);
     let cetree = ce.treeModel;
-    let basenode = cetree.node;
-    if (basenode.configObjectId == nodeId)
-        return cetree.node;
-    else {
-        console.log("ceNode findNodeFromCETree:childNode:", nodeId);
-        let childNode = yield call(findNodeFromChildTreeNodes, cetree.children, nodeId);
-        console.log("ceNode findNodeFromCETree:childNode:after:", childNode);
-        return childNode;
-
-    }
-
+    let node = findNodeFromCETreeModel(nodeId, [cetree])
+    return node;
 }
 
 function* submitCardNodeDataToDBByBindingId(card, ceNode, user, bindingId) {
@@ -233,17 +253,3 @@ export function* updateBaseForm(action) {
     console.log('===============End Log statement===============>>');
 
 }
-
-function* findNodeFromChildTreeNodes(nodes, nodeId) {
-    for (i = 0; i < nodes.length; i++) {
-        if (nodes[i].node.configObjectId == nodeId) {
-            return nodes[i].node;
-        }
-        else {
-            let result = findNodeFromChildTreeNodes(nodes[i].children, nodeId);
-            if (result) return result;
-        }
-        return null;
-    }
-}
-

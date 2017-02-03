@@ -27,9 +27,10 @@ export function renderLayoutAction(keys){
 }
 
 
-export function renderTabAction(tabConfigId, keys){
+export function renderTabAction(cardConfigId, tabConfigId, keys){
   return{
     type: RENDER_ACTIVE_TAB,
+    cardConfigId:cardConfigId,
     tabConfigId: tabConfigId,
     keys :keys,
   };
