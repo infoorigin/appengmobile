@@ -75,8 +75,27 @@ export default class AETabLayoutHeader extends AEBaseComponent {
         );
     }
 
+    _renderModalHeader(){
+        let title = this.props.card.node.name ? this.props.card.node.name : "";
+        return (
+            <AEHeader>
+                <Button transparent onPress={this.props.onCancelModal}>
+                    <Icon name="md-close" />
+                </Button>
+                <Title>{title}</Title>
+                <Button transparent onPress={this.props.onAddSave}>
+                    Save
+                </Button>
+        </AEHeader>
+        );
+    }
+
     _renderUIHeader(uiItem) {
         let title = "";
+        if(this.props.modalVisible){
+            return this._renderModalHeader();
+        }
+
         switch (uiItem.configObjectType) {
             case "FormSection":
             case "Form":

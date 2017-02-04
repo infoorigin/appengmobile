@@ -20,6 +20,10 @@ export default class AETabNavigator extends AEBaseComponent {
 
     }
 
+    _onModalHide(hideaction){
+        console.log("Modal Action ", hideaction);
+    }
+
     _onTabSelect(index, key){
         console.log(" _onTabSelect setstate index, key", index, key)
         this.props.onTabActive(key);
@@ -53,17 +57,19 @@ export default class AETabNavigator extends AEBaseComponent {
 
     render() {
         let headerandscene = this.props.renderHeaderAndScene();
-        console.log("headerandscene length", headerandscene.length);
-         return (
-            <AEContainer>
+        let modelContent = this.props.renderModal();
+        return (
+            <AEContainer modalVisible={this.props.modalVisible} onModalHide={this._onModalHide}>
                 {headerandscene[0]}
 
                 {headerandscene[1]}
 
-
+                
                 <Footer >
                     {this._getUIFooterTabs()}
                 </Footer>
+
+                {modelContent}
 
             </AEContainer>
         );

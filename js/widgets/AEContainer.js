@@ -2,13 +2,14 @@
 'use strict';
 
 import React from 'react';
-import { View, Image, ScrollView } from 'react-native';
+import { View, Image, ScrollView, TouchableHighlight, Text,  Modal} from 'react-native';
 import { View as ViewNB, Header, Content, Footer } from 'native-base';
 import AEBaseComponent from './base/AEBaseComponent';
 import _ from 'lodash';
 import computeProps from '../utils/computeProps';
 import AEHeader from './AEHeader';
 import AEModal from './AEModal';
+import AEModalContent from './AEModalContent';
 import AECard from '../components/aecard';
 import AETabLayoutHeader from '../components/tablayout/AETabLayoutHeader';
 
@@ -19,6 +20,15 @@ export default class AEContainer extends AEBaseComponent {
     style: React.PropTypes.object,
     modalVisible: React.PropTypes.boolean,
     onModalHide : React.PropTypes.func,
+  }
+
+  
+  constructor(props) {
+      super(props);
+
+      this.state = {
+         modalVisible: true,
+      }
   }
 
   renderHeader() {
@@ -38,6 +48,24 @@ export default class AEContainer extends AEBaseComponent {
       }
     }
   }
+
+  renderModalContent() {
+    if (Array.isArray(this.props.children)) {
+
+      return _.filter(this.props.children, function (item) {
+        if (item && _.get(item, 'type', null) == AEModalContent) {
+          return true;
+        }
+      });
+    }
+
+    else {
+      if (this.props.children && (this.props.children.type == AEModalContent )) {
+        return this.props.children;
+      }
+    }
+  }
+
   renderContent() {
     if (Array.isArray(this.props.children)) {
 
@@ -60,7 +88,6 @@ export default class AEContainer extends AEBaseComponent {
     }
   }
   renderFooter() {
-     console.log("Render Footer");
     if (Array.isArray(this.props.children)) {
       return _.find(this.props.children, function (item) {
         if (item && _.get(item, 'type', null) == Footer) {
@@ -89,23 +116,25 @@ export default class AEContainer extends AEBaseComponent {
   }
 
   renderModal() {
+    let content = this.renderModalContent();
+    let modalContent = this.props.modalVisible ? [this.renderHeader(), content] : (<AEModalContent></AEModalContent>) ;
     return (
-      <AEModal
-        offset={0}
-        open={this.props.modalVisible}
-        modalDidOpen={() =>this.props.onModalHide(false)}
-        modalDidClose={() => this.props.onModalHide(true)}
-        style={{ alignItems: 'center' }}>
-      </AEModal>
+      <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.props.modalVisible}
+          onRequestClose={() => {console.log("Modal Closed")}}
+       >
+          { modalContent }
+       </Modal>
     );
   }
 
   renderRegularScreen() {
-    let header = this.renderHeader();
     return (
       <View ref={c => this._root = c} {...this.prepareRootProps() }>
 
-        {header}
+        {this.renderHeader()}
 
         {this.renderContent()}
 

@@ -202,7 +202,7 @@ export default class Header extends AEBaseComponent {
         }
 
         render() {
-            console.log(" Inside rendering of AEHeader ..")
+            
             return(
             <View ref={c => this._root = c} {...this.prepareRootProps()} >
             {this.renderChildren()}
