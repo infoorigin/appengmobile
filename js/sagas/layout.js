@@ -93,13 +93,44 @@ function* createCardState(tabCard, activeTab, action) {
         let activeNode = yield call(getNodeById,activeTab.compositeEntityNode.configObjectId);
         Object.assign(cardState, { node: activeNode });
     }
-    let nodeData = yield call(tabNodeData, cardState, activeTab, action) ;
+    let nodeData = yield call(tabNodeData, cardState, activeTab, action.keys) ;
     
     Object.assign(cardState, { ui: { data: nodeData, config: activeTab.uiItems } });
     return cardState;
 }
 
-function* tabNodeData(cardState, activeTab, action){
+export function* refreshTabData(cardState, keys){
+    const activeTab = cardState.activeTab;
+    switch (activeTab.viewType) {
+        case "Form":
+        case "FormSection":
+            if (cardState.node ) { // Node setup is mandatory for Form or Formsection
+                   //check if nodeId is linked to parent display
+                   let node = cardState.node;
+                   if(cardState.node.addToParentDisplay) {
+                       node = yield call(findParentNode,cardState.node.configObjectId) ;
+                   } 
+                   console.log(" queryNodeData node :",node.configObjectId);
+                   return yield call(queryNodeData, node, keys);
+            }
+            return {}
+
+        case "DataGrid":
+            if (cardState.node) { // setup grid if based on NodeId
+                return yield call(queryNodeGridData, cardState.node.configObjectId, keys);
+            }
+            else {
+                return {};
+            }
+            
+        default:
+            console.log("Invalid or unsupported uiconfig type");
+            return {};
+    }
+    
+}
+
+function* tabNodeData(cardState, activeTab, keys){
     switch (activeTab.viewType) {
         case "Form":
         case "FormSection":
@@ -116,14 +147,14 @@ function* tabNodeData(cardState, activeTab, action){
                        node = yield call(findParentNode,cardState.node.configObjectId) ;
                    } 
                    console.log(" queryNodeData node :",node.configObjectId);
-                   return yield call(queryNodeData, node, action.keys);
+                   return yield call(queryNodeData, node, keys);
                }
             }
             return {}
 
         case "DataGrid":
             if (cardState.node) { // setup grid if based on NodeId
-                return yield call(queryNodeGridData, cardState.node.configObjectId, action.keys);
+                return yield call(queryNodeGridData, cardState.node.configObjectId, keys);
             }
             else {
                 return {};
@@ -148,7 +179,7 @@ export function* renderActiveTab(action) {
         let activeNode = yield call(getNodeById,activeTab.compositeEntityNode.configObjectId);
         card = update(card,  { $merge : { node: activeNode}});
         
-        let nodeData = yield call(tabNodeData, card, activeTab, action) ;
+        let nodeData = yield call(tabNodeData, card, activeTab,  action.keys) ;
         card = update(card,  { $merge : { activeTab: activeTab, ui:  {data: nodeData, config: activeTab.uiItems }}});
         yield put(putCardsData([card]));
     }

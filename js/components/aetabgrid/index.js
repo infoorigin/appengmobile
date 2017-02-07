@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Modal, Image, TouchableHighlight, Alert } from 'react-native';
+import { Modal, Image, TouchableHighlight, Alert, ListView } from 'react-native';
 import { Text, List, ListItem } from 'native-base';
 import AEBaseComponent from '../../widgets/base/AEBaseComponent';
 import styles from './styles';
 import GridRow from './row';
+import uuid from 'uuid';
 const contentscreenBg = require('../../../img/basescreen.png');
 
 export default class AECardGrid extends AEBaseComponent  {
@@ -17,7 +18,10 @@ export default class AECardGrid extends AEBaseComponent  {
 		this.state = {
 		};
         this._onGridDetail = this._onGridDetail.bind(this);
+        
 	}
+
+    
 
     _gridHeader(){
         let headerdata = this.props.config.gridColumns;
@@ -44,11 +48,30 @@ export default class AECardGrid extends AEBaseComponent  {
     _onGridDetail(keys){
         this.props.onGridDetail(keys, this.props.config.configObjectId);
     }
+
     
+    
+    _renderRow( rowData, header, keyColumns){
+         return(<GridRow  key={uuid.v1()} keyColumns={keyColumns} data={rowData} header={header} onGridDetail={this._onGridDetail} >
+                 </GridRow>
+                 );
+        
+    }
 
 	render() {
         let header = this._gridHeader();
         let keyColumns = this._keyColumns();
+        console.log("**Sudhr 4**");
+        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        var dataSource = ds.cloneWithRows(this.props.data);
+            return (
+                <ListView
+                    dataSource={dataSource}
+                    renderRow={(rowData) => this._renderRow(rowData, header, keyColumns)}
+                />
+            );
+
+/*
          return (
             <List dataArray={this.props.data}
                     renderRow={(item, i) =>
@@ -59,6 +82,7 @@ export default class AECardGrid extends AEBaseComponent  {
                 }>
             </List>
         );
+        */
 	}
 
 	componentDidMount() {

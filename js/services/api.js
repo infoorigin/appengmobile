@@ -57,7 +57,12 @@ export function getCENodeData(ceid, leid, key) {
   return axios.get(baseUrl + '/rest/' + ceid + '/' + leid + '/' + key, getHeaders('db6003e6-0093-4e3d-a8d0-d4ff26b750c2'));
 }
 
+export function getSequence(ceid, leid){
+  return axios.get(baseUrl + '/rest/seq/' + ceid + '/' + leid , getHeaders('db6003e6-0093-4e3d-a8d0-d4ff26b750c2'));
+}
+
 export function getGridData(nodeId, keys) {
+  console.log(" getGridData :",keys);
   // merge keys to attributes
   let inputData = keys ? update(defaultInput(), {baseEntity: {attributes :{$merge : keys}}}) : defaultInput();
   return axios.post(baseUrl + '/rest/gridData/' + nodeId, inputData, getHeaders('db6003e6-0093-4e3d-a8d0-d4ff26b750c2'));

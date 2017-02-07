@@ -6,14 +6,14 @@ import { Container, Content, Button, View, H3, Text, Header, Title, Icon, Card, 
 import { NumericCell, TextCell } from './cell.js';
 import styles from './styles';
 import { getPrivilege } from '../../services/usercontext.js';
-
+import AEBaseComponent from '../../widgets/base/AEBaseComponent'
 import { RENDER_GRID_DETAIL, gridAction } from '../../actions/grid';
 import { RENDER_LAYOUT } from '../../actions/layout';
 import * as ceActions from '../../actions/ce.js';
 
 const rightArrowImage = require('../../../img/Icon-Arrow-Right.png');
 
-export default class GridRow extends Component {
+export default class GridRow extends AEBaseComponent {
 
     static propTypes = {
         keyValue: React.PropTypes.string,
@@ -22,6 +22,25 @@ export default class GridRow extends Component {
     constructor(props) {
         super(props);
         this.recordClicked = this.recordClicked.bind(this);
+        this.getInitialStyle = this.getInitialStyle.bind(this);
+    }
+
+   
+    getInitialStyle() {
+
+        return {
+           
+            listItemDivider: {
+                //{flex:1, flexDirection:'row',alignItems:'center'}
+                borderBottomWidth: this.getTheme().borderWidth,
+                height: this.getTheme().listItemHeight,
+                padding: this.getTheme().listItemPadding,
+                backgroundColor: this.getTheme().listDividerBg,
+                justifyContent:  'flex-start',
+                flexDirection: 'row',
+                borderColor: this.getTheme().listBorderColor
+            }
+        }
     }
 
 
@@ -65,7 +84,14 @@ export default class GridRow extends Component {
 
     }
 
+    _defaultProps() {
+        return {
+            style: this.getInitialStyle().listItemDivider
+        };
+    }
+
     render() {
+       
         return (
             <View style={styles.gridRow}>
                 <View style={styles.gridRowData}>

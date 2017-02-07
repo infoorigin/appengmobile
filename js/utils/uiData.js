@@ -69,6 +69,25 @@ function childRecordData(parentNodeData, childEntityData, index, parentKeys, ceN
     childEntities.forEach((c, i) => childRecordData(parentNodeData, c, i, data[primaryKey].keys));
 }
 
+export function createEmptyNodeData(ceNode, seqData, index, parentKeysData) {
+    let keyCols = keyColumns(ceNode);
+    let pkValue = seqData[keyCols.primaryKey];
+    if(pkValue == null) return fromJS({[ceNode.configObjectId] : {}});
+    
+    let keysData = { primaryKey: pkValue, [keyCols.primaryKey]: pkValue };
+    keyCols.keys.forEach((key) => {
+        if (seqData[key] != null)
+            keysData[key] = seqData[key];
+    })
+    if(parentKeysData) {
+        keysData = update(parentKeysData, { $merge: keysData });
+    }
+    let data = { [pkValue]: { index: index, error: {}, keys: keysData, attributes: seqData } };
+    let nodeData =  {[ceNode.configObjectId] : data};
+    let nodeDataMap = fromJS(nodeData);
+    return nodeDataMap;
+}
+
 
 function createRecordData(entityData, index, parentKeysData, ceNodeTree) {
     let ceNode = findNodeFromCETreeModel(entityData.nodeId, [ceNodeTree]);

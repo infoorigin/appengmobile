@@ -2,6 +2,7 @@
 import * as gridaction from '../actions/grid';
 import * as ceaction from '../actions/ce';
 import * as layoutaction from '../actions/layout';
+import * as modal from '../actions/modal';
 import update from 'immutability-helper';
 
 // TO DO populate default user details by login saga
@@ -28,6 +29,7 @@ const initialState = {
   cenode: {},
   nodeData :{},
   layout :{},
+  modal : {visible:false, ui:{}, data:{}},
   activenode :{ config :{}, ui: {}},
   cards :[]
 };
@@ -164,24 +166,25 @@ export default function (state = initialState, action) {
       ...state,
       layout: {config:action.config},
     };
-
-    case ceaction.PUT_ACTIVE_NODE_CONFIG:
+    
+    case modal.PUT_MODAL_UI_DATA:
     return{
       ...state,
-      activenode: update(state.activenode, { $merge: {config:action.config}}),
+      modal: update(state.modal, { $set : {visible:true, ui: action.ui, data : action.data  }})
     };
 
-    case gridaction.PUT_ACTIVE_NODE_GRID_CONFIG:
+    case modal.PUT_MODAL_DATA:
     return{
       ...state,
-      activenode: update(state.activenode, { ui : {$set: {config:action.config}}})
+      modal: update(state.modal, { $merge : {data : action.data }})
     };
 
-    case gridaction.PUT_ACTIVE_NODE_GRID_DATA:
+    case modal.RESET_MODAL :
     return{
       ...state,
-      activenode: update(state.activenode, { ui : {$merge: {data:action.data}}})
+      modal: update(state.modal, { $set : {visible:false, ui: {}, data : {}  }})
     };
+
 
     default:
       return state;

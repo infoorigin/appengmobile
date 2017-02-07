@@ -14,7 +14,14 @@ module.exports = StyleSheet.create({
     fontSize:16,
     paddingLeft:5,
   },
-  gridRow:{flex:1, flexDirection:'row',alignItems:'center'},
+  gridRow:{
+      flex:1, 
+      flexDirection:'row',
+      alignItems:'center',
+      borderBottomWidth: 1,
+      borderColor : '#ddd',
+      padding : 10
+  },
   gridCell:{flex:4/5, flexDirection:'row'},
   gridRowData:{flex:10},
   gridRowDetailLink:{flex:1},

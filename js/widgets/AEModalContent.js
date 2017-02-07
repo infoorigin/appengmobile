@@ -1,12 +1,18 @@
 'use strict';
 
 import React from 'react';
+import { View } from 'react-native';
+import { connect } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AEBaseComponent from './base/AEBaseComponent';
 import computeProps from '../utils/computeProps';
+import AECard from '../components/aecard';
+import { updateAttributes } from '../utils/uiData';
+import {putModalData} from '../actions/modal';
+import _ from 'lodash';
 
 
-export default class AEModalContent extends AEBaseComponent {
+class AEModalContent extends AEBaseComponent {
 
   propTypes: {
       padder: React.PropTypes.bool,
@@ -32,11 +38,68 @@ export default class AEModalContent extends AEBaseComponent {
     return computeProps(this.props, defaultProps);
   }
 
+  _renderModalUI(){
+    let ui = this.props.modalUI;
+    if(_.isEmpty(ui)) {
+      return (<View></View>);
+    }
+    else {
+      return (
+        <AECard key={ui.configObjectId}
+            type="Card"
+            configObjectId={ui.configObjectId}
+            uiItems={[ui]}
+            nodeId={this.props.nodeId}
+            data={this.props.data}
+            {...this._callBacks() }>
+        </AECard>
+    );
+    }
+    
+  }
+
+  _onNodeDataChange(nodeId, bindingId, updateData) {
+    console.log("Modal Data Change");
+        let nodeData = updateAttributes(this.props.data, nodeId, bindingId, updateData);
+        this.props.putModalData(nodeData);
+
+    }
+    _onUIBlur(nodeId, bindingId, updateData) {
+        console.log("Modal Data Blur");
+         let nodeData = updateAttributes(this.props.data, nodeId, bindingId, updateData);
+        this.props.putModalData(nodeData);
+    }
+    _onGridDetail(keys, gridConfigId, nodeId) {
+        console.log("_onGridDetail no implemented");
+    }
+
+  _callBacks() {
+        return {
+            onNodeDataChange: this._onNodeDataChange.bind(this),
+            onUIBlur: this._onUIBlur.bind(this),
+            onGridDetail: this._onGridDetail.bind(this),
+        };
+    }
+
   render() {
     const contentContainerStyle = this.props.contentContainerStyle || {};
     contentContainerStyle.padding = (this.props.padder) ? this.getTheme().contentPadding : 0;
     return(
-      <KeyboardAwareScrollView automaticallyAdjustContentInsets={false} ref={(c) => {this._scrollview = c; this._root = c;}} {...this.prepareRootProps()} contentContainerStyle={contentContainerStyle}>{this.props.children}</KeyboardAwareScrollView>
+      <KeyboardAwareScrollView automaticallyAdjustContentInsets={false} ref={(c) => {this._scrollview = c; this._root = c;}} {...this.prepareRootProps()} contentContainerStyle={contentContainerStyle}>
+        {this._renderModalUI()}
+      </KeyboardAwareScrollView>
     );
   }
 }
+
+function bindAction(dispatch) {
+    return {
+       putModalData: (data) => dispatch(putModalData(data)),
+    };
+}
+
+const mapStateToProps = state => ({
+    data : state.ae.modal.data,
+});
+
+export default connect(mapStateToProps, bindAction)(AEModalContent); 

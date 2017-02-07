@@ -13,6 +13,7 @@ import AEModalContent from '../../widgets/AEModalContent';
 import AETabLayoutHeader from './AETabLayoutHeader';
 import { putCENodeData, submitNodeData, submitCardNodeDataAction } from '../../actions/ce';
 import { renderTabAction, updateCardUIDataAction } from '../../actions/layout';
+import {modalAddUIAction, resetModalAction, saveModalAction} from '../../actions/modal';
 import { gridDetailAction } from '../../actions/grid';
 import { updateAttributes, getKeysByNode, getBindingIdByNodeId } from '../../utils/uiData'
 import { openDrawer } from '../../actions/drawer';
@@ -29,10 +30,8 @@ class AETabLayout extends Component {  // eslint-disable-line
         super(props);
         this._renderHeaderAndScene = this._renderHeaderAndScene.bind(this);
         this._setDataForScene = this._setDataForScene.bind(this);
+        this._renderModalContent = this._renderModalContent.bind(this);
 
-        this.state = {
-            isModalOpen:false
-        }
     }
 
     componentDidMount() {
@@ -55,12 +54,13 @@ class AETabLayout extends Component {  // eslint-disable-line
     _renderHeader(sceneprops) {
         // TO do chnage the API of CE Node for display name 
         let title = this.props.card.node.name ? this.props.card.node.name : "";
-        return (<AETabLayoutHeader card={this.props.card} modalVisible={this.state.isModalOpen} {...this._headerCallBacks() }></AETabLayoutHeader>);
+        return (<AETabLayoutHeader card={this.props.card} modalVisible={this.props.isModalVisible} {...this._headerCallBacks() }></AETabLayoutHeader>);
     }
 
     _renderModalContent(){
+      let nodeId = this.props.card.node.configObjectId;
         return (
-        <AEModalContent>
+        <AEModalContent modalUI={this.props.modalUI} nodeId={nodeId}>
               <View> 
                 <Text>Modal Content</Text>
                 </View>
@@ -71,7 +71,7 @@ class AETabLayout extends Component {  // eslint-disable-line
     _renderScene() {
         let card = this.props.card;
         let uiTab = card.activeTab;
-        console.log("this.state.isModalOpen :",this.state.isModalOpen);
+        console.log("this.props.isModalVisible :",this.props.isModalVisible);
         if (uiTab) {
             return (
                 <Content>
@@ -127,21 +127,24 @@ class AETabLayout extends Component {  // eslint-disable-line
     }
 
     _onAdd() {
-        console.log(" _onAdd with state change called ", this.refs);
-         this.setState({
-             isModalOpen : !this.state.isModalOpen
-         });
+        let nodeId = this.props.card.node.configObjectId;
+        console.log(" _onAdd modalAddUI ", nodeId);
+        this.props.modalAddUI(nodeId, this.props.baseNodeKeys);
+       
+         
     }
 
     _onAddSave() {
         console.log(" _onAdd Save ");
+        let cardConfigId = this.props.card.config.configObjectId;
+        let nodeId = this.props.card.node.configObjectId;
+        this.props.saveModal(cardConfigId,nodeId);
+        // cancel modal and refresh data action
     }
 
      _onCancelModal() {
         console.log(" _onCancelModal ");
-        this.setState({
-             isModalOpen : false,
-         });
+        this.props.resetModal();
     }
 
     _onSave() {
@@ -167,7 +170,7 @@ class AETabLayout extends Component {  // eslint-disable-line
                 activeTab={this.props.card.activeTab}
                 onTabActive={this._setDataForScene}
                 renderHeaderAndScene={this._renderHeaderAndScene}
-                modalVisible={this.state.isModalOpen}
+                modalVisible={this.props.isModalVisible}
                 renderModal={this._renderModalContent}
                 >
             </AETabNavigator>
@@ -197,6 +200,10 @@ function bindAction(dispatch) {
         renderTabAction: (cardConfigId, tabConfigId, keys) => dispatch(renderTabAction(cardConfigId, tabConfigId, keys)),
         updateCardUIData: (cardConfigId, data) => dispatch(updateCardUIDataAction(cardConfigId, data)),
         submitCardNodeData: (cardConfigId, nodeId, bindingId) => dispatch(submitCardNodeDataAction(cardConfigId, nodeId, bindingId)),
+        modalAddUI: (nodeId, baseKeys) => dispatch(modalAddUIAction(nodeId, baseKeys)),
+        resetModal : () => dispatch(resetModalAction()),
+        saveModal : (cardConfigId, nodeId) => dispatch(saveModalAction(cardConfigId, nodeId)),
+         
     };
 }
 
@@ -206,6 +213,8 @@ const mapStateToProps = state => ({
     basenode: state.ae.cenode.config,
     baseNodeKeys: state.ae.cenode.keys,
     card: state.ae.cards.length ? state.ae.cards[0] : {},
+    modalUI : state.ae.modal.ui,
+    isModalVisible : state.ae.modal.visible,
 });
 
 export default connect(mapStateToProps, bindAction)(AETabLayout); 

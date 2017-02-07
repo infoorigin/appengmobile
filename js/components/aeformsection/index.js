@@ -66,13 +66,13 @@ constructor(props) {
     render() {
 
         const selectOptions = [{value:1, text:"one"}, {value:2, text:"two"}, {value:3, text:"three"}, {value:4, text:"four"}];
-
+        console.log("this.props.config.renderColumns ,",this.props.config.renderColumns.length);
         return (
+             
             <View>
                 
                  {
                      this.props.config.renderColumns.map(function(col, i){
-                          
                           switch(col.type){
                             case "TextBox":
                             case "Password":

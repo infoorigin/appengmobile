@@ -77,12 +77,13 @@ static propTypes = {
 
     _renderFormSection(section){
         let uiBindingId = getBindingIdByNodeId(this.props.data, this.props.nodeId);
-        let sectiondata = getDataByBindingId(this.props.data, this.props.nodeId, uiBindingId)
+        let sectiondata = getDataByBindingId(this.props.data, this.props.nodeId, uiBindingId);
         return (<AEFormSection key={uiBindingId+section.configObjectId} bindingId={uiBindingId} config={section} data={sectiondata} {...this._callBacks()}> </AEFormSection>);
     }
 
     _renderForm(form){
         let uiBindingIds = getAllBindingIdsForNodeId(this.props.data, this.props.nodeId);
+        console.log("uiBindingIds ,",uiBindingIds);
         let forms = uiBindingIds.map(function(uiBindingId){
             let sectiondata = getDataByBindingId(this.props.data, this.props.nodeId, uiBindingId)
             let section = form.sections[0];
