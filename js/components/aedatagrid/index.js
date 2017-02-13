@@ -8,6 +8,8 @@ import styles from './styles';
 import { openDrawer } from '../../actions/drawer';
 import AEContainer from '../../widgets/AEContainer';
 import AEHeader from '../../widgets/AEHeader';
+import AEModalContent from '../../widgets/AEModalContent';
+import {modalAddUIAction, resetModalAction, saveGridModalAction} from '../../actions/modal';
 
 const contentscreenBg = require('../../../img/basescreen.png');
 const launchscreenBg = require('../../../img/launchscreen-bg.png');
@@ -25,28 +27,37 @@ class AEDataGrid extends Component {
 		super(props);
 		this.state = {
 			isSearchHeader: false,
-			modalVisible: false,
 			header: []
 		};
 		this._renderSearchHeader = this._renderSearchHeader.bind(this);
 		this._renderTitleHeader = this._renderTitleHeader.bind(this);
 		this._filterGrid = this._filterGrid.bind(this);
-		this._setModalVisible = this._setModalVisible.bind(this);
-		this._onModalHide = this._onModalHide.bind(this);
+		this._onAddSave = this._onAddSave.bind(this);
+		this._onCancelModal = this._onCancelModal.bind(this);
+		this._onAdd = this._onAdd.bind(this);
 	}
 
-	_setModalVisible(visible) {
-		this.setState({ modalVisible: visible });
-	}
+	  _onAdd() {
+        let nodeId = this.props.basenode.configObjectId;
+        console.log(" _onAdd modalAddUI ", nodeId);
+       this.props.modalAddUI(nodeId, this.props.baseNodeKeys);
+    }
 
-	_onModalHide(hide){
-		console.log("received modal callback ",hide);
-		this.setState({ modalVisible: !hide });
-	}
+	_onAddSave() {
+        console.log(" _onAdd Save ");
+        let gridConfigId = this.props.config.configObjectId;
+        let nodeId = this.props.basenode.configObjectId;
+        this.props.saveModal(gridConfigId,nodeId);
+        // cancel modal and refresh data action
+    }
+
+     _onCancelModal() {
+        console.log(" _onCancelModal ");
+        this.props.resetModal();
+    }
 
 	_filterGrid(text) {
 		console.log('Search Text ', text);
-		this._setModalVisible(!this.state.modalVisible);
 	}
 
 	_renderSearchHeader() {
@@ -64,7 +75,23 @@ class AEDataGrid extends Component {
 		);
 	}
 
+	_renderModalHeader(){
+        let title = this.props.basenode.name ? this.props.basenode.name : "";
+        return (
+            <AEHeader>
+                <Button transparent onPress={this._onCancelModal}>
+                    <Icon name="md-close" />
+                </Button>
+                <Title>{title}</Title>
+                <Button transparent onPress={this._onAddSave}>
+                    Save
+                </Button>
+        </AEHeader>
+        );
+    }
+
 	_renderTitleHeader() {
+		console.log("_renderTitleHeader");
 		return (
 			<AEHeader>
 				<Button transparent onPress={this.props.openDrawer}>
@@ -74,11 +101,31 @@ class AEDataGrid extends Component {
 				<Button transparent onPress={() => this.setState({ isSearchHeader: true })}>
 					<Icon name="ios-search" />
 				</Button>
-				<Button transparent onPress={this.props.openDrawer}>
+				<Button transparent onPress={this._onAdd}>
 					<Icon name="md-add" />
 				</Button>
 			</AEHeader>
 		);
+	}
+
+	 _renderModalContent(){
+      let nodeId = this.props.basenode.configObjectId;
+	 return (
+        <AEModalContent modalUI={this.props.modalUI} nodeId={nodeId}>
+       	</AEModalContent>
+        );
+    }
+
+	_renderHeader(){
+		console.log("this.props.modalVisible :",this.props.modalVisible);
+		if(this.props.modalVisible){
+            return this._renderModalHeader();
+        }
+
+		if( this.state.isSearchHeader)
+			return this._renderSearchHeader();
+		else
+			return this._renderTitleHeader();
 	}
 
 	render() {
@@ -87,12 +134,12 @@ class AEDataGrid extends Component {
 			return (<Text> Loading..... </Text>);
 		}
 		else {
-			let header = this.state.isSearchHeader ? this._renderSearchHeader() : this._renderTitleHeader();
+			let modalContent = this._renderModalContent();
 			return (
-				<AEContainer theme={myTheme}  modalVisible={this.state.modalVisible}  onModalHide={this._onModalHide}>
-					{header}
-
+				<AEContainer modalVisible={this.props.modalVisible} theme={myTheme} >
 					
+					{this._renderHeader()}
+				
 						<Image source={launchscreenBg} style={styles.imageContainer}>
 							<View style={styles.gridHeaderSection}>
 								<H3 style={styles.text}>Robert's Claims</H3>
@@ -108,6 +155,8 @@ class AEDataGrid extends Component {
 								</List>
 							</View>
 						</Image>
+
+					{modalContent}	
 				</AEContainer>
 
 			);
@@ -132,7 +181,6 @@ class AEDataGrid extends Component {
 			}
 		});
 		let keyColunms = this.props.config.gridColumns.filter(function (gc) { return gc.logicalColumn.dbColumn.primaryKey | gc.logicalColumn.dbColumn.key; });
-		console.log("keyColunms :",keyColunms);
 		this.setState({ header: headerdata, keyColunms: keyColunms });
 	}
 
@@ -141,6 +189,9 @@ class AEDataGrid extends Component {
 function bindActions(dispatch) {
 	return {
 		openDrawer: () => dispatch(openDrawer()),
+		resetModal : () => dispatch(resetModalAction()),
+		modalAddUI: (nodeId, baseKeys) => dispatch(modalAddUIAction(nodeId, baseKeys)),
+		saveModal : (gridConfigId, nodeId) => dispatch(saveGridModalAction(gridConfigId, nodeId)),
 	};
 }
 
@@ -148,6 +199,10 @@ const mapStateToProps = state => ({
 	navigation: state.cardNavigation,
 	config: state.ae.grid.config,
 	data: state.ae.grid.data ? state.ae.grid.data : [],
+	basenode: state.ae.cenode.config,
+	baseNodeKeys: state.ae.cenode.keys ? state.ae.cenode.keys : {},
+	modalUI : state.ae.modal.ui,
+    modalVisible : state.ae.modal.visible,
 });
 
 export default connect(mapStateToProps, bindActions)(AEDataGrid);

@@ -45,9 +45,6 @@ export function* renderBaseGrid(action) {
     // Navigate to target screen
     yield put(navigateTo(action.navigationRoute, HOMEROUTE));
 
-    console.log("--------------------------------GRID CALLS 4");
-
-
   }
   catch (error) {
     console.log("Error in API Call for action", JSON.stringify(action), error);
@@ -85,7 +82,7 @@ export function* fetchNodeActiveGridData(nodeId, keys) {
   yield put(putActiveNodeGridData(data));
 }
 
-function* fetchGridData(nodeId) {
+export function* fetchGridData(nodeId) {
   // call the api to get the grid config Item
   let result = yield call(getGridData, nodeId);
   let data = result.data.returnData.data;

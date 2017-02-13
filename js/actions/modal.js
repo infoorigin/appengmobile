@@ -20,6 +20,14 @@ export function putModalData(data) {
   };
 }
 
+export function saveGridModalAction(gridConfigId, nodeId){
+  return{
+    type: SAVE_MODAL_DATA,
+    gridConfigId: gridConfigId,
+    nodeId:nodeId,
+  };
+}
+
 export function saveModalAction(cardConfigId, nodeId){
   return{
     type: SAVE_MODAL_DATA,

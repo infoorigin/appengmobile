@@ -2,6 +2,7 @@ import navigateTo from '../actions/sideBarNav';
 import { call, put, select } from "redux-saga/effects";
 import update from 'immutability-helper';
 import { getNodeById } from './ce';
+import {fetchGridData} from './grid';
 import { findCardByIdFromState, refreshTabData } from './layout';
 import { getConfig, getSequence, submitNodeData } from '../services/api';
 import { putModalUIAndData, putModalData, resetModalAction } from '../actions/modal';
@@ -21,11 +22,11 @@ export function* addFormModalUI(action) {
             console.log("calling node.insertFormId", node.insertFormId);
             const result = yield call(getConfig, node.insertFormId);
             const formConfig = result.data.returnData.data;
-            console.log("formConfig :", formConfig);
             const seqresult = yield call(getSequence, node.compositeEntityId, node.entityId);
             const seqData = seqresult.data.message;
             console.log("seqData baseNodeKeys :", seqData, action.baseKeys);
             let nodeData = createEmptyNodeData(node, seqData, 0, action.baseKeys);
+            console.log(" nodeData :",nodeData);
             yield put(putModalUIAndData(formConfig, nodeData));
         }
         else
@@ -57,11 +58,17 @@ export function* submitModalNodeDataToDB(action) {
             console.log('=========================modal success=======================');
             // clean up modal data and ui , remov modal active flag
             yield put(resetModalAction());
+            if(action.cardConfigId) {
             // refresh TabData
             const card = yield call(findCardByIdFromState, action.cardConfigId);
             const tabData =  yield call(refreshTabData,card, keys);
             card = update(card, { ui: { $merge: { data: tabData } } });
             yield put(putCardsData([card]));
+            }
+            else if(action.gridConfigId) { // Refresh Grid 
+                console.log(" call refresh grid after modal insert");
+                yield call (fetchGridData, action.nodeId);
+            }
 
 
         } else {

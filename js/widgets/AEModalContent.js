@@ -40,6 +40,7 @@ class AEModalContent extends AEBaseComponent {
 
   _renderModalUI(){
     let ui = this.props.modalUI;
+    console.log(" _renderModalUI");
     if(_.isEmpty(ui)) {
       return (<View></View>);
     }
@@ -82,6 +83,8 @@ class AEModalContent extends AEBaseComponent {
     }
 
   render() {
+
+    console.log(" AE Sudhir Modal");
     const contentContainerStyle = this.props.contentContainerStyle || {};
     contentContainerStyle.padding = (this.props.padder) ? this.getTheme().contentPadding : 0;
     return(

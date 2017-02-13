@@ -130,8 +130,6 @@ class AETabLayout extends Component {  // eslint-disable-line
         let nodeId = this.props.card.node.configObjectId;
         console.log(" _onAdd modalAddUI ", nodeId);
         this.props.modalAddUI(nodeId, this.props.baseNodeKeys);
-       
-         
     }
 
     _onAddSave() {
