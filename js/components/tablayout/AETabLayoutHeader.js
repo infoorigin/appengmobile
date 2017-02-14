@@ -12,8 +12,11 @@ export default class AETabLayoutHeader extends AEBaseComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isSearchHeader: false
+            isSearchHeader: false,
+           
         }
+        this._onGridSeachInput = this._onGridSeachInput.bind(this);
+        this._onGridSeachCancel = this._onGridSeachCancel.bind(this);
     }
 
     _renderGridSearchHeader() {
@@ -21,10 +24,10 @@ export default class AETabLayoutHeader extends AEBaseComponent {
             <AEHeader searchBar="true">
                 <InputGroup>
                     <Icon name="ios-search" />
-                    <Input placeholder="Search" onChangeText={this.props.onGridSearch} />
+                    <Input placeholder="Search" onChangeText={this._onGridSeachInput} />
                 </InputGroup>
 
-                <Button transparent onPress={() => this.setState({ isSearchHeader: false })}>
+                <Button transparent onPress={this._onGridSeachCancel}>
                     Cancel
 				</Button>
             </AEHeader>
@@ -50,6 +53,17 @@ export default class AETabLayoutHeader extends AEBaseComponent {
         );
     }
 
+     _onGridSeachInput(searchText){
+       this.props.onGridSearch(searchText);
+
+    }
+
+    _onGridSeachCancel(){
+        this.setState({ isSearchHeader: false });
+        this.props.onGridSearch("");
+    }
+
+   
     _renderFormHeader() {
         //TODO Change this
         let title = this.props.card.node.name ? this.props.card.node.name : "";

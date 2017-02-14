@@ -31,6 +31,9 @@ class AETabLayout extends Component {  // eslint-disable-line
         this._renderHeaderAndScene = this._renderHeaderAndScene.bind(this);
         this._setDataForScene = this._setDataForScene.bind(this);
         this._renderModalContent = this._renderModalContent.bind(this);
+        this.state = {
+            searchText: ""
+        }
 
     }
 
@@ -52,9 +55,10 @@ class AETabLayout extends Component {  // eslint-disable-line
         ];
     }
     _renderHeader(sceneprops) {
+        
         // TO do chnage the API of CE Node for display name 
         let title = this.props.card.node.name ? this.props.card.node.name : "";
-        return (<AETabLayoutHeader card={this.props.card} modalVisible={this.props.isModalVisible} {...this._headerCallBacks() }></AETabLayoutHeader>);
+        return (<AETabLayoutHeader ref={(c) => this.tabHeader = c}  card={this.props.card} modalVisible={this.props.isModalVisible} {...this._headerCallBacks() }></AETabLayoutHeader>);
     }
 
     _renderModalContent(){
@@ -72,6 +76,7 @@ class AETabLayout extends Component {  // eslint-disable-line
         let card = this.props.card;
         let uiTab = card.activeTab;
         console.log("this.props.isModalVisible :",this.props.isModalVisible);
+        console.log(" _renderScene headerText ", this.state.searchText);
         if (uiTab) {
             return (
                 <Content>
@@ -79,6 +84,7 @@ class AETabLayout extends Component {  // eslint-disable-line
                         type="Card"
                         configObjectId={uiTab.configObjectId}
                         uiItems={card.ui.config}
+                        searchText={this.state.searchText}
                         uiCard={card.config}
                         nodeId={uiTab.compositeEntityNode ? uiTab.compositeEntityNode.configObjectId : null}
                         data={card.ui.data}
@@ -123,7 +129,8 @@ class AETabLayout extends Component {  // eslint-disable-line
         };
     }
     _onGridSearch(searchText) {
-        console.log(" _onGridSearch called ", searchText);
+        console.log(" Refs headerText ", searchText);
+        this.setState({searchText});
     }
 
     _onAdd() {

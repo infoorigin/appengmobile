@@ -23,7 +23,7 @@ static propTypes = {
     configId:React.PropTypes.string,
     uiItems: React.PropTypes.array,
     nodeId:React.PropTypes.string,
-
+    
   }
   
   constructor(props) {
@@ -93,7 +93,7 @@ static propTypes = {
     }
 
     _renderGrid(grid){
-       return (<AECardGrid key={grid.configObjectId} config={grid} data={this.props.data} {...this._gridCallBacks()}> </AECardGrid>);
+       return (<AECardGrid searchText={this.props.searchText} key={grid.configObjectId} config={grid} data={this.props.data} {...this._gridCallBacks()}> </AECardGrid>);
     }
 
     _renderSingleForm(){ 

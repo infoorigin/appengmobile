@@ -65,7 +65,6 @@ class GridRow extends Component{
                                              let newKey = {[gc.logicalColumn.dbColumn.code] :this.props.rowData[gc.logicalColumn.dbColumn.code]}
                                              Object.assign(rowKeyData, newKey) ;
                                         }.bind(this));
-        console.log("rowKeyData :",rowKeyData);
         this.setState({"rowKeyData":rowKeyData});
 
     }
