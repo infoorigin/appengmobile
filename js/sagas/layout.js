@@ -10,6 +10,8 @@ import { HOMEROUTE } from '../AppNavigator';
 import { saveLayoutConfig, putCardsData } from '../actions/layout';
 import { putActiveNodeGridConfig } from '../actions/grid';
 import {isNodeDataExists} from '../utils/uiData' ;
+import { showSpinner, hideSpinner } from '../actions/aebase';
+
 
 
 export const getLayout = (state) => state.ae.layout.config
@@ -39,6 +41,7 @@ export function* updateCardUIData(action){
 
 export function* renderLayout(action) {
     try {
+        yield put(showSpinner());
         yield put(putBaseNodeKeys(action.keys));
         let ce = yield select(getCompositeEntity);
         if (ce.uiLayoutIds.mobile) { // If Mobile layout is set render layout
@@ -47,6 +50,7 @@ export function* renderLayout(action) {
         else {
             console.log("Error : No Mobile Layout configured");
         }
+        yield put(hideSpinner());
     }
     catch (error) {
         console.log("Error in API Call for action", JSON.stringify(action), error);
@@ -174,6 +178,7 @@ function* findTabById(cardConfig, tabConfigId) {
 
 export function* renderActiveTab(action) {
     try {
+        yield put(showSpinner());
         let card = yield call(findCardByIdFromState, action.cardConfigId);
         let activeTab = yield call(findTabById, card.config, action.tabConfigId);
         let activeNode = yield call(getNodeById,activeTab.compositeEntityNode.configObjectId);
@@ -182,6 +187,7 @@ export function* renderActiveTab(action) {
         let nodeData = yield call(tabNodeData, card, activeTab,  action.keys) ;
         card = update(card,  { $merge : { activeTab: activeTab, ui:  {data: nodeData, config: activeTab.uiItems }}});
         yield put(putCardsData([card]));
+        yield put(hideSpinner());
     }
     catch (error) {
         console.log("Error in renderActiveTab", JSON.stringify(action), error);

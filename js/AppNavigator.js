@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { BackAndroid, StatusBar, NavigationExperimental } from 'react-native';
+import { View, BackAndroid, StatusBar, NavigationExperimental } from 'react-native';
 import { connect } from 'react-redux';
 import { Drawer } from 'native-base';
 import { actions } from 'react-native-navigation-redux-helpers';
@@ -20,6 +20,9 @@ import MyCoverage from './components/mycoverage/';
 
 import AEForm from './components/aeform/';
 import AEDataGrid from './components/aedatagrid/';
+import AESpinner from './components/spinnernew';
+
+import LoginScreen from './components/login/';
 
 import MyClaimDetail from './components/myclaim/claimdetail';
 
@@ -214,7 +217,8 @@ class AppNavigator extends Component {
     }
   }
 
-  render() {
+  _renderMainApp(){
+
     return (
       <Drawer
         ref={(ref) => { this._drawer = ref; }}
@@ -252,8 +256,28 @@ class AppNavigator extends Component {
           renderOverlay={this._renderOverlay}
           renderScene={this._renderScene}
         />
+        <AESpinner visible={this.props.isSpinner} textContent={"Loading..."} textStyle={{color: '#FFF'}}>
+        </AESpinner>
       </Drawer>
     );
+
+  }
+
+  _renderLoginScreen(){
+    return (<LoginScreen>
+              </LoginScreen>
+            );
+  }
+
+  render() {
+    let mainScreen = null;
+    if(this.props.userSession.isAuthenticated){ 
+          mainScreen = this._renderMainApp();
+      }
+      else {
+          mainScreen = this._renderLoginScreen();
+      }
+    return mainScreen ;
   }
 }
 
@@ -266,6 +290,8 @@ const mapStateToProps = state => ({
   drawerState: state.drawer.drawerState,
   navigation: state.cardNavigation,
   printState : printState(state),
+  userSession : state.ae.userSession,
+  isSpinner : state.ae.global.isSpinner,
 });
 
 const printState = (state) => {

@@ -9,6 +9,7 @@ import { openDrawer } from '../../actions/drawer';
 import myTheme from '../../themes/base-theme';
 import styles from './styles';
 
+
 const launchscreenBg = require('../../../img/launchscreen-bg.png');
 const launchscreenLogo = require('../../../img/logo-kitchen-sink.png');
 
@@ -24,6 +25,8 @@ class Home extends Component { // eslint-disable-line
   }
  
   render() {
+   
+    
     return (
       <Container theme={myTheme}>
 
@@ -73,6 +76,7 @@ class Home extends Component { // eslint-disable-line
         </Image>
       </Container>
     );
+    
   }
 }
 
@@ -85,6 +89,7 @@ function bindActions(dispatch) {
 
 const mapStateToProps = state => ({
   navigation: state.cardNavigation,
+  user : state.ae.user,
 });
 
 export default connect(mapStateToProps, bindActions)(Home);

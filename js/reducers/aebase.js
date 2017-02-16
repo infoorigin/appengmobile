@@ -1,20 +1,26 @@
 
+import * as base from '../actions/aebase';
 import * as gridaction from '../actions/grid';
 import * as ceaction from '../actions/ce';
 import * as layoutaction from '../actions/layout';
-import * as modal from '../actions/modal';
+import * as modal from '../actions/modal'
+import * as user from '../actions/user';
 import update from 'immutability-helper';
 
 // TO DO populate default user details by login saga
 const initialState = {
+  global: {
+    isSpinner:false,
+    message:[],
+  },
   error :{},
   sequence:0,
-  user : {
-    attributes: { 
-        APP_LOGGED_IN_PROJECT_ID: 0,
-        APP_LOGGED_IN_ROLE_ID : 16, 
-        APP_LOGGED_IN_USER_ID : 1111
-       }
+  userSession : {
+    isAuthenticated:false,
+    user : {
+      attributes: { }
+    },
+    message : [],
   },
   menu: {},
   grid: {},
@@ -185,6 +191,23 @@ export default function (state = initialState, action) {
       modal: update(state.modal, { $set : {visible:false, ui: {}, data : {}  }})
     };
 
+    case user.PUT_USER :
+    return{
+      ...state,
+      userSession : update(state.userSession , { $merge : { isAuthenticated:true, user: action.user }}) 
+    };
+
+    case base.SHOW_SPINNER :
+    return{
+      ...state,
+      global : update(state.global , { $merge : { isSpinner:true }}) 
+    };
+
+    case base.HIDE_SPINNER :
+    return{
+      ...state,
+      global : update(state.global , { $merge : { isSpinner:false }}) 
+    };
 
     default:
       return state;

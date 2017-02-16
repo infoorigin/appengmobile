@@ -75,7 +75,6 @@ export default class AECardGrid extends AEBaseComponent {
             if (isSearch)
                 filterData.push(filterRow);
         }.bind(this));
-        console.log(" using tab filterdata  for ",searchText);
         return filterData;
     }
 

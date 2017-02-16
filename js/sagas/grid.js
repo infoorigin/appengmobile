@@ -12,6 +12,7 @@ import { putCardsData } from '../actions/layout';
 import { openLayout, findCardByIdFromState, updateCardState } from './layout';
 import { getConfig, getGridData } from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
+import { showSpinner, hideSpinner } from '../actions/aebase';
 
 export function* activeNodeGrid(action) {
   try {
@@ -33,7 +34,7 @@ export function* activeNodeGrid(action) {
 export function* renderBaseGrid(action) {
   try {
     //TODO Start Spinner
-
+    yield put(showSpinner());
     //Fetch and Set CE and Base Node Configs to state
     yield call(setCompositeEntity, action);
 
@@ -44,7 +45,7 @@ export function* renderBaseGrid(action) {
     yield call(fetchGridData, ceNode.configObjectId);
     // Navigate to target screen
     yield put(navigateTo(action.navigationRoute, HOMEROUTE));
-
+    yield put(hideSpinner());
   }
   catch (error) {
     console.log("Error in API Call for action", JSON.stringify(action), error);
