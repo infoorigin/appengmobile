@@ -22,7 +22,7 @@ const initialState = {
     },
     message : [],
   },
-  menu: {},
+  menu: [],
   grid: {},
   form: {config:{},
          keyData:{},
@@ -207,6 +207,12 @@ export default function (state = initialState, action) {
     return{
       ...state,
       global : update(state.global , { $merge : { isSpinner:false }}) 
+    };
+
+    case user.PUT_MENU :
+    return{
+      ...state,
+      menu : action.menu 
     };
 
     default:

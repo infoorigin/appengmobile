@@ -1,5 +1,6 @@
 export const LOGIN = 'LOGIN';
 export const PUT_USER = 'PUT_USER';
+export const PUT_MENU = 'PUT_MENU';
 
 
 export function loginAction(userid, password){
@@ -15,5 +16,12 @@ export function putUser(user){
   return{
     type: PUT_USER,
     user,
+  };
+}
+
+export function putMenu(menu){
+  return{
+    type: PUT_MENU,
+    menu,
   };
 }
