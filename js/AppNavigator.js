@@ -8,6 +8,7 @@ import { actions } from 'react-native-navigation-redux-helpers';
 import { closeDrawer } from './actions/drawer';
 import AEGridLayout from  './components/gridlayout/';
 import AETabLayout from './components/tablayout/';
+import AEDashBoard from './components/aedashboard/';
 
 import MyMessage from './components/eccheckmessage/';
 import Coverage from './components/eccoverage/';
@@ -122,6 +123,9 @@ class AppNavigator extends Component {
     console.log("Route Key :",props.scene.route.key);
     switch (props.scene.route.key) {
       
+      case 'dashboard':
+        return <AEDashBoard></AEDashBoard>;
+       
        case 'datagrid':
 	    		return  <AEDataGrid 
              girdId='8505ee57-8b85-42e4-a3e7-2481e3371d62' 

@@ -81,12 +81,12 @@ class SideBar extends Component {
             </View>
           </ListItem>
           
-          <ListItem button iconLeft onPress={() => this.navigateTo('mymessages')}>
+          <ListItem button iconLeft onPress={() => this.navigateTo('dashboard')}>
             <View style={styles.listItemContainer}>
               <View style={[styles.iconContainer, { backgroundColor: '#5cb85c' }]}>
                 <Icon name="ios-document-outline" style={styles.sidebarIcon} />
               </View>
-              <Text style={styles.text}>My Summary</Text>
+              <Text style={styles.text}>Dashboard</Text>
             </View>
           </ListItem>
           
