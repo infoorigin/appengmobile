@@ -1,35 +1,79 @@
 import { call, put, select } from "redux-saga/effects";
-import { putUser, putMenu} from '../actions/user';
+import update from 'immutability-helper';
+import { putUser, putMenu, putDashBoardCards } from '../actions/user';
 import { showSpinner, hideSpinner } from '../actions/aebase';
-import {hasReadPrivilege} from '../utils/user';
+import { hasReadPrivilege } from '../utils/user';
 import { getConfig } from '../services/api';
+import { MENUGROUPCONFIG, DASHBOARDCONFIG } from '../utils/constants';
 
 export const getCurrentUser = (state) => state.ae.userSession.user
+
+export const getDashBoardCards = (state) => state.ae.dashboard.cards
 
 export function* login(action) {
     // login api call here
     try {
         yield put(showSpinner());
-        console.log("received login call ",action);
+        console.log("received login call ", action);
         const user = getUser();
         yield put(putUser(user));
         yield call(setMenu);
+       // yield call(setDashboard);
         yield put(hideSpinner());
     } catch (error) {
         console.log("Login process failed ", error, action);
     }
 }
 
-function* setMenu(){
-    MENUGROUPCONFIG="952ee82b-75ee-4a66-99f3-a72fadfbeb5f";
+function* setMenu() {
+
     const result = yield call(getConfig, MENUGROUPCONFIG);
     const menugrp = result.data.returnData.data;
     const user = yield select(getCurrentUser);
     const roleId = user.attributes.APP_LOGGED_IN_ROLE_ID;
 
-    const privilegeMenus = menugrp.menus.filter( (menu) => hasReadPrivilege(menu.priveleges, roleId) )
-    console.log(" privilegeMenus :",privilegeMenus);
+    const privilegeMenus = menugrp.menus.filter((menu) => hasReadPrivilege(menu.priveleges, roleId))
+    console.log(" privilegeMenus :", privilegeMenus);
     yield put(putMenu(privilegeMenus));
+}
+
+function* setDashboard() {
+    const result = yield call(getConfig, DASHBOARDCONFIG);
+    const cards = result.data.returnData.data.cards;
+    const dashBoardCards = cards.map(config => ({ config, data: [], isDataReady: false }));
+    yield put(putDashBoardCards(dashBoardCards));
+}
+
+export function* changeDashBoardIndex(action) {
+    let cards = yield select(getDashBoardCards);
+    const start = action.index ? action.index - 1 : 0;
+    const end = action.index >= cards.length ? cards.length : action.index + 1;
+    let indexes = [];
+    for (let i = start; i <= end; i++) {
+        indexes.push(i);
+    }
+    const cardsData = yield indexes.map((i) => call(fetchCardsData, cards[i]));
+
+    indexes.forEach((index, i) => {
+        cards = update(cards, {$splice :[[index, 1, cardsData[i]]]});
+    });
+
+    yield put(putDashBoardCards(cards));
+    
+}
+
+function* fetchCardsData(card) {
+    if (card.config.isDataReady)
+        return card;
+    else {
+        switch (card.config.cardType) {
+            // call grid data by grid ID
+            case "Grid":
+                return update(card, { $merge: { data: [], isDataReady: true } });
+            default:
+                return update(card, { $merge: { data: [], isDataReady: true } });
+        }
+    }
 }
 
 

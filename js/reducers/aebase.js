@@ -13,6 +13,9 @@ const initialState = {
     isSpinner:false,
     message:[],
   },
+  dashboard : {
+    cards:[], // {config,data, isDataReady}
+  },
   error :{},
   sequence:0,
   userSession : {
@@ -213,6 +216,12 @@ export default function (state = initialState, action) {
     return{
       ...state,
       menu : action.menu 
+    };
+
+    case user.PUT_DASHBOARD_CARDS :
+    return{
+      ...state,
+      dashboard : update(state.dashboard , { $merge : { cards:action.cards }}) 
     };
 
     default:

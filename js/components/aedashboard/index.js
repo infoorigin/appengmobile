@@ -10,8 +10,7 @@ import { Title, Content, Text, Button, Icon } from 'native-base';
 import AEContainer from '../../widgets/AEContainer';
 import AEHeader from '../../widgets/AEHeader';
 import AECard from '../aecard';
-import DashBoardTab from './dashboardtab';
-
+import DashBoardTabNavigator from './dashboardtabnavigator';
 
 class AEDashBoard extends Component {
 
@@ -32,7 +31,7 @@ class AEDashBoard extends Component {
           <Title>Dashboard</Title>
         </AEHeader>
         <Content>
-          <DashBoardTab></DashBoardTab>
+          <DashBoardTabNavigator></DashBoardTabNavigator>
          </Content> 
       </AEContainer>
 
@@ -47,7 +46,7 @@ function bindActions(dispatch) {
 }
 
 const mapStateToProps = state => ({
-
+    
 });
 
 export default connect(mapStateToProps, bindActions)(AEDashBoard);   

@@ -11,8 +11,8 @@ import AERadioButtonGroup from '../../widgets/AERadioButtonGroup';
 import AEDatePicker from '../../widgets/AEDatePicker';
 import AESelectPicker from '../../widgets/AESelectPicker';
 import AEFormSection from '../aeformsection';
-import AECardGrid from '../aetabgrid'
-import {getBindingIdByNodeId, getDataByBindingId, getAllBindingIdsForNodeId} from '../../utils/uiData'
+import AECardGrid from '../aecardgrid';
+import {getBindingIdByNodeId, getDataByBindingId, getAllBindingIdsForNodeId} from '../../utils/uiData';
 
 
 
