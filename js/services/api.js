@@ -69,6 +69,12 @@ export function getGridData(nodeId, keys) {
 
 }
 
+export function getGridDataByGridId(gridConfigId) {
+  // merge keys to attributes
+  return axios.get(baseUrl + '/rest/grid/data/' + gridConfigId+'/nokey', getHeaders('db6003e6-0093-4e3d-a8d0-d4ff26b750c2'));
+
+}
+
 export function getSelectOptions(configId, nodedata) {
   return axios.post(baseUrl + '/rest/md/options/' + configId, nodedata, getHeaders('db6003e6-0093-4e3d-a8d0-d4ff26b750c2'));
 }

@@ -19,6 +19,13 @@ class AEDashBoard extends Component {
 
   }
 
+  _renderNavigator(){
+    if(this.props.cards && this.props.cards.length)
+      return (<DashBoardTabNavigator></DashBoardTabNavigator>);
+    else 
+      return (<View></View>) ;
+  }
+
 
   render() {
     return (
@@ -31,7 +38,7 @@ class AEDashBoard extends Component {
           <Title>Dashboard</Title>
         </AEHeader>
         <Content>
-          <DashBoardTabNavigator></DashBoardTabNavigator>
+          {this._renderNavigator()}
          </Content> 
       </AEContainer>
 
@@ -46,7 +53,7 @@ function bindActions(dispatch) {
 }
 
 const mapStateToProps = state => ({
-    
+    cards : state.ae.dashboard.cards,
 });
 
 export default connect(mapStateToProps, bindActions)(AEDashBoard);   

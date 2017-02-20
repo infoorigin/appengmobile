@@ -160,7 +160,7 @@ class AppNavigator extends Component {
 	  case 'splashscreen':
         return <SplashPage />;
       case 'home':
-        return <Home />;
+        return (<AEDashBoard></AEDashBoard>);
       case 'anatomy':
         return <Anatomy />;
       case 'badge':

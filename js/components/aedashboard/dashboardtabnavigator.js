@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { Animated, View, Image, Text, Dimensions, StyleSheet } from 'react-native';
 import { TabViewAnimated, TabViewPagerPan } from 'react-native-tab-view';
 import { connect } from 'react-redux';
-import {changeDashBoardTabIndex} from '../../actions/user';
+import { changeDashBoardTabIndex } from '../../actions/user';
 import DashBoardTab from './dashboardtab';
 
 const {width, height} = Dimensions.get('window');
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
- //   backgroundColor: 'lightblue',
+    //   backgroundColor: 'lightblue',
   },
   page: {
     flex: 1,
@@ -22,9 +22,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-tab: {
+  tab: {
     width: width * 0.85,
-   // height: height * 0.85,
+    // height: height * 0.85,
     elevation: 12,
     shadowColor: '#000000',
     shadowOpacity: 0.5,
@@ -32,7 +32,7 @@ tab: {
     shadowOffset: {
       height: 8,
     },
-    
+
   },
 
   album: {
@@ -63,7 +63,7 @@ const initialLayout = {
   width: Dimensions.get('window').width,
 };
 
- class DashBoardTabNavigator extends Component {
+class DashBoardTabNavigator extends Component {
 
   static title = 'Coverflow';
   static appbarElevation = 0;
@@ -74,7 +74,7 @@ const initialLayout = {
 
   state = {
     index: 0,
-    routes: this.props.cards.map(card => ({ key:card.config.configObjectId })),
+    routes: this.props.cards.map(card => ({ key: card.config.configObjectId })),
   };
 
   _buildCoverFlowStyle = ({ layout, position, route, navigationState }) => {
@@ -125,28 +125,27 @@ const initialLayout = {
 
   _handleChangeTab = (newIndex) => {
     this.setState({
-      index:newIndex
+      index: newIndex
     });
     this.props.onChangeIndex(newIndex);
   };
 
   _renderScene = (props) => {
 
-    if (Math.abs(this.state.index - this.state.routes.indexOf(props.route)) > 1) {
-      return null;
+    const card = this.props.cards[this.state.routes.indexOf(props.route)];
+    let data = [];
+    if (Math.abs(this.state.index - this.state.routes.indexOf(props.route)) < 2) {
+      data = card.data
     }
-    else {
-      const card = this.props.cards[this.state.routes.indexOf(props.route)];
 
-       return (
-         <Animated.View style={[styles.page, this._buildCoverFlowStyle(props)]}>
-           <View style={styles.tab}>
-            <DashBoardTab  config={card.config} data={card.data}></DashBoardTab>
-           </View>
-        </Animated.View >
-        );
-     
-    }
+    return (
+      <Animated.View style={[styles.page, this._buildCoverFlowStyle(props)]}>
+        <View style={styles.tab}>
+          <DashBoardTab config={card.config} data={data}></DashBoardTab>
+        </View>
+      </Animated.View >
+    );
+
   };
 
   _renderPager = (props) => {
@@ -169,13 +168,13 @@ const initialLayout = {
 }
 
 function bindActions(dispatch) {
-	return {
-		onChangeIndex: (newIndex) => dispatch(changeDashBoardTabIndex(newIndex)),
-	};
+  return {
+    onChangeIndex: (newIndex) => dispatch(changeDashBoardTabIndex(newIndex)),
+  };
 }
 
 const mapStateToProps = state => ({
-    cards : state.ae.dashboard.cards,
+  cards: state.ae.dashboard.cards,
 });
 
 export default connect(mapStateToProps, bindActions)(DashBoardTabNavigator);   

@@ -3,7 +3,7 @@ import update from 'immutability-helper';
 import { putUser, putMenu, putDashBoardCards } from '../actions/user';
 import { showSpinner, hideSpinner } from '../actions/aebase';
 import { hasReadPrivilege } from '../utils/user';
-import { getConfig } from '../services/api';
+import { getConfig, getGridDataByGridId } from '../services/api';
 import { MENUGROUPCONFIG, DASHBOARDCONFIG } from '../utils/constants';
 
 export const getCurrentUser = (state) => state.ae.userSession.user
@@ -64,13 +64,16 @@ export function* changeDashBoardIndex(action) {
 }
 
 function* fetchCardsData(card) {
-    if (card.config.isDataReady)
+    if (card.isDataReady)
         return card;
     else {
         switch (card.config.cardType) {
             // call grid data by grid ID
             case "Grid":
-                return update(card, { $merge: { data: [], isDataReady: true } });
+            console.log("Getting Grid data for card ",card.config.grid.configObjectId);
+                const result = yield call(getGridDataByGridId, card.config.grid.configObjectId);
+                let data = result.data.returnData.data;
+                return update(card, { $merge: { data: data, isDataReady: true } });
             default:
                 return update(card, { $merge: { data: [], isDataReady: true } });
         }
