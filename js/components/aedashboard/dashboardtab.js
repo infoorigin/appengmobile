@@ -20,7 +20,7 @@ export default class DashBoardTab extends AEBaseComponent {  // eslint-disable-l
   constructor(props) {
     super(props);
 
-    this._callBacks = this._callBacks.bind(this);
+    this._gridCallBacks = this._gridCallBacks.bind(this);
   }
   getInitialStyle() {
     return {
@@ -69,15 +69,13 @@ export default class DashBoardTab extends AEBaseComponent {  // eslint-disable-l
   }
 
   render() {
-    let card = this.props.card;
-
     return (
-      <View>
-        <RECard containerStyle={{ margin: 5 }} titleStyle={this.getInitialStyle().dividerItemText}
-          title={card.displayLabel}>
+      
+        <RECard containerStyle={{  marginHorizontal : 0, marginVertical : 5 }} titleStyle={this.getInitialStyle().dividerItemText}
+          title={this.props.config.displayLabel}>
           {this._renderTab()}
         </RECard>
-      </View>
+     
     );
   }
 }

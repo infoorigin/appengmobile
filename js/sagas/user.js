@@ -18,7 +18,7 @@ export function* login(action) {
         const user = getUser();
         yield put(putUser(user));
         yield call(setMenu);
-       // yield call(setDashboard);
+        yield call(setDashboard);
         yield put(hideSpinner());
     } catch (error) {
         console.log("Login process failed ", error, action);
@@ -33,7 +33,6 @@ function* setMenu() {
     const roleId = user.attributes.APP_LOGGED_IN_ROLE_ID;
 
     const privilegeMenus = menugrp.menus.filter((menu) => hasReadPrivilege(menu.priveleges, roleId))
-    console.log(" privilegeMenus :", privilegeMenus);
     yield put(putMenu(privilegeMenus));
 }
 
@@ -42,16 +41,18 @@ function* setDashboard() {
     const cards = result.data.returnData.data.cards;
     const dashBoardCards = cards.map(config => ({ config, data: [], isDataReady: false }));
     yield put(putDashBoardCards(dashBoardCards));
+    yield call(changeDashBoardIndex, {index:0});
 }
 
 export function* changeDashBoardIndex(action) {
     let cards = yield select(getDashBoardCards);
     const start = action.index ? action.index - 1 : 0;
-    const end = action.index >= cards.length ? cards.length : action.index + 1;
+    const end = action.index >= cards.length-1 ? action.index : action.index + 1;
     let indexes = [];
     for (let i = start; i <= end; i++) {
         indexes.push(i);
     }
+    console.log("indexes :",indexes);
     const cardsData = yield indexes.map((i) => call(fetchCardsData, cards[i]));
 
     indexes.forEach((index, i) => {

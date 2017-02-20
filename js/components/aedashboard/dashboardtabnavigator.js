@@ -6,6 +6,7 @@ import { Animated, View, Image, Text, Dimensions, StyleSheet } from 'react-nativ
 import { TabViewAnimated, TabViewPagerPan } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 import {changeDashBoardTabIndex} from '../../actions/user';
+import DashBoardTab from './dashboardtab';
 
 const {width, height} = Dimensions.get('window');
 
@@ -13,17 +14,31 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    backgroundColor: 'lightblue',
+ //   backgroundColor: 'lightblue',
   },
   page: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+tab: {
+    width: width * 0.85,
+   // height: height * 0.85,
+    elevation: 12,
+    shadowColor: '#000000',
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    shadowOffset: {
+      height: 8,
+    },
+    
+  },
+
   album: {
     backgroundColor: 'lightblue',
     width: width * 0.85,
-    height: height * 0.8,
+    height: height * 0.85,
     elevation: 12,
     shadowColor: '#000000',
     shadowOpacity: 0.5,
@@ -34,7 +49,7 @@ const styles = StyleSheet.create({
   },
   cover: {
     width: width * 0.85,
-    height: height * 0.8,
+    height: height * 0.85,
   },
   label: {
     margin: 16,
@@ -42,16 +57,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const ALBUMS = {
-  'Abbey Road': require('./assets/album-art-1.jpg'),
-  'Bat Out of Hell': require('./assets/album-art-2.jpg'),
-  Homogenic: require('./assets/album-art-3.jpg'),
-  'Number of the Beast': require('./assets/album-art-4.jpg'),
-  'It\'s Blitz': require('./assets/album-art-5.jpg'),
-  'The Man-Machine': require('./assets/album-art-6.jpg'),
-  'The Score': require('./assets/album-art-7.jpg'),
-  'Lost Horizons': require('./assets/album-art-8.jpg'),
-};
 
 const initialLayout = {
   height: 0,
@@ -69,7 +74,7 @@ const initialLayout = {
 
   state = {
     index: 0,
-    routes: Object.keys(ALBUMS).map(key => ({ key })),
+    routes: this.props.cards.map(card => ({ key:card.config.configObjectId })),
   };
 
   _buildCoverFlowStyle = ({ layout, position, route, navigationState }) => {
@@ -92,7 +97,7 @@ const initialLayout = {
       if (currentIndex === i) {
         return 1;
       } else {
-        return 0.3;
+        return 0.8;
       }
     });
 
@@ -127,22 +132,20 @@ const initialLayout = {
 
   _renderScene = (props) => {
 
-    console.log("props.route.key ", props.route.key, this.state.routes.indexOf(props.route));
     if (Math.abs(this.state.index - this.state.routes.indexOf(props.route)) > 1) {
       return null;
     }
     else {
-      const card = this.props.cards[this.state.index];
+      const card = this.props.cards[this.state.routes.indexOf(props.route)];
 
-      // <DashBoardTab config={card.config} data={card.data}></DashBoardTab>
-      return (
-        <Animated.View style={[styles.page, this._buildCoverFlowStyle(props)]}>
-          <View style={styles.album}>
-            <Image source={ALBUMS[props.route.key]} style={styles.cover} />
-          </View>
-          <Text style={styles.label}>{props.route.key}</Text>
-        </Animated.View>
-      );
+       return (
+         <Animated.View style={[styles.page, this._buildCoverFlowStyle(props)]}>
+           <View style={styles.tab}>
+            <DashBoardTab  config={card.config} data={card.data}></DashBoardTab>
+           </View>
+        </Animated.View >
+        );
+     
     }
   };
 
@@ -151,6 +154,7 @@ const initialLayout = {
   };
 
   render() {
+    console.log("routes : ", this.state.routes);
     return (
       <TabViewAnimated
         style={[styles.container, this.props.style]}

@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
-import { Modal, Image, TouchableHighlight, Alert, ListView } from 'react-native';
+import {Dimensions, StyleSheet, Modal, Image, TouchableHighlight, Alert, ListView } from 'react-native';
 import { Text, List, ListItem } from 'native-base';
 import AEBaseComponent from '../../widgets/base/AEBaseComponent';
-import styles from './styles';
+
 import GridRow from './row';
 import uuid from 'uuid';
 const contentscreenBg = require('../../../img/basescreen.png');
 import { getPrivilege } from '../../services/usercontext.js';
+
+const {width, height} = Dimensions.get('window');
+
+const styles = StyleSheet.create({
+
+  container: {
+    height: height*0.7,
+ //   backgroundColor: 'lightblue',
+  },
+});
 
 export default class AECardGrid extends AEBaseComponent {
     static propTypes = {
@@ -85,7 +95,8 @@ export default class AECardGrid extends AEBaseComponent {
         const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
         var dataSource = ds.cloneWithRows(this._filtertedData());
         return (
-            <ListView
+            <ListView style={styles.container}
+                enableEmptySections ={true}
                 dataSource={dataSource}
                 renderRow={(rowData) => this._renderRow(rowData, header, keyColumns)}
                 />

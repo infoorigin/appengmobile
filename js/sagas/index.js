@@ -8,8 +8,8 @@ import {renderActiveTab, renderLayout, updateCardUIData} from './layout';
 import { RENDER_ACTIVE_TAB, RENDER_LAYOUT, UPDATE_CARD_UI_DATA} from "../actions/layout";
 import { MODAL_ADD_UI, SAVE_MODAL_DATA} from "../actions/modal";
 import { addFormModalUI, submitModalNodeDataToDB } from  "./modal";
-import { LOGIN} from "../actions/user";
-import { login } from  "./user";
+import { LOGIN, CHANGE_DASHBOARD_TAB} from "../actions/user";
+import { login, changeDashBoardIndex } from  "./user";
 
 
 // main saga generators
@@ -25,5 +25,6 @@ export function* sagas() {
     fork(takeLatest, MODAL_ADD_UI, addFormModalUI),
     fork(takeLatest, SAVE_MODAL_DATA, submitModalNodeDataToDB),
     fork(takeLatest, LOGIN, login),
+    fork(takeLatest, CHANGE_DASHBOARD_TAB, changeDashBoardIndex),
   ];
 }
