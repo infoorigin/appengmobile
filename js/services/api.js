@@ -3,7 +3,7 @@ import axios from 'axios';
 import update from 'immutability-helper';
 
 //const baseUrl = "http://ec2-52-4-99-199.compute-1.amazonaws.com:9900/demoedi";
-const baseUrl = "http://ec2-52-4-99-199.compute-1.amazonaws.com:8888/companymanagement";
+const baseUrl = "http://ec2-52-4-99-199.compute-1.amazonaws.com:9800/featuremanagement";
 
 // TO DO get from logged in user state
 

@@ -3,10 +3,18 @@ export const PUT_USER = 'PUT_USER';
 export const PUT_MENU = 'PUT_MENU';
 export const PUT_DASHBOARD_CARDS = 'PUT_DASHBOARD_CARDS';
 export const CHANGE_DASHBOARD_TAB = 'CHANGE_DASHBOARD_TAB';
+export const SET_USER_HOME = "SET_USER_HOME";
 
+export function setUserHome(user, menu, cards){
+  return{
+    type: SET_USER_HOME,
+    user,
+    menu,
+    cards,
+  };
+}
 
 export function loginAction(userid, password){
-    console.log("loginAction :",userid, password);
   return{
     type: LOGIN,
     userid,

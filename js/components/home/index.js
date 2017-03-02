@@ -25,7 +25,7 @@ class Home extends Component { // eslint-disable-line
   }
  
   render() {
-   
+   console.log("Render Home :");
     
     return (
       <Container theme={myTheme}>
@@ -88,8 +88,7 @@ function bindActions(dispatch) {
 }
 
 const mapStateToProps = state => ({
-  navigation: state.cardNavigation,
-  user : state.ae.user,
+  
 });
 
 export default connect(mapStateToProps, bindActions)(Home);

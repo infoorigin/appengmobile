@@ -7,6 +7,16 @@ export const RENDER_GRID_DETAIL = 'RENDER_GRID_DETAIL';
 export const PUT_ACTIVE_NODE_GRID_DATA = 'PUT_ACTIVE_NODE_GRID_DATA';
 export const SAVE_GRID_CONFIG_DATA = 'SAVE_GRID_CONFIG_DATA';
 export const RENDER_BASE_GRID = 'RENDER_BASE_GRID';
+export const SET_GRID_HOME = 'SET_GRID_HOME';
+
+export function setGridHome(ce, ceNode, grid){
+  return{
+    type: SET_GRID_HOME,
+    ce,
+    ceNode,
+    grid,
+  };
+}
 
 export function saveGridConfig(config) {
   return{

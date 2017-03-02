@@ -11,6 +11,7 @@ import update from 'immutability-helper';
 const initialState = {
   global: {
     isSpinner:false,
+    isRender:false,
     message:[],
   },
   dashboard : {
@@ -26,7 +27,7 @@ const initialState = {
     message : [],
   },
   menu: [],
-  grid: {},
+  grid: {config:{}, data:[]},
   form: {config:{},
          keyData:{},
          data:{},
@@ -106,7 +107,16 @@ export default function (state = initialState, action) {
     return {
       ...state,
       cards: action.cards,
+    };
+    
+    case gridaction.SET_GRID_HOME : {
+      return {
+      ...state,
+        grid: {config:action.grid, data :[]},
+        ce: {config:action.ce},
+        cenode: {config:action.ceNode},
       };
+    }
 
     case gridaction.SAVE_GRID_CONFIG:
        return {
@@ -135,7 +145,7 @@ export default function (state = initialState, action) {
     case ceaction.SAVE_CE_NODE_CONFIG:
      return {
       ...state,
-       cenode: {config:action.config},
+       cenode: {config:action.config, keys:{}},
       };
 
       case ceaction.PUT_BASE_NODE_KEYS :
@@ -206,10 +216,34 @@ export default function (state = initialState, action) {
       global : update(state.global , { $merge : { isSpinner:true }}) 
     };
 
+    case base.SHOW_SPINNER_DISABLE_RENDER :
+    return{
+      ...state,
+      global : update(state.global , { $merge : { isSpinner:true, isRender:false }}) 
+    };
+
+    case base.DISABLE_RENDER :
+    return{
+      ...state,
+      global : update(state.global , { $merge : {  isRender:false }}) 
+    };
+
+    case base.ENABLE_RENDER :
+    return{
+      ...state,
+      global : update(state.global , { $merge : { isRender:true }}) 
+    };
+
     case base.HIDE_SPINNER :
     return{
       ...state,
       global : update(state.global , { $merge : { isSpinner:false }}) 
+    };
+
+    case base.HIDE_SPINNER_ENABLE_RENDER :
+    return{
+      ...state,
+      global : update(state.global , { $merge : { isSpinner:false,isRender:true }}) 
     };
 
     case user.PUT_MENU :
@@ -224,6 +258,16 @@ export default function (state = initialState, action) {
       dashboard : update(state.dashboard , { $merge : { cards:action.cards }}) 
     };
 
+    case user.SET_USER_HOME :
+    return update (state, {$merge : 
+                {
+                  global :{isSpinner:false, isRender:true},
+                  userSession : { isAuthenticated:true, user: action.user},
+                  menu : action.menu,
+                  dashboard : {cards : action.cards}
+                }
+          });
+   
     default:
       return state;
   }

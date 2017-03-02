@@ -69,6 +69,7 @@ export default class DashBoardTab extends AEBaseComponent {  // eslint-disable-l
   }
 
   render() {
+    console.log("Rnder DashBoard Tab ",this.props.config.displayLabel);
     return (
       
         <RECard containerStyle={{  marginHorizontal : 0, marginVertical : 5 }} titleStyle={this.getInitialStyle().dividerItemText}

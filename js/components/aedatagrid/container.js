@@ -1,0 +1,65 @@
+
+import React, { Component } from 'react';
+import styles from './styles';
+import { View, List, ListItem } from 'native-base';
+import GridRow from './row.js';
+const contentscreenBg = require('../../../img/basescreen.png');
+import { getPrivilege } from '../../services/usercontext.js';
+
+export default class GridContainer extends Component {
+
+
+    constructor(props) {
+        super(props);
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        console.log(" shouldComponentUpdate :", nextProps.isRenderContent);
+        return nextProps.isRenderContent ? true : false;
+        
+    }
+
+    _filtertedData() {
+        const searchText = this.props.searchText ? this.props.searchText : "";
+        const searchTextRegex = new RegExp(searchText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "i");
+        let filteredColumns = this.props.header.filter(function (gcolumn) {
+            if (getPrivilege(gcolumn).privilegeType) {
+                return true;
+            }
+        }.bind(this));
+        let filterData = [];
+        this.props.data.map(function (rowData) {
+            let filterRow = {};
+            let isSearch = false;
+            filteredColumns.map(function (cellDetail) {
+                let cellData = rowData[cellDetail.logicalColumn.dbColumn.code] != null ? rowData[cellDetail.logicalColumn.dbColumn.code] : "";
+                filterRow[cellDetail.logicalColumn.dbColumn.code] = cellData;
+                isSearch = isSearch ? isSearch : searchTextRegex.test(cellData);
+            });
+            if (isSearch)
+                filterData.push(filterRow);
+        }.bind(this));
+        //console.log(" using filterDatafilterData for ", filterData);
+        return filterData;
+    }
+
+    render() {
+
+        console.log("GridContainer Render ");
+        const filterData = this._filtertedData();
+  
+        return (
+            <View source={contentscreenBg} style={styles.gridContainer}>
+                <List dataArray={filterData}
+                    renderRow={(item, i, iteration) =>
+                        <GridRow key={i} keyColunms={this.props.keyColunms} rowData={item} rowDescription={this.props.header} >
+                        </GridRow>
+                    }>
+                </List>
+            </View>
+        );
+    }
+
+
+
+}

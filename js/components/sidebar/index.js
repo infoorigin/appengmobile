@@ -4,7 +4,7 @@ import { Image } from 'react-native';
 import { connect } from 'react-redux';
 import { Content, Text, List, ListItem, Icon, View } from 'native-base';
 
-import navigateTo from '../../actions/sideBarNav';
+import {navigateTo} from '../../actions/sideBarNav';
 import sidebarTheme from './sidebar-theme';
 import styles from './style';
 
@@ -30,7 +30,7 @@ class SideBar extends Component {
   }
 
   navigateTo(route) {
-    this.props.navigateTo(route, 'home');
+    this.props.navigateTo(route);
   }
 
   navigateAndRender(actionType, configId, route){
@@ -281,7 +281,7 @@ class SideBar extends Component {
 
 function bindAction(dispatch) {
   return {
-    navigateTo: (route, homeRoute) => dispatch(navigateTo(route, homeRoute)),
+    navigateTo: (route) => dispatch(navigateTo(route, true)),
     renderAndNavigate : (actionType,configId, route) => dispatch(renderAndNavigate(actionType ,configId, route)),
   }
 }

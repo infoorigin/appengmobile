@@ -1,10 +1,11 @@
 
-import { call, put, select } from "redux-saga/effects";
-import navigateTo from '../actions/sideBarNav';
+import { fork, call, put, select } from "redux-saga/effects";
+import {navigateTo} from '../actions/sideBarNav';
 import update from 'immutability-helper';
-import { saveGridConfig, saveGridData, putActiveNodeGridConfig, putActiveNodeGridData } from '../actions/grid';
+import {  NavigationActions } from 'react-navigation';
+import { setGridHome, saveGridData, putActiveNodeGridConfig, putActiveNodeGridData } from '../actions/grid';
 import {
-  setNodeData, setNodeKeys, openEditForm, setCompositeEntity, getCompositeEntity, getCompositeEntityNode,
+  setNodeData, setNodeKeys, openEditForm, fetchCompositeEntity, getCompositeEntity, getCompositeEntityNode,
   getActiveCompositeEntityNode, setActiveNode, findNodeFromCETree, getNodeById, queryNodeData
 } from './ce';
 import { putCENodKey } from '../actions/ce';
@@ -12,7 +13,7 @@ import { putCardsData } from '../actions/layout';
 import { openLayout, findCardByIdFromState, updateCardState } from './layout';
 import { getConfig, getGridData } from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
-import { showSpinner, hideSpinner } from '../actions/aebase';
+import { showSpinner, hideSpinner, hideSpinnerAndEnableRender, showSpinnerAndDisableRender } from '../actions/aebase';
 
 export function* activeNodeGrid(action) {
   try {
@@ -21,7 +22,7 @@ export function* activeNodeGrid(action) {
 
     // Fetch and Set Grid Config to state
     yield call(fetchNodeActiveGridConfig, ceNode.gridId);
-    console.log("inside activeNodeGrid cenode :", ceNode)
+    console.log("inside activeNodeGrid cenode :", ceNode);
     // Fetch and set Active Grid node data 
     yield call(fetchNodeActiveGridData, ceNode.configObjectId, action.keys);
   }
@@ -33,25 +34,40 @@ export function* activeNodeGrid(action) {
 // fetch the Config Item
 export function* renderBaseGrid(action) {
   try {
+    console.log("Start Render Base Grid ", action);
     //TODO Start Spinner
-    yield put(showSpinner());
+    //yield put(showSpinnerAndDisableRender());
     //Fetch and Set CE and Base Node Configs to state
-    yield call(setCompositeEntity, action);
-
-    let ceNode = yield select(getCompositeEntityNode);
-    // Fetch and Set Grid Config to state
-    yield call(fetchGridConfig, ceNode.gridId);
-    // Fetch and Set Grid Data to state
+    
+    const ce = yield call(fetchCompositeEntity, action);
+    const ceNode = ce.rootNode;
+    // Fetch and Set Grid Config to state , 
+    const grid = yield call(fetchGridConfig, ceNode.gridId);
+    console.log("Set Grid Home and route as fork task");
+    yield fork(setGridHomeAndNavigate,ce, ceNode, grid);
+    console.log("Publish Grid Data");
     yield call(fetchGridData, ceNode.configObjectId);
+
+  /*  
     // Navigate to target screen
-    yield put(navigateTo(action.navigationRoute, HOMEROUTE));
-    yield put(hideSpinner());
+    yield put(navigateTo(action.navigationRoute, true));
+     console.log("Now hiding spinner ");
+    yield put(hideSpinnerAndEnableRender());
+    // Fetch and Set Grid Data to state
+    call(fetchGridData, ceNode.configObjectId);
+    */
+ //   yield put(NavigationActions.navigate({ routeName: 'DataGrid' }));
   }
   catch (error) {
     console.log("Error in API Call for action", JSON.stringify(action), error);
     console.log("Re-Routing to home");
-    put(navigateTo(HOMEROUTE, HOMEROUTE));
+    yield put(NavigationActions.navigate({ routeName: 'DataGrid' }));
   }
+}
+
+function* setGridHomeAndNavigate(ce, ceNode, grid){
+  yield [put(setGridHome(ce, ceNode, grid)),  put(NavigationActions.navigate({ routeName: 'DataGrid' }))];
+    
 }
 
 function* fetchNodeActiveGridConfig(gridConfigId) {
@@ -65,7 +81,7 @@ function* fetchGridConfig(gridConfigId) {
   // call the api to get the grid config Item
   let result = yield call(getConfig, gridConfigId);
   let configItem = result.data.returnData.data;
-  yield put(saveGridConfig(configItem));
+  return configItem;
 }
 
 export function* queryNodeGridData(nodeId, keys) {
@@ -81,6 +97,12 @@ export function* fetchNodeActiveGridData(nodeId, keys) {
   let data = result.data.returnData.data;
   //console.log("grid data ", data.length)
   yield put(putActiveNodeGridData(data));
+}
+
+export function* queryGridData(nodeId) {
+  // call the api to get the grid config Item
+  let result = yield call(getGridData, nodeId);
+  return data = result.data.returnData.data;
 }
 
 export function* fetchGridData(nodeId) {

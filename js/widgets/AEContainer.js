@@ -11,6 +11,7 @@ import AEHeader from './AEHeader';
 import AEModal from './AEModal';
 import AEModalContent from './AEModalContent';
 import AECard from '../components/aecard';
+import AEGridContainer from '../components/aedatagrid/container';
 import AETabLayoutHeader from '../components/tablayout/AETabLayoutHeader';
 
 
@@ -72,7 +73,8 @@ export default class AEContainer extends AEBaseComponent {
       return _.filter(this.props.children, function (item) {
         if (item && (_.get(item, 'type', null) == ViewNB || _.get(item, 'type', null) == Content
           || _.get(item, 'type', null) == Image || _.get(item, 'type', null) == View
-          || _.get(item, 'type', null) == ScrollView || _.get(item, 'type', null) == AEModal)) {
+          || _.get(item, 'type', null) == ScrollView || _.get(item, 'type', null) == AEModal)
+          || _.get(item, 'type', null) == AEGridContainer) {
 
           return true;
         }
@@ -82,7 +84,8 @@ export default class AEContainer extends AEBaseComponent {
     else {
       if (this.props.children && (this.props.children.type == Content || this.props.children.type == ViewNB
         || this.props.children.type == View || this.props.children.type == Image
-        || this.props.children.type == ScrollView || _.get(item, 'type', null) == AEModal)) {
+        || this.props.children.type == ScrollView || _.get(item, 'type', null) == AEModal
+        || _.get(item, 'type', null) == AEGridContainer )) {
         return this.props.children;
       }
     }

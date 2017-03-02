@@ -6,7 +6,10 @@ import { StyleSheet } from 'react-native';
 import { Container, Content, Text, View } from 'native-base';
 import Modal from 'react-native-modalbox';
 
-import AppNavigator from './AppNavigator';
+//import AppNavigator from './AppNavigator';
+
+import AppNavigator from './AppNavWithState';
+
 import ProgressBar from './components/loaders/ProgressBar';
 
 import theme from './themes/base-theme';
@@ -65,6 +68,7 @@ class App extends Component {
 
   render() {
     console.ignoredYellowBox = ['Warning: Failed prop type'];
+    console.log("Using Navigation State");
 	  /*
     if (this.state.showDownloadingModal) {
       return (
@@ -95,7 +99,7 @@ class App extends Component {
       );
     }
    */
-    return <AppNavigator />;
+   return <AppNavigator />;
   }
 }
 

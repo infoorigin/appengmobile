@@ -3,9 +3,10 @@ import { Modal, Image, TouchableHighlight, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { Container, Content, Button, InputGroup, Input, View, H3, Text, Header, Title, Icon, Card, CardItem, List, ListItem } from 'native-base';
 import GridRow from './row.js';
+import GridContainer from './container';
 import myTheme from '../../themes/base-theme';
 import styles from './styles';
-import { openDrawer } from '../../actions/drawer';
+import {  NavigationActions } from 'react-navigation';
 import AEContainer from '../../widgets/AEContainer';
 import AEHeader from '../../widgets/AEHeader';
 import AEModalContent from '../../widgets/AEModalContent';
@@ -27,6 +28,7 @@ class AEDataGrid extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			isRenderContent : true,
 			isSearchHeader: false,
 			header: [],
 			searchText: ""
@@ -36,6 +38,7 @@ class AEDataGrid extends Component {
 		this._filterGrid = this._filterGrid.bind(this);
 		this._onAddSave = this._onAddSave.bind(this);
 		this._onCancelModal = this._onCancelModal.bind(this);
+		this._onCancelSearch = this._onCancelSearch.bind(this);
 		this._onAdd = this._onAdd.bind(this);
 	}
 
@@ -58,10 +61,20 @@ class AEDataGrid extends Component {
 		this.props.resetModal();
 	}
 
+	_onCancelSearch(){
+		const isRenderContent = this.state.searchText ? true :false;
+		this.setState(
+			{ 	isRenderContent, 
+				isSearchHeader: false, 
+				searchText: "" 
+			});
+	}
+
 	_filterGrid(text) {
 		console.log('Search Text ', text);
 		this.setState({
-			searchText: text
+			searchText: text,
+			isRenderContent:true,
 		})
 	}
 
@@ -73,7 +86,7 @@ class AEDataGrid extends Component {
 					<Input placeholder="Search" onChangeText={this._filterGrid} />
 				</InputGroup>
 
-				<Button transparent onPress={() => this.setState({ isSearchHeader: false, searchText: "" })}>
+				<Button transparent onPress={this._onCancelSearch}>
 					Cancel
 				</Button>
 			</AEHeader>
@@ -96,14 +109,14 @@ class AEDataGrid extends Component {
 	}
 
 	_renderTitleHeader() {
-		console.log("_renderTitleHeader");
+		let title = this.props.basenode.name ? this.props.basenode.name : "";
 		return (
 			<AEHeader>
 				<Button transparent onPress={this.props.openDrawer}>
 					<Icon name="ios-menu" />
 				</Button>
-				<Title>E-Care</Title>
-				<Button transparent onPress={() => this.setState({ isSearchHeader: true })}>
+				<Title>{title}</Title>
+				<Button transparent onPress={() => this.setState({ isRenderContent:false, isSearchHeader: true })}>
 					<Icon name="ios-search" />
 				</Button>
 				<Button transparent onPress={this._onAdd}>
@@ -133,45 +146,42 @@ class AEDataGrid extends Component {
 			return this._renderTitleHeader();
 	}
 
-	render() {
+	_renderGridContent(){
+		return (
+			<GridContainer isRenderContent={this.state.isRenderContent} data={this.props.data} searchText={this.state.searchText} keyColunms={this.state.keyColunms} header={this.state.header}>
+			</GridContainer>
+		);
+	}
 
-		if (this.state.header.length == 0 || this.props.data.length == 0) {
-			return (<Text> Loading..... </Text>);
-		}
-		else {
+	render() {
+		console.log("Sudhir");
 			let modalContent = this._renderModalContent();
-			let filterData = this._filtertedData();
 			return (
 				<AEContainer modalVisible={this.props.modalVisible} theme={myTheme} >
 
 					{this._renderHeader()}
 
-					<Image source={launchscreenBg} style={styles.imageContainer}>
-						<View style={styles.gridHeaderSection}>
-							<H3 style={styles.text}>{this.props.config.dataSet.name}</H3>
-						</View>
-
-						<View source={contentscreenBg} style={styles.gridContainer}>
-							<List dataArray={filterData}
-								renderRow={(item, i, iteration) =>
-									<GridRow key={i} keyColunms={this.state.keyColunms} rowData={item} rowDescription={this.state.header} >
-									</GridRow>
-								}>
-							</List>
-						</View>
-					</Image>
-
+					{this._renderGridContent()}	
+					
 					{modalContent}
 				</AEContainer>
 
 			);
 		}
-
-	}
 	componentDidMount() {
+		console.log("DataGrid componentDidMount :");
 		this.initGrid();
 	}
 
+	componentWillReceiveProps(nextProps){
+		console.log("DataGrid componentWillReceiveProps :");
+	}
+
+	
+
+componentDidUpdate() {
+    console.log(" DataGrid componentDidUpdate :");
+  }
 
 	initGrid() {
 		var headerdata = this.props.config.gridColumns;
@@ -219,7 +229,7 @@ class AEDataGrid extends Component {
 
 function bindActions(dispatch) {
 	return {
-		openDrawer: () => dispatch(openDrawer()),
+		openDrawer: () => dispatch(NavigationActions.navigate({ routeName: 'DrawerOpen' })),
 		resetModal: () => dispatch(resetModalAction()),
 		modalAddUI: (nodeId, baseKeys) => dispatch(modalAddUIAction(nodeId, baseKeys)),
 		saveModal: (gridConfigId, nodeId) => dispatch(saveGridModalAction(gridConfigId, nodeId)),
@@ -227,13 +237,18 @@ function bindActions(dispatch) {
 }
 
 const mapStateToProps = state => ({
-	navigation: state.cardNavigation,
 	config: state.ae.grid.config,
-	data: state.ae.grid.data ? state.ae.grid.data : [],
+	data: state.ae.grid.data ,
 	basenode: state.ae.cenode.config,
-	baseNodeKeys: state.ae.cenode.keys ? state.ae.cenode.keys : {},
+	baseNodeKeys: state.ae.cenode.keys,
 	modalUI: state.ae.modal.ui,
 	modalVisible: state.ae.modal.visible,
+//	dummyProps : printState(state.drawer.drawerState, state.ae.global.isRender)
 });
+
+const printState = (out1, out2) => {
+  console.log("Inside DataGrid :",out1, out2);
+  return "1";
+}
 
 export default connect(mapStateToProps, bindActions)(AEDataGrid);

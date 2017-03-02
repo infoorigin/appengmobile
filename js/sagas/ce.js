@@ -26,9 +26,17 @@ export const getFormDataKey = (state) => state.ae.form.key
 export const geLastnavigation = (state) => state.cardNavigation.routes[state.cardNavigation.routes.length - 1].key;
 
 
-
-
 // fetch the Config Item
+export function* fetchCompositeEntity(action) {
+    console.log("calling api for to get CE for  action ", action)
+    // call the api to get the ce
+    const result = yield call(getConfig, action.configId);
+    const config = result.data.returnData.data;
+    return config;
+
+}
+
+// fetch and set the Config Item
 export function* setCompositeEntity(action) {
     console.log("calling api for to get CE for  action ", action)
     // call the api to get the ce
@@ -62,7 +70,7 @@ export function* openEditForm(action) {
     yield call(fetchNodeData, ceNode, action.key);
 
     // Navigate to target screen 
-    yield put(navigateTo(action.navigationRoute));
+    yield put(navigateTo(action.navigationRoute, true));
 }
 
 function* fetchFormConfig(formConfigId) {

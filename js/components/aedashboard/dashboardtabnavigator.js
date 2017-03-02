@@ -124,6 +124,7 @@ class DashBoardTabNavigator extends Component {
   };
 
   _handleChangeTab = (newIndex) => {
+    console.log("On Tab Change", newIndex);
     this.setState({
       index: newIndex
     });
@@ -131,13 +132,14 @@ class DashBoardTabNavigator extends Component {
   };
 
   _renderScene = (props) => {
-
-    const card = this.props.cards[this.state.routes.indexOf(props.route)];
+   const card = this.props.cards[this.state.routes.indexOf(props.route)];
+    
     let data = [];
     if (Math.abs(this.state.index - this.state.routes.indexOf(props.route)) < 2) {
       data = card.data
     }
-
+    console.log("Render Tab  ", card.config.displayLabel, data);
+   
     return (
       <Animated.View style={[styles.page, this._buildCoverFlowStyle(props)]}>
         <View style={styles.tab}>
@@ -149,7 +151,7 @@ class DashBoardTabNavigator extends Component {
   };
 
   _renderPager = (props) => {
-    return <TabViewPagerPan {...props} />;
+    return  <TabViewPagerPan {...props} />;
   };
 
   render() {

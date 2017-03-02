@@ -11,6 +11,7 @@ import AEContainer from '../../widgets/AEContainer';
 import AEHeader from '../../widgets/AEHeader';
 import AECard from '../aecard';
 import DashBoardTabNavigator from './dashboardtabnavigator';
+import {  NavigationActions } from 'react-navigation';
 
 class AEDashBoard extends Component {
 
@@ -20,16 +21,15 @@ class AEDashBoard extends Component {
   }
 
   _renderNavigator(){
-    if(this.props.cards && this.props.cards.length)
-      return (<DashBoardTabNavigator></DashBoardTabNavigator>);
-    else 
-      return (<View></View>) ;
+    // return (<Text>DashBoardContent</Text>);
+   return (<DashBoardTabNavigator></DashBoardTabNavigator>);
   }
 
 
   render() {
+     console.log("isSpinner :", this.props.isSpinner);
     return (
-
+ 
       <AEContainer  modalVisible={false}>
         <AEHeader>
           <Button transparent onPress={this.props.openDrawer}>
@@ -48,12 +48,12 @@ class AEDashBoard extends Component {
 
 function bindActions(dispatch) {
 	return {
-		openDrawer: () => dispatch(openDrawer()),
+		openDrawer: () => dispatch(NavigationActions.navigate({ routeName: 'DrawerOpen' })),
 	};
 }
 
-const mapStateToProps = state => ({
-    cards : state.ae.dashboard.cards,
+const mapStateToProps = state => ({ 
+  isSpinner: state.ae.global.isSpinner
 });
 
 export default connect(mapStateToProps, bindActions)(AEDashBoard);   
