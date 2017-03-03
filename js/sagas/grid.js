@@ -43,11 +43,10 @@ export function* renderBaseGrid(action) {
     const ceNode = ce.rootNode;
     // Fetch and Set Grid Config to state , 
     const grid = yield call(fetchGridConfig, ceNode.gridId);
+    yield fork(fetchGridData, ceNode.configObjectId);
     console.log("Set Grid Home and route as fork task");
-    yield fork(setGridHomeAndNavigate,ce, ceNode, grid);
-    console.log("Publish Grid Data");
-    yield call(fetchGridData, ceNode.configObjectId);
-
+    yield [put(setGridHome(ce, ceNode, grid)),  put(NavigationActions.navigate({ routeName: 'DataGrid' }))];
+   
   /*  
     // Navigate to target screen
     yield put(navigateTo(action.navigationRoute, true));
@@ -109,7 +108,7 @@ export function* fetchGridData(nodeId) {
   // call the api to get the grid config Item
   let result = yield call(getGridData, nodeId);
   let data = result.data.returnData.data;
-  //console.log("grid data ", data.length)
+  console.log("Saving grid data ");
   yield put(saveGridData(data));
 }
 

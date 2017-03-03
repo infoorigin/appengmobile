@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Modal, Image, TouchableHighlight, Alert } from 'react-native';
+import { Modal } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Content, Button, InputGroup, Input, View, H3, Text, Header, Title, Icon, Card, CardItem, List, ListItem } from 'native-base';
-import GridRow from './row.js';
+import { Button, InputGroup, Input, View, Title, Icon } from 'native-base';
 import GridContainer from './container';
 import myTheme from '../../themes/base-theme';
 import styles from './styles';
@@ -12,10 +11,6 @@ import AEHeader from '../../widgets/AEHeader';
 import AEModalContent from '../../widgets/AEModalContent';
 import { getPrivilege } from '../../services/usercontext.js';
 import { modalAddUIAction, resetModalAction, saveGridModalAction } from '../../actions/modal';
-
-const contentscreenBg = require('../../../img/basescreen.png');
-const launchscreenBg = require('../../../img/launchscreen-bg.png');
-const launchscreenLogo = require('../../../img/logo-kitchen-sink.png');
 
 class AEDataGrid extends Component {
 	static propTypes = {
@@ -185,7 +180,8 @@ componentDidUpdate() {
 
 	initGrid() {
 		var headerdata = this.props.config.gridColumns;
-		headerdata = headerdata.filter(function (d) { return d.actionColoum == false; });
+		//TODO Handle buttons as this is also hiding Hyperlink values
+		//headerdata = headerdata.filter(function (d) { return d.actionColoum == false; });
 		headerdata = headerdata.sort(function (d1, d2) {
 			if (d1.order > d2.order) {
 				return 1;
@@ -199,33 +195,8 @@ componentDidUpdate() {
 		this.setState({ header: headerdata, keyColunms: keyColunms });
 	}
 
-	_filtertedData() {
-		const searchText = this.state.searchText ? this.state.searchText : "";
-		const searchTextRegex = new RegExp(searchText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "i");
-		let filteredColumns = this.state.header.filter(function (gcolumn) {
-			if (getPrivilege(gcolumn).privilegeType) {
-				return true;
-			}
-		}.bind(this));
-		let filterData = [];
-		this.props.data.map(function (rowData) {
-			let filterRow = {};
-			let isSearch = false;
-			filteredColumns.map(function (cellDetail) {
-				let cellData = rowData[cellDetail.logicalColumn.dbColumn.code] != null ? rowData[cellDetail.logicalColumn.dbColumn.code] : "";
-				filterRow[cellDetail.logicalColumn.dbColumn.code] = cellData;
-				isSearch = isSearch ? isSearch : searchTextRegex.test(cellData);
-			});
-			if (isSearch)
-				filterData.push(filterRow);
-		}.bind(this));
-		console.log(" using filterDatafilterData for ", filterData);
-		return filterData;
-	}
 
 }
-
-
 
 function bindActions(dispatch) {
 	return {

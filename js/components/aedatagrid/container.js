@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
+import { View, ListView} from 'react-native';
 import styles from './styles';
-import { View, List, ListItem } from 'native-base';
 import GridRow from './row.js';
 const contentscreenBg = require('../../../img/basescreen.png');
 import { getPrivilege } from '../../services/usercontext.js';
@@ -45,19 +45,24 @@ export default class GridContainer extends Component {
 
     render() {
 
-        console.log("GridContainer Render ");
+        console.log("Get FilterData ");
         const filterData = this._filtertedData();
-  
+        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        console.log("GridContainer Render ");
+
         return (
             <View source={contentscreenBg} style={styles.gridContainer}>
-                <List dataArray={filterData}
-                    renderRow={(item, i, iteration) =>
-                        <GridRow key={i} keyColunms={this.props.keyColunms} rowData={item} rowDescription={this.props.header} >
-                        </GridRow>
-                    }>
-                </List>
+                <ListView 
+                    enableEmptySections 
+                    dataSource={ds.cloneWithRows(filterData)}
+                    initialListSize={3}
+                    renderRow={(item, sectionId, rowId) =>
+                        <GridRow key={rowId} rownum={rowId} keyColunms={this.props.keyColunms} rowData={item} rowDescription={this.props.header} />
+                    }
+                    renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} >
+                </ListView>
             </View>
-        );
+        ); 
     }
 
 

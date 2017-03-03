@@ -18,7 +18,6 @@ const initialState = {
     cards:[], // {config,data, isDataReady}
   },
   error :{},
-  sequence:0,
   userSession : {
     isAuthenticated:false,
     user : {
@@ -28,13 +27,6 @@ const initialState = {
   },
   menu: [],
   grid: {config:{}, data:[]},
-  form: {config:{},
-         keyData:{},
-         data:{},
-         messageData:{sequence:0,globalMessage:"",
-         messageType:"",
-         dataValidationMessages:{}}
-        },
   ce: {},
   cenode: {},
   nodeData :{},
@@ -115,6 +107,8 @@ export default function (state = initialState, action) {
         grid: {config:action.grid, data :[]},
         ce: {config:action.ce},
         cenode: {config:action.ceNode},
+        layout :{},
+        cards :[],
       };
     }
 
@@ -179,6 +173,12 @@ export default function (state = initialState, action) {
        cenode:  update(state.cenode, {$merge: {keys:action.keys}})
     };
 
+    case layoutaction.SET_TAB_LAYOUT_HOME:
+    return {
+      ...state,
+      layout : {config:action.config},
+      cenode:  update(state.cenode, {$merge: {keys:action.keys}})
+    };
 
     case layoutaction.SAVE_LAYOUT_CONFIG:
     return{

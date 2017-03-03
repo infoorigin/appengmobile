@@ -1,13 +1,14 @@
 
 import navigateTo from '../actions/sideBarNav';
-import { call, put, select } from "redux-saga/effects";
+import { fork, call, put, select } from "redux-saga/effects";
 import update from 'immutability-helper';
+import {  NavigationActions } from 'react-navigation';
 import { getCompositeEntity, setActiveNode, getActiveCompositeEntityNode, getNodeById, queryNodeData, findParentNode } from './ce';
 import { putBaseNodeKeys } from '../actions/ce';
 import { fetchNodeActiveGridData, queryNodeGridData } from './grid';
 import { getConfig, getGridData } from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
-import { saveLayoutConfig, putCardsData } from '../actions/layout';
+import { setTabLayoutHome, putCardsData } from '../actions/layout';
 import { putActiveNodeGridConfig } from '../actions/grid';
 import {isNodeDataExists} from '../utils/uiData' ;
 import { showSpinner, hideSpinner } from '../actions/aebase';
@@ -41,8 +42,7 @@ export function* updateCardUIData(action){
 
 export function* renderLayout(action) {
     try {
-        yield put(showSpinner());
-        yield put(putBaseNodeKeys(action.keys));
+        // yield put(showSpinner());
         let ce = yield select(getCompositeEntity);
         if (ce.uiLayoutIds.mobile) { // If Mobile layout is set render layout
             yield call(openLayout, action);
@@ -50,7 +50,7 @@ export function* renderLayout(action) {
         else {
             console.log("Error : No Mobile Layout configured");
         }
-        yield put(hideSpinner());
+        //yield put(hideSpinner());
     }
     catch (error) {
         console.log("Error in API Call for action", JSON.stringify(action), error);
@@ -58,20 +58,24 @@ export function* renderLayout(action) {
 
 }
 
+function* setLayoutHome(layout, action){
+    yield [put(NavigationActions.navigate({ routeName: 'TabLayout' })),put(setTabLayoutHome(layout, action.keys))];
+}
+
 export function* openLayout(action) {
     // Get Layout 
     const ce = yield select(getCompositeEntity);
     const result = yield call(getConfig, ce.uiLayoutIds.mobile);
     const layout = result.data.returnData.data;
-    yield put(saveLayoutConfig(layout));
+    
 
     switch (layout.uiLayoutType) {
         case "MOBILETABLAYOUT": //MOBILETABLAYOUT
+            yield fork(setLayoutHome, layout, action);
             yield call(buildTabLayout, layout, action);
-            yield put(navigateTo('tablayout', HOMEROUTE));
             break;
         default:
-            yield put(navigateTo('gridlayout', HOMEROUTE));
+            yield put(NavigationActions.navigate({ routeName: 'DataGrid' }));
     }
 }
 
@@ -83,10 +87,12 @@ function* getTabCard(layout) {
 }
 
 function* buildTabLayout(layout, action) {
+    console.log("Layout done now building layout");
     let tabCard = yield call(getTabCard, layout);
     if (tabCard && tabCard.uitabs && tabCard.uitabs.length) {
         let activeTab = tabCard.uitabs[0];
         let cardState = yield call(createCardState,tabCard, activeTab, action);
+        console.log("setting card state");
         yield put(putCardsData([cardState]));
     }
 }

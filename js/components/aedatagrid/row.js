@@ -23,31 +23,52 @@ class GridRow extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            rowData: this.props.rowData,
-            rowDescription: this.props.rowDescription,
-        };
         this.recordClicked = this.recordClicked.bind(this);
+        this._getRowKeyData = this._getRowKeyData.bind(this);
     }
 
 
     recordClicked() {
-        console.log('Key Selected----' + JSON.stringify(this.state.rowKeyData));
-        this.props.gridAction(RENDER_LAYOUT, this.state.rowKeyData);
+        const keysData = this._getRowKeyData();
+        console.log('Key Selected----' ,keysData);
+        this.props.gridAction(RENDER_LAYOUT, keysData);
     }
 
     getElementsWithPrivilege() {
         let filteredColumns = this.props.rowDescription.filter(function (gcolumn) {
-            if (this.props.getPrivilege(gcolumn).privilegeType) {
+            if (getPrivilege(gcolumn).privilegeType) {
                 return true;
             }
         }.bind(this));
         return filteredColumns;
     }
 
+    _getRowKeyData(){
+        let rowKeyData = this.props.keyColunms
+            .filter(function (gc) {
+                return gc.logicalColumn.dbColumn.primaryKey;
+            })
+            .map(function (gc) {
+                let val = this.props.rowData[gc.logicalColumn.dbColumn.code];
+                return { primaryKey: val, [gc.logicalColumn.dbColumn.code]: val }
+            }.bind(this));
+        rowKeyData = rowKeyData.length ? rowKeyData[0] : {};
+        let keyCoulumns = this.props.keyColunms
+            .filter(function (gc) {
+                return gc.logicalColumn.dbColumn.key;
+            })
+            .forEach(function (gc) {
+                let newKey = { [gc.logicalColumn.dbColumn.code]: this.props.rowData[gc.logicalColumn.dbColumn.code] }
+                Object.assign(rowKeyData, newKey);
+            }.bind(this));
+
+          return rowKeyData;  
+    }
+
 
     componentDidMount() {
 
+/*
         let rowKeyData = this.props.keyColunms
             .filter(function (gc) {
                 return gc.logicalColumn.dbColumn.primaryKey;
@@ -66,13 +87,14 @@ class GridRow extends Component {
                 Object.assign(rowKeyData, newKey);
             }.bind(this));
         this.setState({ "rowKeyData": rowKeyData });
-
+*/
     }
 
     render() {
+        console.log("Rendering :", this.props.rownum );
         return (
 
-            <View style={styles.gridRow}>
+            <View key={'row-'+this.props.rownum} style={styles.gridRow}>
 
                 <View style={styles.gridRowData}>
                     {this.getElementsWithPrivilege().map(function (cellDetail, key) {
@@ -83,7 +105,7 @@ class GridRow extends Component {
                                 return (
                                     <View key={key} style={styles.girdCell}>
                                         <Text style={styles.gridLabel}> {cellDetail.headerName}:</Text>
-                                        <Text style={styles.gridText}> {this.state.rowData[cellDetail.logicalColumn.dbColumn.code]}</Text>
+                                        <Text style={styles.gridText}> {this.props.rowData[cellDetail.logicalColumn.dbColumn.code]}</Text>
                                     </View>
                                 );
 
@@ -91,7 +113,7 @@ class GridRow extends Component {
                                 return (
                                     <View key={key} style={styles.girdCell}>
                                         <Text style={styles.gridLabel}> {cellDetail.headerName}:</Text>
-                                        <Text style={styles.gridText}> {this.state.rowData[cellDetail.logicalColumn.dbColumn.code]}</Text>
+                                        <Text style={styles.gridText}> {this.props.rowData[cellDetail.logicalColumn.dbColumn.code]}</Text>
                                     </View>
                                 );
                         }
@@ -116,7 +138,6 @@ class GridRow extends Component {
 function bindAction(dispatch) {
     return {
         gridAction: (actionType, keys) => dispatch(gridAction(actionType, keys)),
-        getPrivilege: (configItem) => getPrivilege(configItem)
     };
 }
 const mapStateToProps = state => ({

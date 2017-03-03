@@ -4,6 +4,15 @@ export const PUT_CARDS_DATA = 'PUT_CARDS_DATA';
 export const RENDER_ACTIVE_TAB = 'RENDER_ACTIVE_TAB';
 export const RENDER_LAYOUT = 'RENDER_LAYOUT';
 export const UPDATE_CARD_UI_DATA = 'UPDATE_CARD_UI_DATA';
+export const SET_TAB_LAYOUT_HOME = 'TAB_LAYOUT_HOME' ;
+
+export function setTabLayoutHome(config, keys) {
+  return{
+    type: SET_TAB_LAYOUT_HOME,
+    config: config,
+    keys : keys,
+  };
+}
 
 export function saveLayoutConfig(config) {
   return{

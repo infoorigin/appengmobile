@@ -18,6 +18,7 @@ import {renderAndNavigate} from './actions/aebase';
 import LoginScreen from './components/login/';
 import DashBoard from './components/aedashboard';
 import DataGrid from './components/aedatagrid/';
+import TabLayout from './components/tablayout/';
 
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -102,6 +103,7 @@ const DrawerRoutes = {
   Inbox: { screen: InboxScreen },
   Drafts: { screen: DraftsScreen },
   DataGrid : { screen: DataGrid },
+  TabLayout : { screen : TabLayout},
 };
 
 const DrawerMenuContent =  connect(

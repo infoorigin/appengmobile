@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import update from 'immutability-helper';
+import {  NavigationActions } from 'react-navigation';
+import _ from 'lodash';
 import { Container, Title, Content, Footer, FooterTab, Button, Icon, Badge, Text } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import AEContainer from '../../widgets/AEContainer';
@@ -16,9 +18,6 @@ import { renderTabAction, updateCardUIDataAction } from '../../actions/layout';
 import {modalAddUIAction, resetModalAction, saveModalAction} from '../../actions/modal';
 import { gridDetailAction } from '../../actions/grid';
 import { updateAttributes, getKeysByNode, getBindingIdByNodeId } from '../../utils/uiData'
-import { openDrawer } from '../../actions/drawer';
-
-import _ from 'lodash';
 
 class AETabLayout extends Component {  // eslint-disable-line
 
@@ -167,8 +166,8 @@ class AETabLayout extends Component {  // eslint-disable-line
     }
 
     render() {
-        console.log("this.props.card " + this.props.card.config);
-        if (this.props.card.config) {
+        console.log("this.props.card set ? : ",(this.props.card ? true : false));
+        if (this.props.card && this.props.card.config) {
             console.log(" rendering AETabNavigator ... ")
             return (<AETabNavigator
                 uiCard={this.props.card.config}
@@ -184,7 +183,7 @@ class AETabLayout extends Component {  // eslint-disable-line
         }
         else {
             console.log(" rendering loading without space ... ")
-            return (<AEContainer>
+            return (<AEContainer modalVisible={false}>
                 <AEHeader></AEHeader>
                 <Content>
                     <View>
@@ -200,7 +199,7 @@ class AETabLayout extends Component {  // eslint-disable-line
 
 function bindAction(dispatch) {
     return {
-        openDrawer: () => dispatch(openDrawer()),
+        openDrawer: () => dispatch(NavigationActions.navigate({ routeName: 'DrawerOpen' })),
         gridDetailAction: (keys, cardConfigId, gridConfigId, nodeId) => dispatch(gridDetailAction(keys, cardConfigId, gridConfigId, nodeId)),
         renderTabAction: (cardConfigId, tabConfigId, keys) => dispatch(renderTabAction(cardConfigId, tabConfigId, keys)),
         updateCardUIData: (cardConfigId, data) => dispatch(updateCardUIDataAction(cardConfigId, data)),
@@ -213,11 +212,10 @@ function bindAction(dispatch) {
 }
 
 const mapStateToProps = state => ({
-    navigation: state.cardNavigation,
     config: state.ae.layout.config,
     basenode: state.ae.cenode.config,
     baseNodeKeys: state.ae.cenode.keys,
-    card: state.ae.cards.length ? state.ae.cards[0] : {},
+    card: state.ae.cards[0],
     modalUI : state.ae.modal.ui,
     isModalVisible : state.ae.modal.visible,
 });
