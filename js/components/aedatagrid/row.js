@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image, TouchableHighlight, TouchableOpacity, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Content, Button, View, H3, Text, Header, Title, Icon, Card, CardItem, List, ListItem } from 'native-base';
+import { Container, Content, Button, View, Text,  Icon } from 'native-base';
 
 import { NumericCell, TextCell } from './cell.js';
 import styles from './styles';
@@ -68,26 +68,6 @@ class GridRow extends Component {
 
     componentDidMount() {
 
-/*
-        let rowKeyData = this.props.keyColunms
-            .filter(function (gc) {
-                return gc.logicalColumn.dbColumn.primaryKey;
-            })
-            .map(function (gc) {
-                let val = this.props.rowData[gc.logicalColumn.dbColumn.code];
-                return { primaryKey: val, [gc.logicalColumn.dbColumn.code]: val }
-            }.bind(this));
-        rowKeyData = rowKeyData.length ? rowKeyData[0] : {};
-        let keyCoulumns = this.props.keyColunms
-            .filter(function (gc) {
-                return gc.logicalColumn.dbColumn.key;
-            })
-            .forEach(function (gc) {
-                let newKey = { [gc.logicalColumn.dbColumn.code]: this.props.rowData[gc.logicalColumn.dbColumn.code] }
-                Object.assign(rowKeyData, newKey);
-            }.bind(this));
-        this.setState({ "rowKeyData": rowKeyData });
-*/
     }
 
     render() {

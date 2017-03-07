@@ -13,7 +13,7 @@ const {width, height} = Dimensions.get('window');
 const styles = StyleSheet.create({
 
   container: {
-    height: height*0.7,
+    //height: height*0.8,
  //   backgroundColor: 'lightblue',
   },
 });
@@ -98,6 +98,8 @@ export default class AECardGrid extends AEBaseComponent {
             <ListView style={styles.container}
                 enableEmptySections ={true}
                 dataSource={dataSource}
+                scrollRenderAheadDistance={100}
+                initialListSize={3}
                 renderRow={(rowData) => this._renderRow(rowData, header, keyColumns)}
                 />
         );

@@ -27,7 +27,6 @@ class AEDashBoard extends Component {
 
 
   render() {
-     console.log("isSpinner :", this.props.isSpinner);
     return (
  
       <AEContainer  modalVisible={false}>
@@ -37,9 +36,8 @@ class AEDashBoard extends Component {
           </Button>
           <Title>Dashboard</Title>
         </AEHeader>
-        <Content>
-          {this._renderNavigator()}
-         </Content> 
+         {this._renderNavigator()}
+       
       </AEContainer>
 
     );
@@ -53,7 +51,7 @@ function bindActions(dispatch) {
 }
 
 const mapStateToProps = state => ({ 
-  isSpinner: state.ae.global.isSpinner
+ // isSpinner: state.ae.global.isSpinner
 });
 
 export default connect(mapStateToProps, bindActions)(AEDashBoard);   

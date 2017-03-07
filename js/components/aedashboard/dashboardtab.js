@@ -7,7 +7,7 @@ import { CheckBox as NBCheckBox, Card as NBCard, CardItem as NBCardItem, Text as
 import AEBaseComponent from '../../widgets/base/AEBaseComponent';
 import AECardGrid from '../aecardgrid';
 import { getBindingIdByNodeId, getDataByBindingId, getAllBindingIdsForNodeId } from '../../utils/uiData';
-
+import { getGridDataByGridId } from '../../services/api';
 
 
 export default class DashBoardTab extends AEBaseComponent {  // eslint-disable-line
@@ -19,6 +19,9 @@ export default class DashBoardTab extends AEBaseComponent {  // eslint-disable-l
 
   constructor(props) {
     super(props);
+    this.state = {
+      data: []
+    }
 
     this._gridCallBacks = this._gridCallBacks.bind(this);
   }
@@ -41,6 +44,26 @@ export default class DashBoardTab extends AEBaseComponent {  // eslint-disable-l
     };
   }
 
+  componentDidMount() {
+    switch (this.props.config.cardType) {
+      // call grid data by grid ID
+      case "Grid":
+        console.log("Getting Grid data for card ", this.props.config.grid.configObjectId);
+        const response = getGridDataByGridId(this.props.config.grid.configObjectId);
+        response.then(function (result) {
+          const data = result.data.returnData.data;
+          this.setState({ data });
+        }.bind(this))
+          .catch(function (error) {
+            console.log("DashBoard data query error ",error);
+          });
+          break;
+      default:
+        console.log("Unsupported config tyep ");
+    }
+
+  }
+
   _onGridDetail(keys, gridConfigId) {
     this.props.onGridDetail(keys, gridConfigId, this.props.nodeId);
   }
@@ -54,7 +77,7 @@ export default class DashBoardTab extends AEBaseComponent {  // eslint-disable-l
 
 
   _renderGrid(grid) {
-    return (<AECardGrid searchText="" key={grid.configObjectId} config={grid} data={this.props.data} {...this._gridCallBacks() }> </AECardGrid>);
+    return (<AECardGrid searchText="" key={grid.configObjectId} config={grid} data={this.state.data} {...this._gridCallBacks() }> </AECardGrid>);
   }
 
   _renderTab() {
@@ -69,14 +92,15 @@ export default class DashBoardTab extends AEBaseComponent {  // eslint-disable-l
   }
 
   render() {
-    console.log("Rnder DashBoard Tab ",this.props.config.displayLabel);
+    console.log("Rnder DashBoard Tab ", this.props.config.displayLabel);
     return (
-      
-        <RECard containerStyle={{  marginHorizontal : 0, marginVertical : 5 }} titleStyle={this.getInitialStyle().dividerItemText}
-          title={this.props.config.displayLabel}>
-          {this._renderTab()}
-        </RECard>
-     
+      this._renderTab()
+/*
+      <RECard containerStyle={{ marginHorizontal: 0, marginVertical: 0 }} titleStyle={this.getInitialStyle().dividerItemText}
+        title={this.props.config.displayLabel}>
+        {this._renderTab()}
+      </RECard>
+*/
     );
   }
 }

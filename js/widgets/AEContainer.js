@@ -13,6 +13,7 @@ import AEModalContent from './AEModalContent';
 import AECard from '../components/aecard';
 import AEGridContainer from '../components/aedatagrid/container';
 import AETabLayoutHeader from '../components/tablayout/AETabLayoutHeader';
+import DashBoardTabNavigator from '../components/aedashboard/dashboardtabnavigator';
 
 
 export default class AEContainer extends AEBaseComponent {
@@ -74,7 +75,8 @@ export default class AEContainer extends AEBaseComponent {
         if (item && (_.get(item, 'type', null) == ViewNB || _.get(item, 'type', null) == Content
           || _.get(item, 'type', null) == Image || _.get(item, 'type', null) == View
           || _.get(item, 'type', null) == ScrollView || _.get(item, 'type', null) == AEModal)
-          || _.get(item, 'type', null) == AEGridContainer) {
+          || _.get(item, 'type', null) == AEGridContainer
+          || _.get(item, 'type', null) == DashBoardTabNavigator ) {
 
           return true;
         }
@@ -85,7 +87,8 @@ export default class AEContainer extends AEBaseComponent {
       if (this.props.children && (this.props.children.type == Content || this.props.children.type == ViewNB
         || this.props.children.type == View || this.props.children.type == Image
         || this.props.children.type == ScrollView || _.get(item, 'type', null) == AEModal
-        || _.get(item, 'type', null) == AEGridContainer )) {
+        || _.get(item, 'type', null) == AEGridContainer 
+        || _.get(item, 'type', null) == DashBoardTabNavigator )) {
         return this.props.children;
       }
     }
