@@ -122,14 +122,21 @@ export default function (state = initialState, action) {
       return {
       ...state,
       grid: {config:action.config, data:action.data},
-      };
-  
+    };
+    
     case gridaction.SAVE_GRID_DATA:
       return {
       ...state,
        grid: {config:Object.assign({}, state.grid.config), data:action.data},
       };
     
+    case ceaction.PUT_CE_AND_CE_NODE_CONFIG:
+      return {
+        ...state,
+        ce: {config:action.ce},
+        cenode: {config:action.cenode, keys:{}},
+      };
+
     case ceaction.SAVE_CE_CONFIG:
       return {
       ...state,

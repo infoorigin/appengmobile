@@ -2,7 +2,7 @@
 /* eslint-disable import/no-commonjs */
 
 import React, { Component } from 'react';
-import { Animated, View, Image, Text, Dimensions, StyleSheet } from 'react-native';
+import { WebView , Animated, View, Image, Text, Dimensions, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { changeDashBoardTabIndex } from '../../actions/user';
 import DashBoardTab from './dashboardtab';
@@ -87,13 +87,16 @@ class DashBoardTabNavigator extends Component {
   render() {
     
     return (
+
+    
     <ScrollableTabView
       onChangeTab = {this._onChangeTab}
       tabBarPosition ="bottom"
       renderTabBar={() => <ScrollableTabBar />}    >
       {this._renderTabs()}
-    </ScrollableTabView> );
+    </ScrollableTabView> 
     
+    );
   }
 }
 

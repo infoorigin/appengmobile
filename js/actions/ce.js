@@ -11,6 +11,7 @@ export const FORM_ACTION_RESPONSE='FORM_ACTION_RESPONSE';
 export const PUT_ACTIVE_NODE_CONFIG = 'PUT_ACTIVE_NODE_CONFIG';
 export const PUT_BASE_NODE_KEYS = 'PUT_BASE_NODE_KEYS';
 export const SUBMIT_CARD_NODE_DATA = 'SUBMIT_CARD_NODE_DATA';
+export const PUT_CE_AND_CE_NODE_CONFIG = 'PUT_CE_AND_CE_NODE_CONFIG';
 
 export function putFormActionResponse(response){
   return{
@@ -30,6 +31,14 @@ export function saveCENodeConfig(config) {
   return{
     type: SAVE_CE_NODE_CONFIG,
     config: config,
+  };
+}
+
+export function putCEAndCENodeConfig(ce, cenode) {
+  return{
+    type: PUT_CE_AND_CE_NODE_CONFIG,
+    ce,
+    cenode,
   };
 }
 

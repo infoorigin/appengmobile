@@ -77,7 +77,7 @@ export default class DashBoardTab extends AEBaseComponent {  // eslint-disable-l
 
 
   _renderGrid(grid) {
-    return (<AECardGrid searchText="" key={grid.configObjectId} config={grid} data={this.state.data} {...this._gridCallBacks() }> </AECardGrid>);
+    return (<AECardGrid searchText="" key={grid.configObjectId} config={grid} data={this.state.data}> </AECardGrid>);
   }
 
   _renderTab() {

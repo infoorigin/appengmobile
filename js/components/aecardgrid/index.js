@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import {Dimensions, StyleSheet, Modal, Image, TouchableHighlight, Alert, ListView } from 'react-native';
-import { Text, List, ListItem } from 'native-base';
+import { View, Text, List, ListItem } from 'native-base';
+import { connect } from 'react-redux';
 import AEBaseComponent from '../../widgets/base/AEBaseComponent';
 
 import GridRow from './row';
 import uuid from 'uuid';
 const contentscreenBg = require('../../../img/basescreen.png');
 import { getPrivilege } from '../../services/usercontext.js';
+import {gridAction, configToStandardGridAction, NEW_CE_RENDER_BASE_GRID} from '../../actions/grid';
 
 const {width, height} = Dimensions.get('window');
 
@@ -18,7 +20,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class AECardGrid extends AEBaseComponent {
+class AECardGrid extends AEBaseComponent {
     static propTypes = {
         config: React.PropTypes.object,
         data: React.PropTypes.array,
@@ -26,13 +28,15 @@ export default class AECardGrid extends AEBaseComponent {
 
     constructor(props) {
         super(props);
-        this._onGridDetail = this._onGridDetail.bind(this);
+        this._onGridAction = this._onGridAction.bind(this);
 
     }
 
     _gridHeader() {
         let headerdata = this.props.config.gridColumns;
-        headerdata = headerdata.filter(function (d) { return d.actionColoum == false; });
+         // Skip the action columns which are not mapped to logical columns
+        headerdata = headerdata.filter(function (d) { return  d.visible && d.logicalColumn && d.logicalColumn.dbColumn ; });
+        
         headerdata = headerdata.sort(function (d1, d2) {
             if (d1.order > d2.order) {
                 return 1;
@@ -42,6 +46,7 @@ export default class AECardGrid extends AEBaseComponent {
                 return 0;
             }
         });
+        headerdata.forEach(function (d) { console.log(d.headerName, d.visible) });
         return headerdata;
     }
 
@@ -52,23 +57,40 @@ export default class AECardGrid extends AEBaseComponent {
         return keyColunms;
     }
 
-    _onGridDetail(keys) {
-        this.props.onGridDetail(keys, this.props.config.configObjectId);
+    _rowActions(){
+        let actions = this.props.config.gridColumns
+                        .filter(function (d) { return  d.actionColoum && d.visible; })
+                        .map(function (d) { 
+                            return {
+                                type : configToStandardGridAction(NEW_CE_RENDER_BASE_GRID),
+                                target : d.goToLink,
+                                icon : d.icon,
+                                actionColumnType : d.actionColoumType,
+                                targetConfig : d.goToLink,
+                                dbCode : d.logicalColumn && d.logicalColumn.dbColumn ? d.logicalColumn.dbColumn.code :""
+                            }
+                         })
+         return actions;                
+    }
+
+    _onGridAction(action, keys) {
+        console.log(" _onGridAction: ", action, keys);
+        this.props.onGridAction(action, keys);
     }
 
 
 
-    _renderRow(rowData, header, keyColumns) {
-        return (<GridRow key={uuid.v1()} keyColumns={keyColumns} data={rowData} header={header} onGridDetail={this._onGridDetail} >
+    _renderRow(rowData, header, keyColumns, actions) {
+        return (<GridRow key={uuid.v1()} keyColumns={keyColumns} data={rowData} header={header} actions={actions} onGridAction={this._onGridAction} >
         </GridRow>
         );
 
     }
 
-    _filtertedData() {
+    _filtertedData(header) {
         const searchText = this.props.searchText ? this.props.searchText : "";
         const searchTextRegex = new RegExp(searchText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "i");
-        let filteredColumns = this._gridHeader().filter(function (gcolumn) {
+        let filteredColumns = header.filter(function (gcolumn) {
             if (getPrivilege(gcolumn).privilegeType) {
                 return true;
             }
@@ -89,33 +111,23 @@ export default class AECardGrid extends AEBaseComponent {
     }
 
     render() {
-        let header = this._gridHeader();
-        let keyColumns = this._keyColumns();
-        console.log("**Sudhr 4**");
-        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-        var dataSource = ds.cloneWithRows(this._filtertedData());
+       const header = this._gridHeader();
+        const keyColumns = this._keyColumns();
+        const actions = this._rowActions();
+         console.log("Render AEECardGrid ",actions);
+       
+       const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        var dataSource = ds.cloneWithRows(this._filtertedData(header));
         return (
             <ListView style={styles.container}
                 enableEmptySections ={true}
                 dataSource={dataSource}
                 scrollRenderAheadDistance={100}
                 initialListSize={3}
-                renderRow={(rowData) => this._renderRow(rowData, header, keyColumns)}
+                renderRow={(rowData) => this._renderRow(rowData, header, keyColumns, actions)}
                 />
-        );
-
-        /*
-                 return (
-                    <List dataArray={this.props.data}
-                            renderRow={(item, i) =>
-                            <ListItem>
-                                <GridRow key={i} keyColumns={keyColumns} data={item} header={header} onGridDetail={this._onGridDetail} >
-                                </GridRow>
-                            </ListItem>
-                        }>
-                    </List>
-                );
-                */
+        );  
+  
     }
 
     componentDidMount() {
@@ -123,4 +135,16 @@ export default class AECardGrid extends AEBaseComponent {
     }
 
 }
+
+function bindActions(dispatch) {
+  return {
+    onGridAction: (action , keys) => dispatch(gridAction(action , keys)),
+  };
+}
+
+const mapStateToProps = state => ({
+  
+});
+
+ export default connect(mapStateToProps, bindActions)(AECardGrid);   
 

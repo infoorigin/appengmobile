@@ -8,6 +8,8 @@ export const PUT_ACTIVE_NODE_GRID_DATA = 'PUT_ACTIVE_NODE_GRID_DATA';
 export const SAVE_GRID_CONFIG_DATA = 'SAVE_GRID_CONFIG_DATA';
 export const RENDER_BASE_GRID = 'RENDER_BASE_GRID';
 export const SET_GRID_HOME = 'SET_GRID_HOME';
+export const NEW_CE_RENDER_BASE_GRID = 'NEW_CE_RENDER_BASE_GRID';
+export const INVALID_GRID_ACTION = 'INVALID_GRID_ACTION';
 
 export function setGridHome(ce, ceNode, grid){
   return{
@@ -40,9 +42,9 @@ export function putActiveNodeGridConfig(config) {
   };
 }
 
-export function gridAction(actionType,keys) {
+export function gridAction(action, keys) {
   return{
-    type: actionType,
+    ...action,
     keys: keys,
   };
 }
@@ -79,6 +81,16 @@ export function gridDetailAction(keys, cardConfigId, gridConfigId, nodeId){
 
   };
 }
+
+export function configToStandardGridAction(configAction){
+  switch(configAction){
+    case NEW_CE_RENDER_BASE_GRID : return NEW_CE_RENDER_BASE_GRID;
+    default : return INVALID_GRID_ACTION;
+  }
+
+}
+
+
 
 
 

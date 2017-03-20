@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
-import { Image, TouchableHighlight, TouchableOpacity, Alert } from 'react-native';
+import { Image, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Content, Button, View, H3, Text, Header, Title, Icon, Card, CardItem, List, ListItem } from 'native-base';
+import {  View, Text, Header, Title, Icon } from 'native-base';
 
 import { NumericCell, TextCell } from './cell.js';
 import styles from './styles';
 import { getPrivilege } from '../../services/usercontext.js';
 import AEBaseComponent from '../../widgets/base/AEBaseComponent'
-import { RENDER_GRID_DETAIL, gridAction } from '../../actions/grid';
-import { RENDER_LAYOUT } from '../../actions/layout';
-import * as ceActions from '../../actions/ce.js';
 
 const rightArrowImage = require('../../../img/Icon-Arrow-Right.png');
 
@@ -45,9 +42,9 @@ export default class GridRow extends AEBaseComponent {
 
 
     recordClicked() {
-        let keys = this._keys();
-        console.log('Key Selected----', keys);
-        this.props.onGridDetail(keys);
+        const action = this.props.actions[0]
+        const keys = this._keys();
+        this.props.onGridAction(action, keys);
     }
 
     getElementsWithPrivilege() {
@@ -90,6 +87,19 @@ export default class GridRow extends AEBaseComponent {
         };
     }
 
+    _rowActions(){
+        if(this.props.actions && this.props.actions.length == 1){
+            return (
+                <TouchableOpacity style={styles.gridRowDetailLink} onPress={this.recordClicked}>
+                        <Image source={rightArrowImage} style={styles.gridRowDetailLinkImage}></Image>
+                    </TouchableOpacity>
+            );
+        }
+        else
+            return null;
+    
+    }
+
     render() {
        
         return (
@@ -116,11 +126,9 @@ export default class GridRow extends AEBaseComponent {
 
                     }.bind(this))}
                 </View>
-
-                <TouchableOpacity style={styles.gridRowDetailLink} onPress={this.recordClicked}>
-                    <Image source={rightArrowImage} style={styles.gridRowDetailLinkImage}></Image>
-                </TouchableOpacity>
-
+                
+                { this._rowActions() }
+                
             </View>
 
 

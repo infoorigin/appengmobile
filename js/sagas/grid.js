@@ -8,12 +8,26 @@ import {
   setNodeData, setNodeKeys, openEditForm, fetchCompositeEntity, getCompositeEntity, getCompositeEntityNode,
   getActiveCompositeEntityNode, setActiveNode, findNodeFromCETree, getNodeById, queryNodeData
 } from './ce';
-import { putCENodKey } from '../actions/ce';
+import { putCENodKey, putCEAndCENodeConfig } from '../actions/ce';
+import { renderLayoutAction } from '../actions/layout';
 import { putCardsData } from '../actions/layout';
 import { openLayout, findCardByIdFromState, updateCardState } from './layout';
 import { getConfig, getGridData } from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
 import { showSpinner, hideSpinner, hideSpinnerAndEnableRender, showSpinnerAndDisableRender } from '../actions/aebase';
+
+export function* renderNewCEBaseGrid(action){
+    console.log(" Grid Action from Sagas :", action);
+    const ce = yield call(fetchCompositeEntity, action.targetConfig);
+    console.log("Received CENode :",ce.rootNode.configObjectId) ;
+    const cenode = ce.rootNode;
+    const puta = putCEAndCENodeConfig(ce, cenode);
+    console.log(" putnoede : ", puta.cenode.configObjectId) ;
+    yield put(putCEAndCENodeConfig(ce, cenode)) ;
+    console.log(" Publishing Render Layout ") ;
+    yield put(renderLayoutAction(action.keys));
+    console.log(" Action posted for renderNewCEBaseGrid ") ;
+} 
 
 export function* activeNodeGrid(action) {
   try {
@@ -39,7 +53,7 @@ export function* renderBaseGrid(action) {
     //yield put(showSpinnerAndDisableRender());
     //Fetch and Set CE and Base Node Configs to state
     
-    const ce = yield call(fetchCompositeEntity, action);
+    const ce = yield call(fetchCompositeEntity, action.configId);
     const ceNode = ce.rootNode;
     // Fetch and Set Grid Config to state , 
     const grid = yield call(fetchGridConfig, ceNode.gridId);

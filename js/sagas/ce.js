@@ -27,10 +27,10 @@ export const geLastnavigation = (state) => state.cardNavigation.routes[state.car
 
 
 // fetch the Config Item
-export function* fetchCompositeEntity(action) {
-    console.log("calling api for to get CE for  action ", action)
+export function* fetchCompositeEntity(configId) {
+    console.log("calling api for to get CE for  action ", configId)
     // call the api to get the ce
-    const result = yield call(getConfig, action.configId);
+    const result = yield call(getConfig, configId);
     const config = result.data.returnData.data;
     return config;
 

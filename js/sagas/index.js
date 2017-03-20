@@ -1,7 +1,7 @@
 import { takeLatest } from "redux-saga";
 import { fork } from "redux-saga/effects";
-import { renderGridDetail, renderBaseGrid } from "./grid";
-import { RENDER_GRID_DETAIL, RENDER_BASE_GRID} from "../actions/grid";
+import { renderNewCEBaseGrid, renderGridDetail, renderBaseGrid } from "./grid";
+import { NEW_CE_RENDER_BASE_GRID, RENDER_GRID_DETAIL, RENDER_BASE_GRID} from "../actions/grid";
 import {  submitNodeDataToDB, submitCardNodeDataToDB } from "./ce";
 import {  SUBMIT_NODE_DATA, SUBMIT_CARD_NODE_DATA } from "../actions/ce";
 import {renderActiveTab, renderLayout, updateCardUIData} from './layout';
@@ -26,5 +26,6 @@ export function* sagas() {
     fork(takeLatest, SAVE_MODAL_DATA, submitModalNodeDataToDB),
     fork(takeLatest, LOGIN, login),
     fork(takeLatest, CHANGE_DASHBOARD_TAB, changeDashBoardIndex),
+    fork(takeLatest, NEW_CE_RENDER_BASE_GRID, renderNewCEBaseGrid),
   ];
 }
