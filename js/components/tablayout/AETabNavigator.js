@@ -58,8 +58,9 @@ export default class AETabNavigator extends AEBaseComponent {
     render() {
         let headerandscene = this.props.renderHeaderAndScene();
         let modelContent = this.props.renderModal();
+        let modalAction = this.props.renderModalAction();
         return (
-            <AEContainer modalVisible={this.props.modalVisible} onModalHide={this._onModalHide}>
+            <AEContainer modalActionVisible={this.props.modalActionVisible} modalVisible={this.props.modalVisible} onModalHide={this._onModalHide}>
                 {headerandscene[0]}
 
                 {headerandscene[1]}
@@ -70,6 +71,8 @@ export default class AETabNavigator extends AEBaseComponent {
                 </Footer>
 
                 {modelContent}
+
+                 {modalAction}
 
             </AEContainer>
         );

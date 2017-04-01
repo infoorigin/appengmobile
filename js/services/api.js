@@ -57,6 +57,10 @@ export function getCENodeData(ceid, leid, key) {
   return axios.get(baseUrl + '/rest/' + ceid + '/' + leid + '/' + key, getHeaders('db6003e6-0093-4e3d-a8d0-d4ff26b750c2'));
 }
 
+export function getlayoutData(ceid, key) {
+  return axios.get(baseUrl + '/rest/mobile/tablayout/' + ceid + '/'+ key, getHeaders('db6003e6-0093-4e3d-a8d0-d4ff26b750c2'));
+}
+
 export function getSequence(ceid, leid){
   return axios.get(baseUrl + '/rest/seq/' + ceid + '/' + leid , getHeaders('db6003e6-0093-4e3d-a8d0-d4ff26b750c2'));
 }

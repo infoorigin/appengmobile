@@ -26,7 +26,7 @@ export function* addFormModalUI(action) {
             const seqData = seqresult.data.message;
             console.log("seqData baseNodeKeys :", seqData, action.baseKeys);
             let nodeData = createEmptyNodeData(node, seqData, 0, action.baseKeys);
-            console.log(" nodeData :",nodeData);
+           // console.log(" nodeData :",nodeData);
             yield put(putModalUIAndData(formConfig, nodeData));
         }
         else

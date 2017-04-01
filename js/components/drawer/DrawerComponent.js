@@ -24,6 +24,16 @@ const navitems = [
     nav: 'Drafts',
     //path:'/schedule'
   },
+  {
+    name: 'WebView',
+    nav: 'WebView',
+    //path:'/schedule'
+  },
+  {
+    name: 'HTMLView',
+    nav: 'HTMLView',
+    //path:'/schedule'
+  },
 ]
 
 const menu = [{

@@ -68,6 +68,7 @@ cards[
 
 export default function (state = initialState, action) {
 
+  const payload = action.payload ? action.payload :{};
   switch (action.type) {
 
     case ceaction.FORM_ACTION_RESPONSE:
@@ -180,11 +181,22 @@ export default function (state = initialState, action) {
        cenode:  update(state.cenode, {$merge: {keys:action.keys}})
     };
 
+    case layoutaction.RESET_TAB_LAYOUT_HOME :
+       return {
+        ...state,
+        ce: {},
+        cenode: {},
+        layout : {},
+        cards: {},
+      };
+    
     case layoutaction.SET_TAB_LAYOUT_HOME:
     return {
       ...state,
-      layout : {config:action.config},
-      cenode:  update(state.cenode, {$merge: {keys:action.keys}})
+      ce: {config:payload.ce},
+      cenode: {config:payload.cenode, keys:payload.keys, processactions : payload.processactions, buttons : payload.buttons },
+      layout : {config:payload.layout},
+      cards: payload.cards,
     };
 
     case layoutaction.SAVE_LAYOUT_CONFIG:

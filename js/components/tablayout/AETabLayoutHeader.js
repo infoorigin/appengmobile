@@ -73,6 +73,14 @@ export default class AETabLayoutHeader extends AEBaseComponent {
                     <Icon name="ios-menu" />
             </Button>
         );
+
+       buttons.push(
+                <Button key="modalactions" transparent onPress={this.props.onEnableModalAction}>
+                        <Icon name="ios-more" />
+                </Button>
+        );
+       
+        /*
         //TODO create new attribute for inline save option
         if(this.props.card.node.editFormId) {
             buttons.push(
@@ -81,6 +89,7 @@ export default class AETabLayoutHeader extends AEBaseComponent {
                 </Button>
             );
         }
+        */
         return (
             <AEHeader>
                 <Title>{title}</Title>

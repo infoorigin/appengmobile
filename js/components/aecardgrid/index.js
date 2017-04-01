@@ -9,6 +9,7 @@ import uuid from 'uuid';
 const contentscreenBg = require('../../../img/basescreen.png');
 import { getPrivilege } from '../../services/usercontext.js';
 import {gridAction, configToStandardGridAction, NEW_CE_RENDER_BASE_GRID} from '../../actions/grid';
+import {RENDER_LAYOUT_FOR_CE} from '../../actions/layout';
 
 const {width, height} = Dimensions.get('window');
 
@@ -62,7 +63,7 @@ class AECardGrid extends AEBaseComponent {
                         .filter(function (d) { return  d.actionColoum && d.visible; })
                         .map(function (d) { 
                             return {
-                                type : configToStandardGridAction(NEW_CE_RENDER_BASE_GRID),
+                                type : configToStandardGridAction(RENDER_LAYOUT_FOR_CE),
                                 target : d.goToLink,
                                 icon : d.icon,
                                 actionColumnType : d.actionColoumType,

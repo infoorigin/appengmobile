@@ -4,8 +4,8 @@ import { renderNewCEBaseGrid, renderGridDetail, renderBaseGrid } from "./grid";
 import { NEW_CE_RENDER_BASE_GRID, RENDER_GRID_DETAIL, RENDER_BASE_GRID} from "../actions/grid";
 import {  submitNodeDataToDB, submitCardNodeDataToDB } from "./ce";
 import {  SUBMIT_NODE_DATA, SUBMIT_CARD_NODE_DATA } from "../actions/ce";
-import {renderActiveTab, renderLayout, updateCardUIData} from './layout';
-import { RENDER_ACTIVE_TAB, RENDER_LAYOUT, UPDATE_CARD_UI_DATA} from "../actions/layout";
+import {renderActiveTab, renderLayout, updateCardUIData, renderLayoutForCE} from './layout';
+import { RENDER_ACTIVE_TAB, RENDER_LAYOUT, UPDATE_CARD_UI_DATA, RENDER_LAYOUT_FOR_CE} from "../actions/layout";
 import { MODAL_ADD_UI, SAVE_MODAL_DATA} from "../actions/modal";
 import { addFormModalUI, submitModalNodeDataToDB } from  "./modal";
 import { LOGIN, CHANGE_DASHBOARD_TAB} from "../actions/user";
@@ -27,5 +27,6 @@ export function* sagas() {
     fork(takeLatest, LOGIN, login),
     fork(takeLatest, CHANGE_DASHBOARD_TAB, changeDashBoardIndex),
     fork(takeLatest, NEW_CE_RENDER_BASE_GRID, renderNewCEBaseGrid),
+    fork(takeLatest, RENDER_LAYOUT_FOR_CE, renderLayoutForCE),
   ];
 }

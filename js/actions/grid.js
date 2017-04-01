@@ -1,4 +1,6 @@
 
+import {RENDER_LAYOUT_FOR_CE} from './layout';
+
 export const ACTIVE_NODE_GRID = 'ACTIVE_NODE_GRID';
 export const SAVE_GRID_DATA = 'SAVE_GRID_DATA';
 export const SAVE_GRID_CONFIG = 'SAVE_GRID_CONFIG';
@@ -85,6 +87,7 @@ export function gridDetailAction(keys, cardConfigId, gridConfigId, nodeId){
 export function configToStandardGridAction(configAction){
   switch(configAction){
     case NEW_CE_RENDER_BASE_GRID : return NEW_CE_RENDER_BASE_GRID;
+    case RENDER_LAYOUT_FOR_CE : return RENDER_LAYOUT_FOR_CE;
     default : return INVALID_GRID_ACTION;
   }
 

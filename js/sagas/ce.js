@@ -96,6 +96,7 @@ export function* queryNodeData(ceNode, keys) {
     console.log("Getting Node Data for ", ceNode.compositeEntityId, ceNode.entityId, keys.primaryKey);
     let result = yield call(getCENodeData, ceNode.compositeEntityId, ceNode.entityId, keys.primaryKey);
     let responseData = result.data.returnData.data;
+    console.log("Received Node Data for ", ceNode.compositeEntityId, ceNode.entityId, keys.primaryKey);
     let ce = yield select(getCompositeEntity);
     let cetree = ce.treeModel;
     let nodeData = initCENodeDataMap(responseData, keys, cetree);

@@ -3,14 +3,23 @@ export const SAVE_LAYOUT_CONFIG = 'SAVE_LAYOUT_CONFIG';
 export const PUT_CARDS_DATA = 'PUT_CARDS_DATA';
 export const RENDER_ACTIVE_TAB = 'RENDER_ACTIVE_TAB';
 export const RENDER_LAYOUT = 'RENDER_LAYOUT';
+export const RENDER_LAYOUT_FOR_CE = 'RENDER_LAYOUT_FOR_CE';
 export const UPDATE_CARD_UI_DATA = 'UPDATE_CARD_UI_DATA';
 export const SET_TAB_LAYOUT_HOME = 'TAB_LAYOUT_HOME' ;
+export const RESET_TAB_LAYOUT_HOME = 'RESET_TAB_LAYOUT_HOME';
 
-export function setTabLayoutHome(config, keys) {
+
+export function resetLayoutHomeAction(){
+  return{
+    type: RESET_TAB_LAYOUT_HOME,
+  };
+}
+
+
+export function setTabLayoutHome(payload) {
   return{
     type: SET_TAB_LAYOUT_HOME,
-    config: config,
-    keys : keys,
+    payload,
   };
 }
 

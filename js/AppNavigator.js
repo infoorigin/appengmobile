@@ -25,6 +25,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import DrawerContent from './components/drawer/DrawerComponent';
 
+import AEWebEditor from './widgets/AEWebEditor';
+import AEHTMLView from './widgets/AEHTMLView';
 
 const SampleText = ({ children }) => (
   <Text style={styles.sampleText}>{children}</Text>
@@ -78,6 +80,25 @@ InboxScreen.navigationOptions = {
   },
 };
 
+const AEWebEditorScreen =  connect()(({ navigation, dispatch }) => {
+  return (
+     <AEWebEditor
+    navigation={navigation}
+    dispatch={dispatch}
+  />
+  );
+});
+
+const AEHTMLViewScreen =  connect()(({ navigation, dispatch }) => {
+  return (
+     <AEHTMLView
+    navigation={navigation}
+    dispatch={dispatch}
+  />
+  );
+});
+
+
 const DraftsScreen = ({ navigation }) => (
   <MyNavScreen
     banner={'Drafts Screen'}
@@ -104,6 +125,8 @@ const DrawerRoutes = {
   Drafts: { screen: DraftsScreen },
   DataGrid : { screen: DataGrid },
   TabLayout : { screen : TabLayout},
+  WebView : {screen : AEWebEditorScreen},
+  HTMLView : {screen : AEHTMLViewScreen},
 };
 
 const DrawerMenuContent =  connect(

@@ -21,8 +21,6 @@ export function* renderNewCEBaseGrid(action){
     const ce = yield call(fetchCompositeEntity, action.targetConfig);
     console.log("Received CENode :",ce.rootNode.configObjectId) ;
     const cenode = ce.rootNode;
-    const puta = putCEAndCENodeConfig(ce, cenode);
-    console.log(" putnoede : ", puta.cenode.configObjectId) ;
     yield put(putCEAndCENodeConfig(ce, cenode)) ;
     console.log(" Publishing Render Layout ") ;
     yield put(renderLayoutAction(action.keys));

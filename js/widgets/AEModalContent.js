@@ -84,7 +84,6 @@ class AEModalContent extends AEBaseComponent {
 
   render() {
 
-    console.log(" AE Sudhir Modal");
     const contentContainerStyle = this.props.contentContainerStyle || {};
     contentContainerStyle.padding = (this.props.padder) ? this.getTheme().contentPadding : 0;
     return(

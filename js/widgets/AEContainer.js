@@ -10,6 +10,7 @@ import computeProps from '../utils/computeProps';
 import AEHeader from './AEHeader';
 import AEModal from './AEModal';
 import AEModalContent from './AEModalContent';
+import AEModalActions from './AEModalActions';
 import AECard from '../components/aecard';
 import AEGridContainer from '../components/aedatagrid/container';
 import AETabLayoutHeader from '../components/tablayout/AETabLayoutHeader';
@@ -51,18 +52,37 @@ export default class AEContainer extends AEBaseComponent {
     }
   }
 
-  renderModalContent() {
+   renderModalAction() {
     if (Array.isArray(this.props.children)) {
 
       return _.filter(this.props.children, function (item) {
-        if (item && _.get(item, 'type', null) == AEModalContent) {
+        if (item && _.get(item, 'type', null) == AEModalActions ) {
           return true;
         }
       });
     }
 
     else {
-      if (this.props.children && (this.props.children.type == AEModalContent )) {
+      if (this.props.children 
+        && ( this.props.children.type == AEModalActions)) {
+        return this.props.children;
+      }
+    }
+  }
+
+  renderModalContent() {
+    if (Array.isArray(this.props.children)) {
+
+      return _.filter(this.props.children, function (item) {
+        if (item && _.get(item, 'type', null) == AEModalContent ) {
+          return true;
+        }
+      });
+    }
+
+    else {
+      if (this.props.children 
+        && (this.props.children.type == AEModalContent )) {
         return this.props.children;
       }
     }
@@ -123,18 +143,33 @@ export default class AEContainer extends AEBaseComponent {
 
   renderModal() {
     let content = this.renderModalContent();
-    let modalContent = this.props.modalVisible ? [this.renderHeader(), content] : (<AEModalContent></AEModalContent>) ;
-    return (
-      <Modal
-          animationType={"slide"}
-          transparent={false}
-          visible={this.props.modalVisible}
-          onRequestClose={() => {console.log("Modal Closed")}}
-       >
-          { modalContent }
-       </Modal>
-    );
+    let action = this.props.modalActionVisible ?  this.renderModalAction() : <View/>;
+    let modalContent = this.props.modalVisible ? [this.renderHeader(), content] : <View/> ;
+    
+    let modals =   [<Modal key="contentModal"
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.props.modalVisible}
+                    onRequestClose={() => {console.log("Modal Closed")}}
+                >
+                  { modalContent }
+    </Modal>];
+
+    modals.push(<Modal key= "actionsModal"
+                    animationType={"slide"}
+                    transparent={true}
+                    visible={this.props.modalActionVisible ? true : false}
+                    onRequestClose={() => {console.log("Modal Closed")}}
+                >
+                  { action }
+    </Modal>)
+  
+    return modals;
+ 
   }
+
+  
+
 
   renderRegularScreen() {
     return (

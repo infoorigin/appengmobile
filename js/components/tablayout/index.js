@@ -12,6 +12,7 @@ import AEHeader from '../../widgets/AEHeader';
 import AETabNavigator from './AETabNavigator';
 import AECard from '../aecard';
 import AEModalContent from '../../widgets/AEModalContent';
+import AEModalActions from '../../widgets/AEModalActions';
 import AETabLayoutHeader from './AETabLayoutHeader';
 import { putCENodeData, submitNodeData, submitCardNodeDataAction } from '../../actions/ce';
 import { renderTabAction, updateCardUIDataAction } from '../../actions/layout';
@@ -30,7 +31,9 @@ class AETabLayout extends Component {  // eslint-disable-line
         this._renderHeaderAndScene = this._renderHeaderAndScene.bind(this);
         this._setDataForScene = this._setDataForScene.bind(this);
         this._renderModalContent = this._renderModalContent.bind(this);
+        this._renderModalAction = this._renderModalAction.bind(this);
         this.state = {
+            isModalActionVisible : false,
             searchText: ""
         }
 
@@ -58,6 +61,20 @@ class AETabLayout extends Component {  // eslint-disable-line
         // TO do chnage the API of CE Node for display name 
         let title = this.props.card.node.name ? this.props.card.node.name : "";
         return (<AETabLayoutHeader ref={(c) => this.tabHeader = c}  card={this.props.card} modalVisible={this.props.isModalVisible} {...this._headerCallBacks() }></AETabLayoutHeader>);
+    }
+    
+    _onModalAction(){
+        console.log("_onModalAction");
+        this.setState({
+            isModalActionVisible:false
+        });
+    }
+
+
+    _renderModalAction(){
+        return (
+        <AEModalActions onModalAction={this._onModalAction.bind(this)} ></AEModalActions>
+        );
     }
 
     _renderModalContent(){
@@ -122,6 +139,7 @@ class AETabLayout extends Component {  // eslint-disable-line
             onGridSearch: this._onGridSearch.bind(this),
             onAdd: this._onAdd.bind(this),
             onSave: this._onSave.bind(this),
+            onEnableModalAction : this._onEnableModalAction.bind(this),
             openMenu: this.props.openDrawer,
             onAddSave : this._onAddSave.bind(this),
             onCancelModal : this._onCancelModal.bind(this)
@@ -151,6 +169,13 @@ class AETabLayout extends Component {  // eslint-disable-line
         this.props.resetModal();
     }
 
+    _onEnableModalAction(){
+         console.log(" _onEnableModalAction called with state");
+         this.setState({
+            isModalActionVisible : true
+         });
+    }
+
     _onSave() {
         console.log(" _onSave called ");
         let cardConfigId = this.props.card.config.configObjectId;
@@ -176,6 +201,8 @@ class AETabLayout extends Component {  // eslint-disable-line
                 renderHeaderAndScene={this._renderHeaderAndScene}
                 modalVisible={this.props.isModalVisible}
                 renderModal={this._renderModalContent}
+                renderModalAction = {this._renderModalAction}
+                modalActionVisible={this.state.isModalActionVisible}
                 >
             </AETabNavigator>
            
@@ -218,6 +245,7 @@ const mapStateToProps = state => ({
     card: state.ae.cards[0],
     modalUI : state.ae.modal.ui,
     isModalVisible : state.ae.modal.visible,
+    isModalActionVisible : false,//state.ae.modal.actionvisible,
 });
 
 export default connect(mapStateToProps, bindAction)(AETabLayout); 
