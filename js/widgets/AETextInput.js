@@ -4,7 +4,7 @@ import React from 'react';
 import {View, TextInput, Text, Platform} from 'react-native';
 import AEBaseWidget from './base/AEBaseWidget';
 import computeProps from '../utils/computeProps';
-
+import { NO_PRIVILEGE, VIEW_PRIVILEGE, EDIT_PRIVILEGE, getPrivilege } from '../services/usercontext.js';
 
 export default class AETextInput extends AEBaseWidget {
 
@@ -53,7 +53,7 @@ constructor(props) {
                     height: 36,
                     padding: 7,
                     borderRadius: 4,
-                    borderColor: this.getTheme().inputBorderColor,
+                    borderColor: this.getTheme().inputNonEditableBorderColor,
                     borderWidth: 1,
                     marginBottom: 5,
                     color: this.getTheme().inputDisableColor,
@@ -99,33 +99,33 @@ constructor(props) {
        return defaultProps;
     }
 
-    _isTextArea(){
-        return this.props.config.type == "TextArea";
-    }
-
-    _multilineProps(){
-        if(this._isTextArea())
-            return {multiline : true, numberOfLines : 2};
-        else 
-            return {multiline : false};
-        
-    }
-
-   
-
-    render() { 
-       const styles = this.componentStyle();
-       const base = this._baseRender(styles);
-
-        return (
-            <View style={styles.formGroupStyle}>
-                {base.label}
-                <TextInput
+    _input(styles, privilege){
+        if(privilege == VIEW_PRIVILEGE){
+           return this._nonEditableField();
+       }
+       else {
+        return ( <TextInput
                     ref="input"
                     {...this.prepareRootProps(styles.textboxStyle) }
                     placeholderTextColor={this.getTheme().inputColorPlaceholder}
                     underlineColorAndroid='rgba(0,0,0,0)'
                     />
+        );
+       }
+    }
+
+
+    render() { 
+       const privilege = getPrivilege(this.props.config, this.props.user);
+       if(privilege == NO_PRIVILEGE) 
+           return null;
+
+       const styles = this.componentStyle();
+       const base = this._baseRender(styles);
+       return (
+            <View style={styles.formGroupStyle}>
+                {base.label}
+                {this._input(styles,privilege)}
                 {base.help}
                 {base.error}
             </View>

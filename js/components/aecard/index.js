@@ -14,8 +14,6 @@ import AEFormSection from '../aeformsection';
 import AECardGrid from '../aecardgrid';
 import {getBindingIdByNodeId, getDataByBindingId, getAllBindingIdsForNodeId} from '../../utils/uiData';
 
-
-
 export default class  AECard extends AEBaseComponent {  // eslint-disable-line
 
 static propTypes = {
@@ -87,13 +85,13 @@ static propTypes = {
         let forms = uiBindingIds.map(function(uiBindingId){
             let sectiondata = getDataByBindingId(this.props.data, this.props.nodeId, uiBindingId)
             let section = form.sections[0];
-            return (<AEFormSection key={uiBindingId+section.configObjectId} bindingId={uiBindingId} config={section} data={sectiondata} {...this._callBacks()}> </AEFormSection>);
+            return (<AEFormSection key={uiBindingId+section.configObjectId} user={this.props.user} bindingId={uiBindingId} config={section} data={sectiondata} {...this._callBacks()}> </AEFormSection>);
         }.bind(this))
         return forms;
     }
 
     _renderGrid(grid){
-       return (<AECardGrid searchText={this.props.searchText} key={grid.configObjectId} config={grid} data={this.props.data} {...this._gridCallBacks()}> </AECardGrid>);
+       return (<AECardGrid user={this.props.user} searchText={this.props.searchText} key={grid.configObjectId} config={grid} data={this.props.data} {...this._gridCallBacks()}> </AECardGrid>);
     }
 
     _renderSingleForm(){ 
@@ -113,7 +111,6 @@ static propTypes = {
                 <RECard containerStyle={{margin: 5}} titleStyle = {this.getInitialStyle().dividerItemText} 
                     title='React Native Element Card'>
                     {this.props.uiItems.map(function(item, i){
-                        console.log("item.configObjectType :",item.configObjectType);
                         switch(item.configObjectType){
                             case "FormSection":
                                 return this._renderFormSection(item);

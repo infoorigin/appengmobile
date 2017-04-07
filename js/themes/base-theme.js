@@ -138,7 +138,8 @@ export default {
   inputBorderColor: '#D9D5DC',
   inputSuccessBorderColor: '#2b8339',
   inputErrorBorderColor: '#ed2f2f',
-  inputDisableColor: '#777777',
+  inputNonEditableBorderColor :'#F7F3FA',
+  inputDisableColor: '#454545',
   inputDisableBackGroundColor: '#eeeeee',
   inputErrorColor:'#a94442',
 

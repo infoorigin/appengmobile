@@ -6,12 +6,13 @@ import { NavigationActions } from 'react-navigation';
 import { getCompositeEntity, setActiveNode, getActiveCompositeEntityNode, getNodeById, queryNodeData, findParentNode } from './ce';
 import { putBaseNodeKeys } from '../actions/ce';
 import { fetchNodeActiveGridData, queryNodeGridData } from './grid';
-import { getConfig, getGridData, getlayoutData } from '../services/api';
+import { submitNodeData,getConfig, getGridData, getlayoutData } from '../services/api';
 import { HOMEROUTE } from '../AppNavigator';
 import { setTabLayoutHome, putCardsData, resetLayoutHomeAction } from '../actions/layout';
 import { putActiveNodeGridConfig } from '../actions/grid';
-import { isNodeDataExists, initCENodeDataMap } from '../utils/uiData';
+import { updateError, clearError, isNodeDataExists, initCENodeDataMap, getKeys, createAPIRequestData } from '../utils/uiData';
 import { showSpinner, hideSpinner } from '../actions/aebase';
+import { getCurrentUser } from './user';
 
 
 
@@ -20,14 +21,90 @@ export const getLayout = (state) => state.ae.layout.config
 export const getCards = (state) => state.ae.cards
 
 /**
+ * Submit User Process action to DB and route to dashboard
+ * @param {*} action 
+ */
+export function* submitLayoutAction(action) {
+    console.log("Action receive to submitLayoutAction :",action);
+    try {
+        const {card, isSuccess} = yield call(submitCardNodeDataToDBByBindingId, action) ;
+        console.log(" card, isSuccess ", isSuccess);
+        
+        if(isSuccess){
+            yield put(NavigationActions.navigate({ routeName: 'DashBoard' }));
+        }
+        else {
+            yield call(updateCardState, card);
+        }
+        
+        // route to dashboard 
+        //TODO preserver the on success routing target
+    } catch (error) {
+        console.log("submitCardNodeData failed", action, error);
+    }
+    
+}
+
+/**
+ * Upate layout data to db and no routing.
+ * @param {*} action 
+ */
+export function* submitCardNodeDataToDB(action) {
+    try {
+       const {card, isSuccess} =  submitCardNodeDataToDBByBindingId(action) 
+       // just upate the card state and re-render the same layout
+       yield call(updateCardState, card);
+    } catch (error) {
+        console.log("submitCardNodeData failed", action, error);
+    }
+}
+
+/**
+ * Submit Card data to DB 
+ * @param {*} card 
+ * @param {*} ceNode 
+ * @param {*} user 
+ * @param {*} bindingId 
+ */
+export function* submitCardNodeDataToDBByBindingId(action) {
+    console.log(" submitNodeDataToDB calling api");
+    // Get current logged in user
+    let user = yield select(getCurrentUser);
+    // Get the card 
+    let card = yield call(findCardByIdFromState, action.cardConfigId);
+    let ceNode = card.node;
+    let keysMap = yield call(getKeys, card.ui.data, ceNode.configObjectId, action.bindingId);
+    let keys = keysMap.toJS();
+    console.log("** keys **",keys);
+    // Get API Request Data 
+    let apiRequest = yield call(createAPIRequestData, card.ui.data, user.attributes, ceNode, action.bindingId, action.apiAction);
+    // call backend service
+    let result = yield call(submitNodeData, ceNode.compositeEntityId, keys, apiRequest);
+    if (result.data.status) {
+        console.log('=========================success=======================');
+        let nodeDataWithNoError = yield call(clearError, card.ui.data, ceNode.configObjectId, action.bindingId);
+        card = update(card, { ui: { $merge: { data: nodeDataWithNoError } } });
+        return {card, isSuccess:true} ;
+
+    } else {
+        console.log('=============================error===================');
+        let nodeDataWithError = yield call(updateError, card.ui.data, ceNode.configObjectId, action.bindingId, result.data.message);
+        card = update(card, { ui: { $merge: { data: nodeDataWithError } } });
+        return {card, isSuccess:false} ;
+    }
+    
+}
+
+
+/**
  * Calls from Dashboard Grid to Render Layout for a composite entity
  * @param {*} action 
  */
 export function* renderLayoutForCE(action) {
     try {
-        console.log(" renderLayoutForCE :",action) ;
+        console.log(" renderLayoutForCE :", action);
         yield fork(resetLayoutHome);
-        console.log(" forking done :") ;
+        console.log(" forking done :");
         let result = yield call(getlayoutData, action.targetConfig, action.keys.primaryKey);
         const ce = result.data.returnData.ce;
         const cenode = ce.rootNode;

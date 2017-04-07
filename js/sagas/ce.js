@@ -10,7 +10,6 @@ import { getConfig, getCENodeData, submitNodeData, baseFormUpdate } from '../ser
 import { HOMEROUTE } from '../AppNavigator';
 import { findNodeFromCETreeModel, keyColumns, initCENodeDataMap, updateKeys, createAPIRequestData, getKeys, updateError, clearError, getAllBindingIdsForNodeId } from '../utils/uiData';
 import { getCurrentUser } from './user';
-import { updateCardState, findCardByIdFromState } from './layout';
 
 
 export const getCompositeEntity = (state) => state.ae.ce.config
@@ -163,47 +162,9 @@ export function* findNodeFromCETree(nodeId) {
     return node;
 }
 
-function* submitCardNodeDataToDBByBindingId(card, ceNode, user, bindingId) {
-    console.log(" submitNodeDataToDB calling api");
-    let keysMap = yield call(getKeys, card.ui.data, ceNode.configObjectId, bindingId);
-    let keys = keysMap.toJS();
-    console.log("** keys **",keys);
-    // Get API Request Data 
-    let apiRequest = yield call(createAPIRequestData, card.ui.data, user.attributes, ceNode, bindingId);
-    // call backend service
-    let result = yield call(submitNodeData, ceNode.compositeEntityId, keys, apiRequest);
-    if (result.data.status) {
-        console.log('=========================success=======================');
-        let nodeDataWithNoError = yield call(clearError, card.ui.data, ceNode.configObjectId, bindingId);
-        card = update(card, { ui: { $merge: { data: nodeDataWithNoError } } });
 
-    } else {
-        console.log('=============================error===================');
-        let nodeDataWithError = yield call(updateError, card.ui.data, ceNode.configObjectId, bindingId, result.data.message);
-        card = update(card, { ui: { $merge: { data: nodeDataWithError } } });
-    }
-    yield call(updateCardState, card);
-}
 
-export function* submitCardNodeDataToDB(action) {
-    try {
-        // Get current logged in user
-        let user = yield select(getCurrentUser);
-        // Get the card 
-        let card = yield call(findCardByIdFromState, action.cardConfigId);
-        let ceNode = card.node;
 
-        if (action.bindingId != null) {
-            yield call(submitCardNodeDataToDBByBindingId, card, ceNode, user, action.bindingId)
-        }
-        else {
-            let allbindIds = getAllBindingIdsForNodeId(card.ui.data, ceNode.configObjectId);
-            yield allbindIds.map((bindingId) => call (submitCardNodeDataToDBByBindingId, card, ceNode, user, bindingId));
-        }
-    } catch (error) {
-        console.log("submitCardNodeData failed", action, error);
-    }
-}
 
 export function* submitNodeDataToDB(action) {
 

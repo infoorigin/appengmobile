@@ -118,7 +118,8 @@ export function updateApiData(apidata, stateMapData) {
 
 }
 
-export function createAPIRequestData(stateMapData, userattrbs, ceNode, bindingId) {
+export function createAPIRequestData(stateMapData, userattrbs, ceNode, bindingId, action) {
+    action = action ? action :"update" ;
     if (!isBindingIdExists(stateMapData, ceNode.configObjectId, bindingId)) {
         // throw exception
         return {};

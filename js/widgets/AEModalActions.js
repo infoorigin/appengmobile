@@ -1,38 +1,25 @@
 'use strict';
 
 import React from 'react';
-import { View,StyleSheet } from 'react-native';
+import _ from 'lodash';
+import { View, StyleSheet } from 'react-native';
 import { Button, Text } from 'native-base';
-import { connect } from 'react-redux';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AEBaseComponent from './base/AEBaseComponent';
 import computeProps from '../utils/computeProps';
-import AECard from '../components/aecard';
-import { updateAttributes } from '../utils/uiData';
-import {putModalData} from '../actions/modal';
-import _ from 'lodash';
+import { NO_PRIVILEGE, getPrivilege } from '../services/usercontext.js';
 
+export default class AEModalActions extends AEBaseComponent {
 
-class AEModalActions extends AEBaseComponent {
-
-  propTypes: {
-      padder: React.PropTypes.bool,
-      style : React.PropTypes.object,
-      disableKBDismissScroll: React.PropTypes.bool
-    }
-
-    constructor(props) {
-        super(props);
-        this._onModalButtonClick = this._onModalButtonClick.bind(this);
-    }
+  constructor(props) {
+    super(props);
+    this._onModalButtonClick = this._onModalButtonClick.bind(this);
+  }
 
   prepareRootProps() {
-
     var type = {
       backgroundColor: 'transparent',
       flex: 1
     }
-
     var defaultProps = {
       style: type,
       resetScrollToCoords: (this.props.disableKBDismissScroll) ? null : {
@@ -40,53 +27,56 @@ class AEModalActions extends AEBaseComponent {
         y: 0
       }
     }
-
     return computeProps(this.props, defaultProps);
   }
 
-  _renderModalUI(){
-     return (<View style={styles.container}>
-                 <Button style={styles.action} block rounded onPress={() => this._onModalButtonClick("light")}>
-                    <Text>Light</Text>
-                </Button>
-                <Button style={styles.action} block rounded onPress={() => this._onModalButtonClick("primary")}>
-                    <Text>Primary</Text>
-                </Button>
-                <Button style={styles.cancel} block rounded  info onPress={() => this._onModalButtonClick("cancel")}>
-                    <Text>Cancel</Text>
-                </Button>
-            </View>
-            );
- }
+  _renderProcessActions() {
+    return this.props.processactions.map((a, i) => {
+      return (
+        <Button key={a.name + 'pa' + i} style={styles.action} block rounded onPress={() => this._onModalButtonClick(a.name)}>
+          <Text>{a.name}</Text>
+        </Button>);
+    })
+  }
+
+  _renderButtons() {
+    this.props.buttons.filter((b) => getPrivilege(b, this.props.user) != NO_PRIVILEGE)
+      .map((b, i) => {
+        return (
+          <Button key={b.label + 'bt' + i} style={styles.action} block rounded onPress={() => this._onModalButtonClick(b.label)}>
+            <Text>{b.label}</Text>
+          </Button>
+        );
+      });
+  }
+
+  _defaultButtons() {
+    return (
+      [(
+        <Button key={"cancel"} style={styles.cancel} block info rounded onPress={() => this._onModalButtonClick("cancel")}>
+          <Text>Cancel</Text>
+        </Button>
+      )]
+    );
+  }
 
   _onModalButtonClick(action) {
-    console.log("Modal button click 2 ", action);
-    this.props.onModalAction();   
+    this.props.onModalAction(action);
 
-    }
-    
+  }
+
   render() {
-
-    console.log(" AE Button Action Modal");
     const contentContainerStyle = this.props.contentContainerStyle || {};
     contentContainerStyle.padding = (this.props.padder) ? this.getTheme().contentPadding : 0;
-    return(
-      this._renderModalUI()
+    let pabuttons = this._renderProcessActions();
+    let configbuttons = this._renderButtons();
+    let defbuttons = this._defaultButtons();
+    return (<View style={styles.container}>
+      {pabuttons.concat(configbuttons).concat(defbuttons)}
+    </View>
     );
   }
 }
-
-function bindAction(dispatch) {
-    return {
-       
-    };
-}
-
-const mapStateToProps = state => ({
-   
-});
-
-export default connect(mapStateToProps, bindAction)(AEModalActions); 
 
 const styles = StyleSheet.create({
   container: {
@@ -95,14 +85,14 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  action : {
-    margin : 5,
+  action: {
+    margin: 5,
     height: 50,
   },
-  cancel : {
-    marginHorizontal : 5,
-    marginVertical : 20,
+  cancel: {
+    marginHorizontal: 5,
+    marginVertical: 20,
     height: 50,
-    
+
   }
 });

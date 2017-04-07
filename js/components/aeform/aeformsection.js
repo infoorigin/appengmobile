@@ -14,7 +14,7 @@ import AERadio from './aeradio.js';
 import AECheckbox from './aecheckbox.js';
 import AEDatePicker from './aedatepicker';
 import AETextArea from './aetextarea';
-import {getPrivilege} from '../../services/usercontext.js';
+import {NO_PRIVILEGE, getPrivilege} from '../../services/usercontext.js';
 
 class AEFormSection extends Component {
  static propTypes = {
@@ -62,9 +62,7 @@ _onInputBlur(){
 getElementsWithPrivilege(){
     
        let filteredFields = this.props.sectionItem.renderColumns.filter(function(rc){
-            if(this.props.getPrivilege(rc).privilegeType){
-                return true;
-            }
+           return this.props.getPrivilege(rc) != NO_PRIVILEGE ;
         }.bind(this));
         
         return  filteredFields;

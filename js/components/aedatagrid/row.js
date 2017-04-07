@@ -5,7 +5,7 @@ import { Container, Content, Button, View, Text,  Icon } from 'native-base';
 
 import { NumericCell, TextCell } from './cell.js';
 import styles from './styles';
-import { getPrivilege } from '../../services/usercontext.js';
+import { NO_PRIVILEGE, getPrivilege } from '../../services/usercontext.js';
 
 import { RENDER_GRID_DETAIL, gridAction } from '../../actions/grid';
 import { RENDER_LAYOUT } from '../../actions/layout';
@@ -36,7 +36,7 @@ class GridRow extends Component {
 
     getElementsWithPrivilege() {
         let filteredColumns = this.props.rowDescription.filter(function (gcolumn) {
-            if (getPrivilege(gcolumn).privilegeType) {
+            if (getPrivilege(gcolumn) != NO_PRIVILEGE ) {
                 return true;
             }
         }.bind(this));

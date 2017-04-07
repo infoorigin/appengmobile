@@ -48,7 +48,6 @@ export default class DashBoardTab extends AEBaseComponent {  // eslint-disable-l
     switch (this.props.config.cardType) {
       // call grid data by grid ID
       case "Grid":
-        console.log("Getting Grid data for card ", this.props.config.grid.configObjectId);
         const response = getGridDataByGridId(this.props.config.grid.configObjectId);
         response.then(function (result) {
           const data = result.data.returnData.data;
@@ -92,7 +91,6 @@ export default class DashBoardTab extends AEBaseComponent {  // eslint-disable-l
   }
 
   render() {
-    console.log("Rnder DashBoard Tab ", this.props.config.displayLabel);
     return (
       this._renderTab()
 /*

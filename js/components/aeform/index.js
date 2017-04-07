@@ -10,7 +10,7 @@ import styles from './styles';
 
 import AccordionView from './aeaccordian.js';
 import AEFormSection from './aeformsection.js'
-import {getPrivilege} from '../../services/usercontext.js';
+import {NO_PRIVILEGE, getPrivilege} from '../../services/usercontext.js';
 import {updateBaseForm} from '../../actions/ce.js';
 
 
@@ -84,9 +84,7 @@ class AEForm extends Component {
  getElementsWithPrivilege(){
     
        let filteredSection = this.props.formMD.sections.filter(function(section){
-            if(this.props.getPrivilege(section).privilegeType){
-                return true;
-            }
+            return this.props.getPrivilege(section) != NO_PRIVILEGE
         }.bind(this));
         
         return  filteredSection;

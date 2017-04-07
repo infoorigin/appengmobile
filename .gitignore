@@ -43,3 +43,4 @@ android/keystores/debug.keystore
 #vscode
 \.vscode/
 .vscode
+/android/*.log

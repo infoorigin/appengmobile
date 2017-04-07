@@ -10,17 +10,28 @@ export function getUser() {
 }
 
 
-const NO_PRIVILEGE = {}
-const DEFAULT_PRIVILEGE = {privilegeType: "EDIT"}
+export const NO_PRIVILEGE = "NOPRIVILEGE";
+export const VIEW_PRIVILEGE = "VIEW";
+export const EDIT_PRIVILEGE = "EDIT";
+const DEFAULT_PRIVILEGE = "EDIT";
 
-export function getPrivilege(configObject){
-    var user = getUser();
+export function getPrivilege(configObject, user){
+
+  if(!user)  
+    user = getUser();
   
+   return getPrivilegeByUser(configObject, user);
+
+   
+}
+
+function getPrivilegeByUser(configObject, user){
+
     if(configObject.priveleges){
       
       let userPrivileges = configObject.priveleges.filter(function(privilege){if(privilege.roldId == user.currentRole.id)return true;});
       if(userPrivileges.length>0){
-        return Object.assign({}, userPrivileges[0]);
+        return userPrivileges[0].privilegeType;
       }
       return NO_PRIVILEGE;
 
@@ -30,3 +41,4 @@ export function getPrivilege(configObject){
 
    
 }
+

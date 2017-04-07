@@ -148,6 +148,9 @@ export default {
     inputBorderColor: '#D9D5DC',
     inputSuccessBorderColor: '#2b8339',
     inputErrorBorderColor: '#ed2f2f',
+ 
+    inputNonEditableBorderColor :'#FFFDFF',
+    inputDisableColor: '#454545',
 
     get inputColor () {
         return this.textColor;

@@ -40,7 +40,6 @@ function* getMenu(user) {
     const result = yield call(getConfig, MENUGROUPCONFIG);
     const menugrp = result.data.returnData.data;
     const roleId = user.attributes.APP_LOGGED_IN_ROLE_ID;
-
     const privilegeMenus = menugrp.menus.filter((menu) => hasReadPrivilege(menu.priveleges, roleId))
     return privilegeMenus;
 }

@@ -7,7 +7,7 @@ import AEBaseComponent from '../../widgets/base/AEBaseComponent';
 import GridRow from './row';
 import uuid from 'uuid';
 const contentscreenBg = require('../../../img/basescreen.png');
-import { getPrivilege } from '../../services/usercontext.js';
+import { NO_PRIVILEGE, getPrivilege } from '../../services/usercontext.js';
 import {gridAction, configToStandardGridAction, NEW_CE_RENDER_BASE_GRID} from '../../actions/grid';
 import {RENDER_LAYOUT_FOR_CE} from '../../actions/layout';
 
@@ -92,9 +92,7 @@ class AECardGrid extends AEBaseComponent {
         const searchText = this.props.searchText ? this.props.searchText : "";
         const searchTextRegex = new RegExp(searchText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "i");
         let filteredColumns = header.filter(function (gcolumn) {
-            if (getPrivilege(gcolumn).privilegeType) {
-                return true;
-            }
+             return getPrivilege(gcolumn) != NO_PRIVILEGE ;
         }.bind(this));
         let filterData = [];
         this.props.data.map(function (rowData) {
@@ -115,7 +113,8 @@ class AECardGrid extends AEBaseComponent {
        const header = this._gridHeader();
         const keyColumns = this._keyColumns();
         const actions = this._rowActions();
-         console.log("Render AEECardGrid ",actions);
+         console.log("Render AEECardGrid ",this.props.data.length);
+          console.log("this._filtertedData(header) ",this._filtertedData(header).length);
        
        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
         var dataSource = ds.cloneWithRows(this._filtertedData(header));

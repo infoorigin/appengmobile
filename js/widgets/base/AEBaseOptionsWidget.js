@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import {View, Text, Platform} from 'react-native';
+import {View, Text, TextInput, Platform} from 'react-native';
 import AEBaseWidget from './AEBaseWidget';
 import { getSelectOptions } from '../../services/api';
 
@@ -19,6 +19,18 @@ export default class AEBaseOptionsWidget  extends AEBaseWidget {
 
      _onChange(text) {
         this.props.onBlur(this._fieldDBCode(), text);
+    }
+
+    _nonEditablePickerField(){
+        const selectedVal = this._getData();
+        const filt = this.state.options.find( item => item.id == selectedVal );
+        const label = filt && filt.label ? filt.label : "";
+        return(
+         <TextInput 
+                    {...this._nonEditableProps()} value={label} 
+                    underlineColorAndroid='rgba(0,0,0,0)'
+                    />
+        );           
     }
 
     defaultProps() {

@@ -15,7 +15,7 @@ import AEModalContent from '../../widgets/AEModalContent';
 import AEModalActions from '../../widgets/AEModalActions';
 import AETabLayoutHeader from './AETabLayoutHeader';
 import { putCENodeData, submitNodeData, submitCardNodeDataAction } from '../../actions/ce';
-import { renderTabAction, updateCardUIDataAction } from '../../actions/layout';
+import { renderTabAction, updateCardUIDataAction,submitLayoutAction } from '../../actions/layout';
 import {modalAddUIAction, resetModalAction, saveModalAction} from '../../actions/modal';
 import { gridDetailAction } from '../../actions/grid';
 import { updateAttributes, getKeysByNode, getBindingIdByNodeId } from '../../utils/uiData'
@@ -63,17 +63,24 @@ class AETabLayout extends Component {  // eslint-disable-line
         return (<AETabLayoutHeader ref={(c) => this.tabHeader = c}  card={this.props.card} modalVisible={this.props.isModalVisible} {...this._headerCallBacks() }></AETabLayoutHeader>);
     }
     
-    _onModalAction(){
-        console.log("_onModalAction");
+    _onModalAction(action){
+        console.log("_onModalAction for other actions :",action);
+        const card = this.props.card;
+        
+        if(action != "cancel"){
+            let uiBindingId = getBindingIdByNodeId(card.ui.data, this.props.basenode.configObjectId);
+            console.log(uiBindingId);
+            this.props.submitLayoutAction(card.config.configObjectId, this.props.basenode.configObjectId, uiBindingId, action);
+        }
+        
         this.setState({
             isModalActionVisible:false
         });
     }
 
-
     _renderModalAction(){
         return (
-        <AEModalActions onModalAction={this._onModalAction.bind(this)} ></AEModalActions>
+        <AEModalActions buttons={this.props.buttons} processactions={this.props.processactions} onModalAction={this._onModalAction.bind(this)} ></AEModalActions>
         );
     }
 
@@ -91,8 +98,6 @@ class AETabLayout extends Component {  // eslint-disable-line
     _renderScene() {
         let card = this.props.card;
         let uiTab = card.activeTab;
-        console.log("this.props.isModalVisible :",this.props.isModalVisible);
-        console.log(" _renderScene headerText ", this.state.searchText);
         if (uiTab) {
             return (
                 <Content>
@@ -104,6 +109,7 @@ class AETabLayout extends Component {  // eslint-disable-line
                         uiCard={card.config}
                         nodeId={uiTab.compositeEntityNode ? uiTab.compositeEntityNode.configObjectId : null}
                         data={card.ui.data}
+                        user={this.props.user}
                         {...this._callBacks() }>
                     </AECard>
 
@@ -126,7 +132,7 @@ class AETabLayout extends Component {  // eslint-disable-line
         this.props.updateCardUIData(this.props.card.config.configObjectId, nodeData);
         //TODO condition for inline save 
         if (!this.props.card.node.editFormId) {
-            this.props.submitCardNodeData(this.props.card.config.configObjectId, nodeId, bindingId);
+            this.props.submitCardNodeData(this.props.card.config.configObjectId, nodeId, bindingId, "update");
         }
     }
     _onGridDetail(keys, gridConfigId, nodeId) {
@@ -170,7 +176,6 @@ class AETabLayout extends Component {  // eslint-disable-line
     }
 
     _onEnableModalAction(){
-         console.log(" _onEnableModalAction called with state");
          this.setState({
             isModalActionVisible : true
          });
@@ -191,9 +196,7 @@ class AETabLayout extends Component {  // eslint-disable-line
     }
 
     render() {
-        console.log("this.props.card set ? : ",(this.props.card ? true : false));
         if (this.props.card && this.props.card.config) {
-            console.log(" rendering AETabNavigator ... ")
             return (<AETabNavigator
                 uiCard={this.props.card.config}
                 activeTab={this.props.card.activeTab}
@@ -210,7 +213,8 @@ class AETabLayout extends Component {  // eslint-disable-line
         }
         else {
             console.log(" rendering loading without space ... ")
-            return (<AEContainer modalVisible={false}>
+            return (
+            <AEContainer modalVisible={false}>
                 <AEHeader></AEHeader>
                 <Content>
                     <View>
@@ -230,7 +234,8 @@ function bindAction(dispatch) {
         gridDetailAction: (keys, cardConfigId, gridConfigId, nodeId) => dispatch(gridDetailAction(keys, cardConfigId, gridConfigId, nodeId)),
         renderTabAction: (cardConfigId, tabConfigId, keys) => dispatch(renderTabAction(cardConfigId, tabConfigId, keys)),
         updateCardUIData: (cardConfigId, data) => dispatch(updateCardUIDataAction(cardConfigId, data)),
-        submitCardNodeData: (cardConfigId, nodeId, bindingId) => dispatch(submitCardNodeDataAction(cardConfigId, nodeId, bindingId)),
+        submitCardNodeData: (cardConfigId, nodeId, bindingId, apiAction) => dispatch(submitCardNodeDataAction(cardConfigId, nodeId, bindingId, apiAction)),
+        submitLayoutAction: (cardConfigId, nodeId, bindingId, apiAction) => dispatch(submitLayoutAction(cardConfigId, nodeId, bindingId, apiAction)),
         modalAddUI: (nodeId, baseKeys) => dispatch(modalAddUIAction(nodeId, baseKeys)),
         resetModal : () => dispatch(resetModalAction()),
         saveModal : (cardConfigId, nodeId) => dispatch(saveModalAction(cardConfigId, nodeId)),
@@ -246,6 +251,9 @@ const mapStateToProps = state => ({
     modalUI : state.ae.modal.ui,
     isModalVisible : state.ae.modal.visible,
     isModalActionVisible : false,//state.ae.modal.actionvisible,
+    processactions : state.ae.cenode.processactions,
+    buttons : state.ae.cenode.buttons,
+    user : state.ae.userSession.user,
 });
 
 export default connect(mapStateToProps, bindAction)(AETabLayout); 

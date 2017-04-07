@@ -35,7 +35,6 @@ export default class AEContainer extends AEBaseComponent {
   }
 
   renderHeader() {
-    console.log("Render Header");
     if (Array.isArray(this.props.children)) {
       return _.find(this.props.children, function (item) {
         if (item && (_.get(item, 'type', null) == Header || _.get(item, 'type', null) == AEHeader

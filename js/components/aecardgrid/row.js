@@ -5,7 +5,7 @@ import {  View, Text, Header, Title, Icon } from 'native-base';
 
 import { NumericCell, TextCell } from './cell.js';
 import styles from './styles';
-import { getPrivilege } from '../../services/usercontext.js';
+import { NO_PRIVILEGE, getPrivilege } from '../../services/usercontext.js';
 import AEBaseComponent from '../../widgets/base/AEBaseComponent'
 
 const rightArrowImage = require('../../../img/Icon-Arrow-Right.png');
@@ -49,9 +49,7 @@ export default class GridRow extends AEBaseComponent {
 
     getElementsWithPrivilege() {
         let filteredColumns = this.props.header.filter(function (gcolumn) {
-            if (getPrivilege(gcolumn).privilegeType) {
-                return true;
-            }
+           return getPrivilege(gcolumn) != NO_PRIVILEGE ;
         }.bind(this));
         return filteredColumns;
     }

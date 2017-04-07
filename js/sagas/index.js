@@ -2,10 +2,10 @@ import { takeLatest } from "redux-saga";
 import { fork } from "redux-saga/effects";
 import { renderNewCEBaseGrid, renderGridDetail, renderBaseGrid } from "./grid";
 import { NEW_CE_RENDER_BASE_GRID, RENDER_GRID_DETAIL, RENDER_BASE_GRID} from "../actions/grid";
-import {  submitNodeDataToDB, submitCardNodeDataToDB } from "./ce";
+import {  submitNodeDataToDB } from "./ce";
 import {  SUBMIT_NODE_DATA, SUBMIT_CARD_NODE_DATA } from "../actions/ce";
-import {renderActiveTab, renderLayout, updateCardUIData, renderLayoutForCE} from './layout';
-import { RENDER_ACTIVE_TAB, RENDER_LAYOUT, UPDATE_CARD_UI_DATA, RENDER_LAYOUT_FOR_CE} from "../actions/layout";
+import {submitCardNodeDataToDB, renderActiveTab, renderLayout, updateCardUIData, renderLayoutForCE, submitLayoutAction} from './layout';
+import { RENDER_ACTIVE_TAB, RENDER_LAYOUT, UPDATE_CARD_UI_DATA, RENDER_LAYOUT_FOR_CE, SUBMIT_LAYOUT_ACTION} from "../actions/layout";
 import { MODAL_ADD_UI, SAVE_MODAL_DATA} from "../actions/modal";
 import { addFormModalUI, submitModalNodeDataToDB } from  "./modal";
 import { LOGIN, CHANGE_DASHBOARD_TAB} from "../actions/user";
@@ -22,6 +22,7 @@ export function* sagas() {
     fork(takeLatest, RENDER_GRID_DETAIL , renderGridDetail),
     fork(takeLatest,UPDATE_CARD_UI_DATA, updateCardUIData),
     fork(takeLatest, SUBMIT_CARD_NODE_DATA, submitCardNodeDataToDB),
+    fork(takeLatest,SUBMIT_LAYOUT_ACTION, submitLayoutAction),
     fork(takeLatest, MODAL_ADD_UI, addFormModalUI),
     fork(takeLatest, SAVE_MODAL_DATA, submitModalNodeDataToDB),
     fork(takeLatest, LOGIN, login),

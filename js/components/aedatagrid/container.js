@@ -4,7 +4,7 @@ import { View, ListView} from 'react-native';
 import styles from './styles';
 import GridRow from './row.js';
 const contentscreenBg = require('../../../img/basescreen.png');
-import { getPrivilege } from '../../services/usercontext.js';
+import { NO_PRIVILEGE, getPrivilege } from '../../services/usercontext.js';
 
 export default class GridContainer extends Component {
 
@@ -23,9 +23,7 @@ export default class GridContainer extends Component {
         const searchText = this.props.searchText ? this.props.searchText : "";
         const searchTextRegex = new RegExp(searchText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "i");
         let filteredColumns = this.props.header.filter(function (gcolumn) {
-            if (getPrivilege(gcolumn).privilegeType) {
-                return true;
-            }
+            return getPrivilege(gcolumn) != NO_PRIVILEGE;
         }.bind(this));
         let filterData = [];
         this.props.data.map(function (rowData) {

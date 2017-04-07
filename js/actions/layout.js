@@ -7,6 +7,7 @@ export const RENDER_LAYOUT_FOR_CE = 'RENDER_LAYOUT_FOR_CE';
 export const UPDATE_CARD_UI_DATA = 'UPDATE_CARD_UI_DATA';
 export const SET_TAB_LAYOUT_HOME = 'TAB_LAYOUT_HOME' ;
 export const RESET_TAB_LAYOUT_HOME = 'RESET_TAB_LAYOUT_HOME';
+export const SUBMIT_LAYOUT_ACTION = 'SUBMIT_LAYOUT_ACTION';
 
 
 export function resetLayoutHomeAction(){
@@ -61,3 +62,14 @@ export function updateCardUIDataAction(cardConfigId, data){
     data :data,
   };
 }
+
+export function submitLayoutAction(cardConfigId, nodeId, bindingId, apiAction){
+  return {
+    type : SUBMIT_LAYOUT_ACTION,
+    cardConfigId,
+    nodeId,
+    bindingId,
+    apiAction,
+  }
+}
+
