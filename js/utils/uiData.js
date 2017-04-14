@@ -133,7 +133,7 @@ export function createAPIRequestData(stateMapData, userattrbs, ceNode, bindingId
 
     Object.assign(attributes, userattrbs);
     Object.assign(attributes, keys);
-    let apiData = { baseEntity: { configId: ceNode.entityId, attributes: attributes, childEntities: [] } };
+    let apiData = { action, baseEntity: { configId: ceNode.entityId, attributes: attributes, childEntities: [] } };
     return apiData;
 
 }

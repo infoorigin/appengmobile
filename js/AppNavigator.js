@@ -27,6 +27,7 @@ import DrawerContent from './components/drawer/DrawerComponent';
 
 import AEWebEditor from './widgets/AEWebEditor';
 import AEHTMLView from './widgets/AEHTMLView';
+import AEDemoWidget from './widgets/AEDemoWidget' ; 
 
 const SampleText = ({ children }) => (
   <Text style={styles.sampleText}>{children}</Text>
@@ -89,6 +90,16 @@ const AEWebEditorScreen =  connect()(({ navigation, dispatch }) => {
   );
 });
 
+const AEDemoWidgetScreen = connect()(({ navigation, dispatch }) => {
+  return (
+     <AEDemoWidget
+    navigation={navigation}
+    dispatch={dispatch}
+  />
+  );
+});
+
+
 const AEHTMLViewScreen =  connect()(({ navigation, dispatch }) => {
   return (
      <AEHTMLView
@@ -127,6 +138,7 @@ const DrawerRoutes = {
   TabLayout : { screen : TabLayout},
   WebView : {screen : AEWebEditorScreen},
   HTMLView : {screen : AEHTMLViewScreen},
+  Demo : {screen : AEDemoWidgetScreen},
 };
 
 const DrawerMenuContent =  connect(

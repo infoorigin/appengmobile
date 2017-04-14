@@ -2,8 +2,12 @@
 
 import React from 'react';
 import {View, TextInput, Text, Platform} from 'react-native';
+import TagInput from 'react-native-tag-input';
 import AEBaseWidget from './base/AEBaseWidget';
 import computeProps from '../utils/computeProps';
+import Tags from '../components/aetags';
+
+
 import { NO_PRIVILEGE, VIEW_PRIVILEGE, EDIT_PRIVILEGE, getPrivilege } from '../services/usercontext.js';
 
 export default class AETextInput extends AEBaseWidget {
@@ -104,7 +108,8 @@ constructor(props) {
            return this._nonEditableField();
        }
        else {
-        return ( <TextInput
+        return ( 
+            <TextInput
                     ref="input"
                     {...this.prepareRootProps(styles.textboxStyle) }
                     placeholderTextColor={this.getTheme().inputColorPlaceholder}
@@ -114,8 +119,47 @@ constructor(props) {
        }
     }
 
+    _onTagsInputBlur(){
+        this.props.onBlur(this._fieldDBCode(), this._getData());
+    }
+
+    _inputTags(styles, privilege){
+       if(privilege == VIEW_PRIVILEGE){
+           return (  
+             <Tags 
+                ref="input"
+                initialText="" 
+                initialTags= {this._parseTags()}
+                editable = {false}
+                inputStyle={{ backgroundColor: 'white' }}
+                />
+           );
+       }
+       else {
+        return ( 
+            <Tags 
+                ref="input"
+                initialText="  " 
+                initialTags= {this._parseTags()}
+                editable = {true}
+                onChangeTags={(text) =>  this._onChange(text.join())}
+                onBlur =  {this._onTagsInputBlur.bind(this)}
+                onTagPress={ (index, tagLabel, event) => console.log(index, tagLabel) }
+                inputStyle={{ backgroundColor: 'white' }}
+                />
+        );
+       }
+    } 
+
+    _parseTags(){
+        const tagString = this._getData() ? this._getData() :"";
+        return tagString.split(',');
+    }
+
 
     render() { 
+        console.log(" isTagsInput :", this.props.config.tagsInput) ;
+
        const privilege = getPrivilege(this.props.config, this.props.user);
        if(privilege == NO_PRIVILEGE) 
            return null;
@@ -125,7 +169,7 @@ constructor(props) {
        return (
             <View style={styles.formGroupStyle}>
                 {base.label}
-                {this._input(styles,privilege)}
+                {this.props.config.tagsInput ? this._inputTags(styles, privilege) : this._input(styles,privilege)}
                 {base.help}
                 {base.error}
             </View>

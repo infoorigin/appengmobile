@@ -34,6 +34,10 @@ const navitems = [
     nav: 'HTMLView',
     //path:'/schedule'
   },
+  {
+  name :'Demo',
+  nav :'Demo',
+  },
 ]
 
 const menu = [{

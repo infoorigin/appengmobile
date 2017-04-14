@@ -48,6 +48,8 @@ export function getConfig(configId) {
 
 
 export function submitNodeData(ceid, keys, apiRequest) {
+  console.log("API rest to be submitted :"+JSON.stringify(apiRequest))
+  console.log("ceid , primaryKey  :",ceid , keys.primaryKey)
   return axios.patch(
     baseUrl + '/rest/' + ceid + '/' + keys.primaryKey, apiRequest, getHeaders('db6003e6-0093-4e3d-a8d0-d4ff26b750c2')
   );
