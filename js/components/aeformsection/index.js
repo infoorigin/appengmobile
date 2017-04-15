@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
-import { FormLabel as REFormLabel, FormInput as REFormInput, Button as REButton } from 'react-native-elements';
 import { CheckBox as NBCheckBox, Card as NBCard, CardItem as NBCardItem, Text as NBText } from 'native-base';
 import AEBaseComponent from '../../widgets/base/AEBaseComponent';
 import AETextInput from '../../widgets/AETextInput';
@@ -11,6 +10,8 @@ import AERadioButtonGroup from '../../widgets/AERadioButtonGroup';
 import AEDatePicker from '../../widgets/AEDatePicker';
 import AESelectPicker from '../../widgets/AESelectPicker';
 import { Map } from 'immutable';
+import { NO_PRIVILEGE, VIEW_PRIVILEGE, EDIT_PRIVILEGE, getPrivilege } from '../../services/usercontext.js';
+import {resolveExpression} from '../../utils/exprexecutor';
 
 export default class AEFormSection extends AEBaseComponent {  // eslint-disable-line
 
@@ -53,32 +54,35 @@ export default class AEFormSection extends AEBaseComponent {  // eslint-disable-
     }
 
 
-    _defaultFieldProps() {
+    _defaultFieldProps(privilege, config, data) {
         return {
             onChange: this._onFieldChange.bind(this),
             onBlur: this._onFieldBlur.bind(this),
-            data: this.props.data.get("attributes") ? this.props.data.get("attributes") : Map(),
             error: this.props.data.get("error") ? this.props.data.get("error") : Map(),
+            user : this.props.user,
+            privilege,
+            config,
+            data,
         }
     }
 
-    _renderField(col) { 
-        switch (col.type) {
+    _renderField(col, privilege, attrbdata) { 
+         switch (col.type) {
             case "TextBox":
             case "Password":
             case "TextArea":
             case "LabelField":
-                return (<AETextInput key={col.configObjectId} user={this.props.user} config={col}  {...this._defaultFieldProps() } >
+                return (<AETextInput key={col.configObjectId}  {...this._defaultFieldProps(privilege,col,attrbdata) } >
                 </AETextInput>);
             case "SelectOption":
-                return (<AESelectPicker key={col.configObjectId} user={this.props.user} config={col} {...this._defaultFieldProps() } > </AESelectPicker>);
+                return (<AESelectPicker key={col.configObjectId} {...this._defaultFieldProps(privilege,col,attrbdata) } > </AESelectPicker>);
             case "RadioButton":
-                return (<AERadioButtonGroup key={col.configObjectId} user={this.props.user} config={col} {...this._defaultFieldProps() } > </AERadioButtonGroup>);
+                return (<AERadioButtonGroup key={col.configObjectId} {...this._defaultFieldProps(privilege,col,attrbdata) } > </AERadioButtonGroup>);
             case "CheckBox":
-                return (<AECheckboxGroup key={col.configObjectId} user={this.props.user} config={col} {...this._defaultFieldProps() } > </AECheckboxGroup>);
+                return (<AECheckboxGroup key={col.configObjectId} {...this._defaultFieldProps(privilege,col,attrbdata) } > </AECheckboxGroup>);
             case "DatePicker":
             case "TimePicker":
-                return (<AEDatePicker key={col.configObjectId} user={this.props.user} config={col} {...this._defaultFieldProps() } ></AEDatePicker>);
+                return (<AEDatePicker key={col.configObjectId} {...this._defaultFieldProps(privilege,col,attrbdata) } ></AEDatePicker>);
             case "Hiddenfield":
                 return null;;
             default:
@@ -91,53 +95,27 @@ export default class AEFormSection extends AEBaseComponent {  // eslint-disable-
 
     render() {
 
-        const selectOptions = [{ value: 1, text: "one" }, { value: 2, text: "two" }, { value: 3, text: "three" }, { value: 4, text: "four" }];
-        // console.log("Section Data ,",this.props.data);
+        const attrbs  = this.props.data.get("attributes") ? this.props.data.get("attributes").toJS() : {};
+        const attrbdata = Object.assign(attrbs, this.props.user.attributes);
+        console.log("User Props Data ,", attrbdata);
+        
         return (
 
             <View>
 
                 {
                     this.props.config.renderColumns.map(function (col, i) {
-                        return this._renderField(col);
+                        
+                        const privilege = getPrivilege(col, this.props.user); 
+                        const isAccesible = resolveExpression(col.accessbilityRegEx, attrbdata);
+                        console.log("Col Name and Privilege,",col.name, col.label, privilege);
+                        if( isAccesible && privilege != NO_PRIVILEGE) 
+                            return this._renderField(col, privilege, attrbdata);
+                        else
+                            return null;
                     }.bind(this))
 
-                    /* 
-                     <AESelectPicker hasError="true" error="Error message" label="Select Picker" value={new Date()}
-                        options={selectOptions} >
-                    </AESelectPicker>
-
-                     <AERadioButtonGroup hasError="true" error="Error message" label="Radio Label">
-                    </AERadioButtonGroup>
-
-                    <AECheckboxGroup hasError="true" error="Error message" label="Checkbox Label">
-                    </AECheckboxGroup>
-
-                    <AEDatePicker hasError="true" error="Error message" label="Date Picker" value={new Date()}>
-                    </AEDatePicker>
-                    */
                 }
-
-
-
-
-
-
-
-
-
-                <Text style={this.getInitialStyle().itemText}>
-                    The idea with React Native Elements is more about component structure than actual SB design.
-                    </Text>
-
-                <REFormLabel>Name</REFormLabel>
-                <REFormInput />
-
-                <REButton
-                    raised
-                    icon={{ name: 'cached' }}
-                    title='BUTTON WITH ICON' />
-
 
             </View>
         );

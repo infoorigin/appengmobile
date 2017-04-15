@@ -8,7 +8,7 @@ import computeProps from '../utils/computeProps';
 import Tags from '../components/aetags';
 
 
-import { NO_PRIVILEGE, VIEW_PRIVILEGE, EDIT_PRIVILEGE, getPrivilege } from '../services/usercontext.js';
+import { VIEW_PRIVILEGE, EDIT_PRIVILEGE } from '../services/usercontext.js';
 
 export default class AETextInput extends AEBaseWidget {
 
@@ -103,8 +103,8 @@ constructor(props) {
        return defaultProps;
     }
 
-    _input(styles, privilege){
-        if(privilege == VIEW_PRIVILEGE){
+    _input(styles){
+        if(this.props.privilege == VIEW_PRIVILEGE){
            return this._nonEditableField();
        }
        else {
@@ -123,8 +123,8 @@ constructor(props) {
         this.props.onBlur(this._fieldDBCode(), this._getData());
     }
 
-    _inputTags(styles, privilege){
-       if(privilege == VIEW_PRIVILEGE){
+    _inputTags(styles){
+       if(this.props.privilege == VIEW_PRIVILEGE){
            return (  
              <Tags 
                 ref="input"
@@ -152,24 +152,17 @@ constructor(props) {
     } 
 
     _parseTags(){
-        const tagString = this._getData() ? this._getData() :"";
-        return tagString.split(',');
+        return this._getData() ? this._getData().split(',') :[];
     }
 
 
     render() { 
-        console.log(" isTagsInput :", this.props.config.tagsInput) ;
-
-       const privilege = getPrivilege(this.props.config, this.props.user);
-       if(privilege == NO_PRIVILEGE) 
-           return null;
-
        const styles = this.componentStyle();
        const base = this._baseRender(styles);
        return (
             <View style={styles.formGroupStyle}>
                 {base.label}
-                {this.props.config.tagsInput ? this._inputTags(styles, privilege) : this._input(styles,privilege)}
+                {this.props.config.tagsInput ? this._inputTags(styles) : this._input(styles)}
                 {base.help}
                 {base.error}
             </View>

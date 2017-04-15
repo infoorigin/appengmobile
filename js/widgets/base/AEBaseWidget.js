@@ -121,7 +121,7 @@ export default class AEBaseWidget extends AEBaseComponent {
 
     _getData() {
         let dbCode = this._fieldDBCode();
-        let value = this.props.data.get(dbCode) != null ? this.props.data.get(dbCode) : "";
+        let value = this.props.data[dbCode] != null ? this.props.data[dbCode] : "";
         switch (this.props.config.type) {
             case "TextBox":
             case "Password":

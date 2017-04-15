@@ -109,7 +109,7 @@ export default class AERadioButtonGroup extends AEBaseOptionsWidget {
         let radioOptions = this.state.options.map(function(option, i){
                 return ( 
                     <View style={{flexDirection:'row' , margin :5}}>
-                    <AERadioButton  animation={'bounceIn'}
+                    <AERadioButton key={"rd"+i} animation={'bounceIn'}
                             isSelected={this._getData() == option.value}
                         onPress={() => this._onChange(option.value)}
                     />

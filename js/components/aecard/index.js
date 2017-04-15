@@ -71,7 +71,7 @@ static propTypes = {
     _renderFormSection(section){
         let uiBindingId = getBindingIdByNodeId(this.props.data, this.props.nodeId);
         let sectiondata = getDataByBindingId(this.props.data, this.props.nodeId, uiBindingId);
-        return (<AEFormSection key={uiBindingId+section.configObjectId} bindingId={uiBindingId} config={section} data={sectiondata} {...this._callBacks()}> </AEFormSection>);
+        return (<AEFormSection key={uiBindingId+section.configObjectId} user={this.props.user}  bindingId={uiBindingId} config={section} data={sectiondata} {...this._callBacks()}> </AEFormSection>);
     }
 
     _renderForm(form){
@@ -99,8 +99,7 @@ static propTypes = {
 
 
     render() {
-
-         return (
+          return (
             <View>
                 
                 <RECard containerStyle={{margin: 5}} titleStyle = {this.getInitialStyle().dividerItemText} 
