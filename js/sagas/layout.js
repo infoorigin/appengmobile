@@ -14,8 +14,6 @@ import { updateError, clearError, isNodeDataExists, initCENodeDataMap, getKeys, 
 import { showSpinner, hideSpinner } from '../actions/aebase';
 import { getCurrentUser } from './user';
 
-
-
 export const getLayout = (state) => state.ae.layout.config
 
 export const getCards = (state) => state.ae.cards
@@ -36,7 +34,6 @@ export function* submitLayoutAction(action) {
         else {
             yield call(updateCardState, card);
         }
-        
         // route to dashboard 
         //TODO preserver the on success routing target
     } catch (error) {
@@ -51,7 +48,7 @@ export function* submitLayoutAction(action) {
  */
 export function* submitCardNodeDataToDB(action) {
     try {
-       const {card, isSuccess} =  submitCardNodeDataToDBByBindingId(action) 
+       const {card, isSuccess} =  yield call(submitCardNodeDataToDBByBindingId, action) ;
        // just upate the card state and re-render the same layout
        yield call(updateCardState, card);
     } catch (error) {
@@ -60,11 +57,8 @@ export function* submitCardNodeDataToDB(action) {
 }
 
 /**
- * Submit Card data to DB 
- * @param {*} card 
- * @param {*} ceNode 
- * @param {*} user 
- * @param {*} bindingId 
+ * 
+ * @param {*} action 
  */
 export function* submitCardNodeDataToDBByBindingId(action) {
     console.log(" submitNodeDataToDB calling api");
@@ -72,13 +66,18 @@ export function* submitCardNodeDataToDBByBindingId(action) {
     let user = yield select(getCurrentUser);
     // Get the card 
     let card = yield call(findCardByIdFromState, action.cardConfigId);
+    
+    if(action.data) {// if data is submitted as part of submit action
+        card = update(card, { ui: { $merge: { data: action.data } } });
+    }
+
     let ceNode = card.node;
-    let keysMap = yield call(getKeys, card.ui.data, ceNode.configObjectId, action.bindingId);
+    let keysMap = yield call(getKeys, card.ui.data, action.nodeId, action.bindingId);
     let keys = keysMap.toJS();
-    console.log("** keys **",keys);
     // Get API Request Data 
     let apiRequest = yield call(createAPIRequestData, card.ui.data, user.attributes, ceNode, action.bindingId, action.apiAction);
-    // call backend service
+    // call backend 
+    
     let result = yield call(submitNodeData, ceNode.compositeEntityId, keys, apiRequest);
     if (result.data.status) {
         console.log('=========================success=======================');

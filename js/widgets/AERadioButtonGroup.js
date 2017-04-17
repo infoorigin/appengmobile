@@ -1,17 +1,17 @@
 'use strict';
 
 import React from 'react';
-import {View, TextInput, Text, Platform} from 'react-native';
+import { View, TextInput, Text, Platform } from 'react-native';
 import AEBaseOptionsWidget from './base/AEBaseOptionsWidget';
 import computeProps from '../utils/computeProps';
 import AERadioButton from './AERadioButton';
 
 export default class AERadioButtonGroup extends AEBaseOptionsWidget {
 
-   constructor(props) {
-		super(props);
-		
-   }
+    constructor(props) {
+        super(props);
+
+    }
 
     getInitialStyle() {
         return {
@@ -22,7 +22,7 @@ export default class AERadioButtonGroup extends AEBaseOptionsWidget {
                 error: {
                     marginBottom: 10
                 }
-            }, 
+            },
             controlLabel: {
                 normal: {
                     color: this.getContextForegroundColor(),
@@ -62,19 +62,19 @@ export default class AERadioButtonGroup extends AEBaseOptionsWidget {
                     fontSize: this.getTheme().fontSizeBase,
                     marginLeft: 5,
                     marginRight: 5,
-               },
+                },
                 // the style applied when a validation error occours
                 error: {
                     color: this.getTheme().brandDanger,
                     fontSize: this.getTheme().inputFontSize,
-                    marginLeft:5, 
-                    marginRight:5,
+                    marginLeft: 5,
+                    marginRight: 5,
                 },
                 // the style applied when the textbox is not editable
                 notEditable: {
                     fontSize: this.getTheme().fontSizeBase,
-                    marginLeft:5, 
-                    marginRight:5,
+                    marginLeft: 5,
+                    marginRight: 5,
                     color: this.getTheme().inputDisableColor,
                     backgroundColor: this.getTheme().inputDisableBackGroundColor
                 }
@@ -105,17 +105,17 @@ export default class AERadioButtonGroup extends AEBaseOptionsWidget {
 
     }
 
-    _renderOptions(styles){
-        let radioOptions = this.state.options.map(function(option, i){
-                return ( 
-                    <View style={{flexDirection:'row' , margin :5}}>
-                    <AERadioButton key={"rd"+i} animation={'bounceIn'}
-                            isSelected={this._getData() == option.value}
+    _renderOptions(styles) {
+        let radioOptions = this.state.options.map(function (option, i) {
+            return (
+                <View key={"ropt" + i} style={{ flexDirection: 'row', margin: 5 }}>
+                    <AERadioButton key={"rd" + i} animation={'bounceIn'}
+                        isSelected={this._getData() == option.value}
                         onPress={() => this._onChange(option.value)}
                     />
-                <Text style={styles.textStyle}>{option.label}</Text>
+                    <Text style={styles.textStyle}>{option.label}</Text>
                 </View>
-                )
+            )
         }.bind(this));
         return radioOptions;
     }
@@ -129,9 +129,9 @@ export default class AERadioButtonGroup extends AEBaseOptionsWidget {
         return (
             <View style={styles.formGroupStyle}>
                 {baseRender.label}
-                 <View  key="1" style={{flexDirection:'row' , margin :10}} >
-                   {this._renderOptions(styles)}                    
-                 </View>
+                <View style={{ flexDirection: 'row', margin: 10 }} >
+                    {this._renderOptions(styles)}
+                </View>
                 {baseRender.help}
                 {baseRender.error}
             </View>

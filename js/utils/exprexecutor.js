@@ -22,10 +22,10 @@ export function resolveExpression(expression, data ){
 function executeJS(jsexpression, data ){
     try {
         const exprwithreturn = " return "+ jsexpression ;
-        console.log("JS Exression Code :",exprwithreturn);
+       // console.log("JS Exression Code :",exprwithreturn);
         const fnexp = new Function("input", exprwithreturn ) ;
         const result = fnexp(data) ;
-        console.log("JS Exression Result :",result);
+       // console.log("JS Exression Result :",result);
         return result;
     }
     catch(err) {

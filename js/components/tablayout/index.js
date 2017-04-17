@@ -129,11 +129,7 @@ class AETabLayout extends Component {  // eslint-disable-line
     _onUIBlur(nodeId, bindingId, updateData) {
         console.log("layoutchange _onUIBlur", nodeId, bindingId, updateData);
         let nodeData = updateAttributes(this.props.card.ui.data, nodeId, bindingId, updateData);
-        this.props.updateCardUIData(this.props.card.config.configObjectId, nodeData);
-        //TODO condition for inline save 
-        if (!this.props.card.node.editFormId) {
-            this.props.submitCardNodeData(this.props.card.config.configObjectId, nodeId, bindingId, "update");
-        }
+        this.props.submitCardNodeData(this.props.card.config.configObjectId, nodeId, bindingId, nodeData, "update");
     }
     _onGridDetail(keys, gridConfigId, nodeId) {
         let cardConfigId = this.props.card.config.configObjectId;
@@ -234,7 +230,7 @@ function bindAction(dispatch) {
         gridDetailAction: (keys, cardConfigId, gridConfigId, nodeId) => dispatch(gridDetailAction(keys, cardConfigId, gridConfigId, nodeId)),
         renderTabAction: (cardConfigId, tabConfigId, keys) => dispatch(renderTabAction(cardConfigId, tabConfigId, keys)),
         updateCardUIData: (cardConfigId, data) => dispatch(updateCardUIDataAction(cardConfigId, data)),
-        submitCardNodeData: (cardConfigId, nodeId, bindingId, apiAction) => dispatch(submitCardNodeDataAction(cardConfigId, nodeId, bindingId, apiAction)),
+        submitCardNodeData: (cardConfigId, nodeId, bindingId, nodedata, apiAction) => dispatch(submitCardNodeDataAction(cardConfigId, nodeId, bindingId, nodedata,apiAction)),
         submitLayoutAction: (cardConfigId, nodeId, bindingId, apiAction) => dispatch(submitLayoutAction(cardConfigId, nodeId, bindingId, apiAction)),
         modalAddUI: (nodeId, baseKeys) => dispatch(modalAddUIAction(nodeId, baseKeys)),
         resetModal : () => dispatch(resetModalAction()),

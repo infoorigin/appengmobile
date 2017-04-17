@@ -14,6 +14,9 @@ export default class AETextInput extends AEBaseWidget {
 
 constructor(props) {
     super(props);
+    this.state = {
+        textValue : this._getData()
+    }
 }
 
 
@@ -92,15 +95,25 @@ constructor(props) {
         var defaultProps = {
             style: textboxStyle,
             placeholder : this.props.config.placeHolder ? this.props.config.placeHolder:"", 
-            value : this._getData(),
+            value : this.state.textValue,
             secureTextEntry : this.props.config.type == "Password",
-            onChangeText: this._onChange,
-            onBlur : this._onBlur,
+            onChangeText: this._onChangeText.bind(this),
+            onBlur : this._onBlurTextInput.bind(this),
             editable : this._editable(),
             ...this._multilineProps()
         }
        //return computeProps(this.props, defaultProps);
        return defaultProps;
+    }
+
+    _onChangeText(text) {
+        this.setState({
+            textValue : text,
+        });
+    }
+
+    _onBlurTextInput() {
+        this.props.onBlur(this._fieldDBCode(), this.state.textValue);
     }
 
     _input(styles){
@@ -142,7 +155,7 @@ constructor(props) {
                 initialText="  " 
                 initialTags= {this._parseTags()}
                 editable = {true}
-                onChangeTags={(text) =>  this._onChange(text.join())}
+                onChangeTags={(tags) => this.setState({textValue : tags.join(",")})}
                 onBlur =  {this._onTagsInputBlur.bind(this)}
                 onTagPress={ (index, tagLabel, event) => console.log(index, tagLabel) }
                 inputStyle={{ backgroundColor: 'white' }}
@@ -152,7 +165,7 @@ constructor(props) {
     } 
 
     _parseTags(){
-        return this._getData() ? this._getData().split(',') :[];
+        return this.state.textValue ? this.state.textValue.split(',') :[];
     }
 
 

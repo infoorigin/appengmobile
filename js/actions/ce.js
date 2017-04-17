@@ -112,12 +112,13 @@ export function putBaseNodeKeys(keys){
     }
 }
 
-export function submitCardNodeDataAction(cardConfigId, nodeId, bindingId, apiAction){
+export function submitCardNodeDataAction(cardConfigId, nodeId, bindingId, data, apiAction){
   return {
     type : SUBMIT_CARD_NODE_DATA,
     cardConfigId,
     nodeId,
     bindingId,
+    data,
     apiAction,
   }
 }

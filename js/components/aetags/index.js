@@ -80,7 +80,6 @@ class Tags extends React.Component {
   }
 
   _renderTagInput(){
-      console.log("this.props.editable :",this.props.editable);
     if(this.props.editable){
         return (
         <View style={[styles.textInputContainer]}>

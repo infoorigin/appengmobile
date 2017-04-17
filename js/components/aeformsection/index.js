@@ -97,7 +97,7 @@ export default class AEFormSection extends AEBaseComponent {  // eslint-disable-
 
         const attrbs  = this.props.data.get("attributes") ? this.props.data.get("attributes").toJS() : {};
         const attrbdata = Object.assign(attrbs, this.props.user.attributes);
-        console.log("User Props Data ,", attrbdata);
+        console.log("User Props Data ,", JSON.stringify(attrbdata));
         
         return (
 
@@ -108,7 +108,6 @@ export default class AEFormSection extends AEBaseComponent {  // eslint-disable-
                         
                         const privilege = getPrivilege(col, this.props.user); 
                         const isAccesible = resolveExpression(col.accessbilityRegEx, attrbdata);
-                        console.log("Col Name and Privilege,",col.name, col.label, privilege);
                         if( isAccesible && privilege != NO_PRIVILEGE) 
                             return this._renderField(col, privilege, attrbdata);
                         else
