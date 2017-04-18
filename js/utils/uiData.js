@@ -162,7 +162,6 @@ export function updateKeys(stateMapData, nodeId, keys, bindingId) {
     }
 
     let updatePath = [nodeId, bindingId, "keys"]
-    console.log("updatePath :", updatePath)
     let newStateMapData = stateMapData.mergeIn(updatePath, keys);
     return newStateMapData;
 }

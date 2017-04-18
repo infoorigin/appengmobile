@@ -1,9 +1,11 @@
 'use strict';
 
 import React from 'react';
-import { Text, View, ListView, StyleSheet, Button } from 'react-native';
-import HTMLView  from 'react-native-htmlview';
+import { Text, View, ListView, StyleSheet, Modal } from 'react-native';
+import { Icon, Button } from 'native-base';
+import HTMLView from 'react-native-htmlview';
 import AEBaseWidget from './base/AEBaseWidget';
+import AEModalEditor from './AEModalEditor';
 import computeProps from '../utils/computeProps';
 import { NavigationActions } from 'react-navigation';
 
@@ -15,23 +17,37 @@ const TEXT_INPUT_REF = 'urlInput';
 const WEBVIEW_REF = 'webview';
 const DEFAULT_URL = 'https://m.facebook.com';
 
-export default class AEWebEditor extends AEBaseWidget {
- webview = null
+export default class AEHTMLView extends AEBaseWidget {
+    webview = null
     constructor(props) {
         super(props);
         this.state = {
-            
+            isModalEditor : false,
+            value : this._getData(),
         }
-      
+        this._closeModalAndSave = this._closeModalAndSave.bind(this);
+
     }
 
 
     getInitialStyle() {
         return {
 
+            editicon : {
+                container: {
+                    flex: 1,
+                    flexDirection: 'row'
+                }, 
+                button : {
+                    marginBottom: 2,
+                }
+            },
             editor: {
                 default: {
-
+                     a: {
+                        fontWeight: '300',
+                        color: '#FF3366', // pink links
+                    },
                 },
                 normal: {
 
@@ -54,71 +70,90 @@ export default class AEWebEditor extends AEBaseWidget {
 
     componentStyle() {
         const isError = this._hasError();
-        const initialStyle = this.getInitialStyle();
+        const initial = this.getInitialStyle().editor;
 
-        let editorStyle = isError ? initialStyle.editor.error : initialStyle.editor.normal;
-        if (!this._editable()) {
-            textboxStyle = initialStyle.editor.notEditable;
-        }
-
-
+        let editorStyle = isError ? {...initial.default, ...initial.error} : {...initial.default, ...initial.normal};
+        
         return {
             ...this._baseComponentStyle(),
             editorStyle: editorStyle,
+            editicon : this.getInitialStyle().editicon,
         }
 
     }
 
-    _editable() {
-        return this.props.config.type !== "LabelField";
-    }
+
 
     prepareRootProps(textboxStyle) {
         var defaultProps = {
-
+            
         }
         //return computeProps(this.props, defaultProps);
         return defaultProps;
     }
 
-    _isTextArea() {
-
+    _renderEditIcon(styles){
+        return (
+            <Button  transparent  
+                onPress={() => this._enableModal()}
+            >
+                <Icon  style={ { marginBottom: 10, fontSize: 30, color: 'dodgerblue'}} name='ios-create' />
+            </Button>
+           //<Icon name='ios-create' />
+        )
     }
 
-    _multilineProps() {
-        if (this._isTextArea())
-            return { multiline: true, numberOfLines: 2 };
-        else
-            return { multiline: false };
-
+    _renderModal(){
+        return <Modal
+            animationType={"slide"}
+            transparent={true}
+            visible={this.state.isModalEditor}
+            onRequestClose={() => {console.log("Editor Modal Closed")}} >
+                <AEModalEditor content={this._getData()} closeModalAndSave={this._closeModalAndSave}/>
+        </Modal> ;
     }
 
-    
+    _enableModal(){
+        console.log("Enabling Modal");
+        this.setState({
+            isModalEditor : true,
+        });
+    }
+
+    _closeModalAndSave(value){
+        console.log("Closing Editor ", value) ;
+        this.setState({
+            isModalEditor : false,
+            value
+        });
+        this.props.onBlur(this._fieldDBCode(), value);
+    }
+
     render() {
-        //const styles = this.componentStyle();
-        // const base = this._baseRender(styles);
-        const htmlContent = '<p>hi</p><ul><li>111</li><li>222</li><li>333</li><li>444</li></ul><p><b>ddd</b></p>';
-
+        const styles = this.componentStyle();
+        const base = this._baseRender(styles);
+        base.label = base.label != null ? base.label : <Text style={styles.controlLabelStyle}>{"Description"}</Text> ;
+        console.log("this._getData() :",this._getData());
         return (
             <View>
-                  <Button
-                onPress={() =>  this.props.dispatch(NavigationActions.navigate({ routeName: 'DrawerOpen' }))}
-                title="Open drawer2"
-                />
-            <HTMLView
-            value={htmlContent}
-            stylesheet={styles}
-            />    
-            </View>         
+                <View style={styles.editicon.container} > 
+                    {base.label}
+                    {this._renderEditIcon(styles)}
+                </View>
+                 <HTMLView value={this.state.value} stylesheet={styles.editorStyle} />
+                {base.help}
+                {base.error}
+                {this._renderModal()}
+            </View>
         );
     }
 
 
 }
 
-const styles = StyleSheet.create({
-  a: {
-    fontWeight: '300',
-    color: '#FF3366', // pink links
-  },
-});
+// const styles = StyleSheet.create({
+//     a: {
+//         fontWeight: '300',
+//         color: '#FF3366', // pink links
+//     },
+// });

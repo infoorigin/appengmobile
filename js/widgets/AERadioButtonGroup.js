@@ -10,7 +10,7 @@ export default class AERadioButtonGroup extends AEBaseOptionsWidget {
 
     constructor(props) {
         super(props);
-
+        this._onPress = this._onPress.bind(this);
     }
 
     getInitialStyle() {
@@ -105,13 +105,21 @@ export default class AERadioButtonGroup extends AEBaseOptionsWidget {
 
     }
 
+   _onPress(selectedValue){
+       this.setState({
+           selectedValue,
+       })
+       this._onChange(selectedValue)
+   }
+
+
     _renderOptions(styles) {
         let radioOptions = this.state.options.map(function (option, i) {
             return (
                 <View key={"ropt" + i} style={{ flexDirection: 'row', margin: 5 }}>
                     <AERadioButton key={"rd" + i} animation={'bounceIn'}
-                        isSelected={this._getData() == option.value}
-                        onPress={() => this._onChange(option.value)}
+                        isSelected={this.state.selectedValue == option.id}
+                        onPress={() => this._onPress(option.id)}
                     />
                     <Text style={styles.textStyle}>{option.label}</Text>
                 </View>

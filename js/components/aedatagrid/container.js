@@ -14,7 +14,6 @@ export default class GridContainer extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        console.log(" shouldComponentUpdate :", nextProps.isRenderContent);
         return nextProps.isRenderContent ? true : false;
         
     }

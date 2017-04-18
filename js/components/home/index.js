@@ -25,7 +25,6 @@ class Home extends Component { // eslint-disable-line
   }
  
   render() {
-   console.log("Render Home :");
     
     return (
       <Container theme={myTheme}>

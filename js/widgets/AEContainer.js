@@ -141,9 +141,9 @@ export default class AEContainer extends AEBaseComponent {
   }
 
   renderModal() {
-    let content = this.renderModalContent();
-    let action = this.props.modalActionVisible ?  this.renderModalAction() : <View/>;
-    let modalContent = this.props.modalVisible ? [this.renderHeader(), content] : <View/> ;
+    const content = this.renderModalContent();
+    const action = this.props.modalActionVisible ?  this.renderModalAction() : <View/>;
+    const modalContent = this.props.modalVisible ? [this.renderHeader(), content] : <View/> ;
     
     let modals =   [<Modal key="contentModal"
                     animationType={"slide"}

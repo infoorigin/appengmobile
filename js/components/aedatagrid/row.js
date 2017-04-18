@@ -30,7 +30,6 @@ class GridRow extends Component {
 
     recordClicked() {
         const keysData = this._getRowKeyData();
-        console.log('Key Selected----' ,keysData);
         this.props.gridAction(RENDER_LAYOUT, keysData);
     }
 
@@ -71,7 +70,6 @@ class GridRow extends Component {
     }
 
     render() {
-        console.log("Rendering :", this.props.rownum );
         return (
 
             <View key={'row-'+this.props.rownum} style={styles.gridRow}>

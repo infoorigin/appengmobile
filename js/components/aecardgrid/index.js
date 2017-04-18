@@ -47,7 +47,6 @@ class AECardGrid extends AEBaseComponent {
                 return 0;
             }
         });
-        headerdata.forEach(function (d) { console.log(d.headerName, d.visible) });
         return headerdata;
     }
 
@@ -75,7 +74,6 @@ class AECardGrid extends AEBaseComponent {
     }
 
     _onGridAction(action, keys) {
-        console.log(" _onGridAction: ", action, keys);
         this.props.onGridAction(action, keys);
     }
 
@@ -113,9 +111,7 @@ class AECardGrid extends AEBaseComponent {
        const header = this._gridHeader();
         const keyColumns = this._keyColumns();
         const actions = this._rowActions();
-         console.log("Render AEECardGrid ",this.props.data.length);
-          console.log("this._filtertedData(header) ",this._filtertedData(header).length);
-       
+        
        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
         var dataSource = ds.cloneWithRows(this._filtertedData(header));
         return (

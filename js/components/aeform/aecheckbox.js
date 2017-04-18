@@ -25,10 +25,8 @@ export default class AECheckbox extends Component {
    //static list
    let data = this.props.field.metadataUISelectItems.filter(function(d){d["key"]=d["value"];return true;});
 
-       console.log('===============================================');
       console.log(JSON.stringify(data));
-      console.log('===============================================');
-
+     
    this.setState({data:data});
  }
 

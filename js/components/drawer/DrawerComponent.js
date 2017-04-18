@@ -29,11 +29,7 @@ const navitems = [
     nav: 'WebView',
     //path:'/schedule'
   },
-  {
-    name: 'HTMLView',
-    nav: 'HTMLView',
-    //path:'/schedule'
-  },
+  
   {
   name :'Demo',
   nav :'Demo',

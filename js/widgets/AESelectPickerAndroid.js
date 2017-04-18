@@ -6,23 +6,25 @@ export default class AESelectPickerAndroid extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value : this.props.onChange
+      value : this.props.value
     };
     this._onChange = this._onChange.bind(this);
   }
 
   _onChange(value){
-    this.setState({
-      value,
-    });
-    this.props.onChange(value);
+    if(this.state.value != value) {
+      this.setState({
+        value,
+      });
+      this.props.onChange(value);
+    }
+       
   }
 
   render() {
     let options = this.props.options.map(({id, value, label}) => <Picker.Item key={id} value={id} label={label} />);
     const defaultSelect = <Picker.Item key="d000-0" value="" label={" "} />;
     options.unshift(defaultSelect);
-
     return (
       <Picker
         accessibilityLabel={this.props.label}

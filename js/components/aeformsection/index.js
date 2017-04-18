@@ -9,6 +9,7 @@ import AECheckboxGroup from '../../widgets/AECheckboxGroup';
 import AERadioButtonGroup from '../../widgets/AERadioButtonGroup';
 import AEDatePicker from '../../widgets/AEDatePicker';
 import AESelectPicker from '../../widgets/AESelectPicker';
+import AEHTMLView from '../../widgets/AEHTMLView';
 import { Map } from 'immutable';
 import { NO_PRIVILEGE, VIEW_PRIVILEGE, EDIT_PRIVILEGE, getPrivilege } from '../../services/usercontext.js';
 import {resolveExpression} from '../../utils/exprexecutor';
@@ -83,29 +84,26 @@ export default class AEFormSection extends AEBaseComponent {  // eslint-disable-
             case "DatePicker":
             case "TimePicker":
                 return (<AEDatePicker key={col.configObjectId} {...this._defaultFieldProps(privilege,col,attrbdata) } ></AEDatePicker>);
+            case "cktexteditor" :
+                return (<AEHTMLView key={col.configObjectId} {...this._defaultFieldProps(privilege,col,attrbdata) } ></AEHTMLView>);   
             case "Hiddenfield":
                 return null;;
             default:
                 console.log("Invalid or unspported Form field :", col.type);
                 return null;
         }
-
     }
-
 
     render() {
 
         const attrbs  = this.props.data.get("attributes") ? this.props.data.get("attributes").toJS() : {};
         const attrbdata = Object.assign(attrbs, this.props.user.attributes);
-        console.log("User Props Data ,", JSON.stringify(attrbdata));
-        
+        //console.log("User Props Data ,", JSON.stringify(attrbdata));
         return (
 
             <View>
-
                 {
                     this.props.config.renderColumns.map(function (col, i) {
-                        
                         const privilege = getPrivilege(col, this.props.user); 
                         const isAccesible = resolveExpression(col.accessbilityRegEx, attrbdata);
                         if( isAccesible && privilege != NO_PRIVILEGE) 
@@ -113,9 +111,7 @@ export default class AEFormSection extends AEBaseComponent {  // eslint-disable-
                         else
                             return null;
                     }.bind(this))
-
                 }
-
             </View>
         );
     }

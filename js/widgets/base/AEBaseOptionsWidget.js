@@ -9,11 +9,12 @@ export default class AEBaseOptionsWidget  extends AEBaseWidget {
 
     constructor(props) {
         super(props);
-         this._queryOptions = this._queryOptions.bind(this);
+        this._queryOptions = this._queryOptions.bind(this);
         this.state = {
             options: this.props.config.metadataUISelectItems && this.props.config.metadataUISelectItems.length ?
                 this.props.config.metadataUISelectItems : [],
-            radioSelected: false,    
+            radioSelected: false,  
+            selectedValue : this._getData(),   
         }
     }
 
