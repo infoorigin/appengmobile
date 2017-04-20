@@ -18,6 +18,8 @@ export const getCompositeEntityNodeData = (state) => state.ae.nodeData
 
 export const getCompositeEntityNode = (state) => state.ae.cenode.config
 
+export const getCompositeEntityNodeKeys = (state) => state.ae.cenode.keys
+
 export const getActiveCompositeEntityNode = (state) => state.ae.activenode.config
 
 export const getFormDataKey = (state) => state.ae.form.key

@@ -3,7 +3,7 @@ import navigateTo from '../actions/sideBarNav';
 import { fork, call, put, select } from "redux-saga/effects";
 import update from 'immutability-helper';
 import { NavigationActions } from 'react-navigation';
-import { getCompositeEntity, setActiveNode, getActiveCompositeEntityNode, getNodeById, queryNodeData, findParentNode } from './ce';
+import { getCompositeEntity, getCompositeEntityNode, getCompositeEntityNodeKeys, getNodeById, queryNodeData, findParentNode } from './ce';
 import { putBaseNodeKeys } from '../actions/ce';
 import { fetchNodeActiveGridData, queryNodeGridData } from './grid';
 import { submitNodeData,getConfig, getGridData, getlayoutData } from '../services/api';
@@ -220,6 +220,11 @@ function* createCardState(tabCard, activeTab, action) {
     return cardState;
 }
 
+/**
+ * POssible duplicate to tabdata
+ * @param {*} cardState 
+ * @param {*} keys 
+ */
 export function* refreshTabData(cardState, keys) {
     const activeTab = cardState.activeTab;
     switch (activeTab.viewType) {
@@ -229,9 +234,10 @@ export function* refreshTabData(cardState, keys) {
                 //check if nodeId is linked to parent display
                 let node = cardState.node;
                 if (cardState.node.addToParentDisplay) {
-                    node = yield call(findParentNode, cardState.node.configObjectId);
+                    node = yield select(getCompositeEntityNode);
+                    keys = yield select(getCompositeEntityNodeKeys);
                 }
-                console.log(" queryNodeData node :", node.configObjectId);
+                console.log(" queryNodeData refreshTabData node :", node.configObjectId);
                 return yield call(queryNodeData, node, keys);
             }
             return {}
@@ -264,10 +270,11 @@ function* tabNodeData(cardState, activeTab, keys) {
                 else {
                     //check if nodeId is linked to parent display
                     let node = cardState.node;
-                    if (cardState.node.addToParentDisplay) {
-                        node = yield call(findParentNode, cardState.node.configObjectId);
+                    if (cardState.node.addToParentDisplay) { // get the base  node
+                        node = yield select(getCompositeEntityNode);
+                        keys = yield select(getCompositeEntityNodeKeys);
                     }
-                    console.log(" queryNodeData node :", node.configObjectId);
+                    console.log(" tabNodeData queryNodeData node :", node.configObjectId);
                     return yield call(queryNodeData, node, keys);
                 }
             }

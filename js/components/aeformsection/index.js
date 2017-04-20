@@ -67,7 +67,8 @@ export default class AEFormSection extends AEBaseComponent {  // eslint-disable-
         }
     }
 
-    _renderField(col, privilege, attrbdata) { 
+    _renderField(col, privilege, attrbdata) {
+
          switch (col.type) {
             case "TextBox":
             case "Password":

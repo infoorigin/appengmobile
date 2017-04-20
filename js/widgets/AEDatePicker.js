@@ -7,13 +7,14 @@ import computeProps from '../utils/computeProps';
 import AEDatePickerIOS from './AEDatePickerIOS';
 import AEDatePickerAndroid from './AEDatePickerAndroid';
 import AEBaseWidget from './base/AEBaseWidget';
-
+import { resolveExpression } from '../utils/exprexecutor';
+import { VIEW_PRIVILEGE, EDIT_PRIVILEGE } from '../services/usercontext.js';
 
 export default class AEDatePicker extends AEBaseWidget {
 
     constructor(props) {
-		super(props);
-		this._renderIOSDatePicker = this._renderIOSDatePicker.bind(this);
+        super(props);
+        this._renderIOSDatePicker = this._renderIOSDatePicker.bind(this);
         this._renderAndroidDatePicker = this._renderAndroidDatePicker.bind(this);
     }
 
@@ -100,7 +101,7 @@ export default class AEDatePicker extends AEBaseWidget {
         let dateValueStyle = isError ? initialStyle.dateValue.error : initialStyle.dateValue.normal;
         let dateTouchableStyle = isError ? initialStyle.dateTouchable.error : initialStyle.dateTouchable.normal;
         let datepickerStyle = isError ? initialStyle.datepicker.error : initialStyle.datepicker.normal;
-        
+
         let formGroupStyle = isError ? initialStyle.formGroup.error : initialStyle.formGroup.normal;
         let controlLabelStyle = isError ? initialStyle.controlLabel.error : initialStyle.controlLabel.normal;
         let helpBlockStyle = isError ? initialStyle.helpBlock.error : initialStyle.helpBlock.normal;
@@ -108,8 +109,8 @@ export default class AEDatePicker extends AEBaseWidget {
 
         return {
             dateValueStyle: dateValueStyle,
-            dateTouchableStyle : dateTouchableStyle,
-            datepickerStyle : datepickerStyle,
+            dateTouchableStyle: dateTouchableStyle,
+            datepickerStyle: datepickerStyle,
             formGroupStyle: formGroupStyle,
             controlLabelStyle: controlLabelStyle,
             helpBlockStyle: helpBlockStyle,
@@ -118,14 +119,14 @@ export default class AEDatePicker extends AEBaseWidget {
 
     }
 
-    _renderIOSDatePicker(baseRender, styles){
+    _renderIOSDatePicker(baseRender, styles) {
         return (
             <View style={styles.formGroupStyle}>
                 {baseRender.label}
-                <AEDatePickerIOS {...this.defaultProps()} styles = {styles}/>
+                <AEDatePickerIOS {...this.defaultProps() } styles={styles} />
                 {baseRender.help}
                 {baseRender.error}
-             </View>
+            </View>
         );
     }
 
@@ -138,40 +139,57 @@ export default class AEDatePicker extends AEBaseWidget {
             placeholder: this.props.config.placeHolder ? this.props.config.placeHolder : "",
             value: this._getData(),
             onChange: this._onChange,
-            mode : this.props.config.type === "DatePicker"? "date" : "time",
+            mode: this.props.config.type === "DatePicker" ? "date" : "time",
         };
     }
 
-    _
-
-    _mode(){
-        return this.props.config.type === "DatePicker"? "date" : "time";
+    _mode() {
+        return this.props.config.type === "DatePicker" ? "date" : "time";
     }
 
-    _renderAndroidDatePicker(baseRender, styles){
+    _renderAndroidDatePicker(baseRender, styles) {
         return (
             <View style={styles.formGroupStyle}>
-                <AEDatePickerAndroid  {...this.defaultProps()} label={baseRender.label} styles = {styles}  />
+                <AEDatePickerAndroid  {...this.defaultProps() } label={baseRender.label} styles={styles} />
                 {baseRender.help}
                 {baseRender.error}
-             </View>
+            </View>
         );
     }
+
+    _renderNonEditable(baseRender, styles) {
+        return (
+            <View style={styles.formGroupStyle}>
+                {baseRender.label}
+                {this._nonEditableField()}
+                {baseRender.help}
+                {baseRender.error}
+            </View>
+        );
+    }
+
+
 
     render() {
 
         const styles = this.componentStyle();
         const baseRender = this._baseRender(styles);
-        let datepicker =  null;
+        let datepicker = null;
 
-        if(Platform.OS === 'ios'){
-            datepicker =  this._renderIOSDatePicker(baseRender, styles);
+        const isEditable = resolveExpression(this.props.config.editabilityRegEx, this.props.data);
+
+        if (!isEditable || this.props.privilege == VIEW_PRIVILEGE) {
+            return this._renderNonEditable(baseRender, styles);
+        }
+
+        if (Platform.OS === 'ios') {
+            datepicker = this._renderIOSDatePicker(baseRender, styles);
         }
         else { // android
-            datepicker =  this._renderAndroidDatePicker(baseRender, styles);
+            datepicker = this._renderAndroidDatePicker(baseRender, styles);
         }
 
-        return datepicker ;
+        return datepicker;
     }
 
 

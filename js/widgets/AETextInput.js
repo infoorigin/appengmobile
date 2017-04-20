@@ -6,6 +6,7 @@ import TagInput from 'react-native-tag-input';
 import AEBaseWidget from './base/AEBaseWidget';
 import computeProps from '../utils/computeProps';
 import Tags from '../components/aetags';
+import {resolveExpression} from '../utils/exprexecutor';
 
 
 import { VIEW_PRIVILEGE, EDIT_PRIVILEGE } from '../services/usercontext.js';
@@ -110,6 +111,7 @@ constructor(props) {
         this.setState({
             textValue : text,
         });
+        this._onChange(text);
     }
 
     _onBlurTextInput() {
@@ -117,7 +119,9 @@ constructor(props) {
     }
 
     _input(styles){
-        if(this.props.privilege == VIEW_PRIVILEGE){
+        const isEditable = resolveExpression(this.props.config.editabilityRegEx, this.props.data);
+        
+        if( !isEditable || this.props.privilege == VIEW_PRIVILEGE){
            return this._nonEditableField();
        }
        else {
@@ -137,7 +141,9 @@ constructor(props) {
     }
 
     _inputTags(styles){
-       if(this.props.privilege == VIEW_PRIVILEGE){
+      const isEditable = resolveExpression(this.props.config.editabilityRegEx, this.props.data);
+      
+       if(!isEditable || this.props.privilege == VIEW_PRIVILEGE){
            return (  
              <Tags 
                 ref="input"

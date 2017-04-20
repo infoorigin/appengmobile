@@ -13,7 +13,7 @@ export default class AETabLayoutHeader extends AEBaseComponent {
         super(props);
         this.state = {
             isSearchHeader: false,
-           
+
         }
         this._onGridSeachInput = this._onGridSeachInput.bind(this);
         this._onGridSeachCancel = this._onGridSeachCancel.bind(this);
@@ -53,33 +53,52 @@ export default class AETabLayoutHeader extends AEBaseComponent {
         );
     }
 
-     _onGridSeachInput(searchText){
-       this.props.onGridSearch(searchText);
+    _onGridSeachInput(searchText) {
+        this.props.onGridSearch(searchText);
 
     }
 
-    _onGridSeachCancel(){
+    _onGridSeachCancel() {
         this.setState({ isSearchHeader: false });
         this.props.onGridSearch("");
     }
 
-   
+    _isPrimaryTab() {
+        const firstTab = this.props.card.config.uitabs[0];
+        console.log("firstTab.configObjectId :", firstTab.configObjectId);
+        console.log("this.props.card.activeTab.configObjectId :", this.props.card.activeTab.configObjectId);
+        return firstTab.configObjectId == this.props.card.activeTab.configObjectId
+    }
+
+
     _renderFormHeader() {
         //TODO Change this
         let title = this.props.card.node.name ? this.props.card.node.name : "";
         let buttons = [];
+
         buttons.push(
             <Button key="menu" transparent onPress={this.props.openMenu}>
-                    <Icon name="ios-menu" />
+                <Icon name="ios-menu" />
             </Button>
         );
 
-       buttons.push(
+        if (this._isPrimaryTab()) {
+            buttons.push(
                 <Button key="modalactions" transparent onPress={this.props.onEnableModalAction}>
-                        <Icon name="ios-more" />
+                    <Icon name="ios-more" />
                 </Button>
-        );
-       
+            );
+        }
+        else {
+            // Add privilege TODO
+            buttons.push(
+                <Button transparent onPress={this.props.onAdd}>
+                    <Icon name="md-add" />
+                </Button>
+            );
+        }
+
+
         /*
         //TODO create new attribute for inline save option
         if(this.props.card.node.editFormId) {
@@ -98,7 +117,7 @@ export default class AETabLayoutHeader extends AEBaseComponent {
         );
     }
 
-    _renderModalHeader(){
+    _renderModalHeader() {
         let title = this.props.card.node.name ? this.props.card.node.name : "";
         return (
             <AEHeader>
@@ -109,20 +128,20 @@ export default class AETabLayoutHeader extends AEBaseComponent {
                 <Button transparent onPress={this.props.onAddSave}>
                     Save
                 </Button>
-        </AEHeader>
+            </AEHeader>
         );
     }
 
     _renderUIHeader(uiItem) {
         let title = "";
-        if(this.props.modalVisible){
+        if (this.props.modalVisible) {
             return this._renderModalHeader();
         }
 
         switch (uiItem.configObjectType) {
             case "FormSection":
             case "Form":
-                return this._renderFormHeader();
+                return this._renderFormHeader(uiItem);
             case "DataGrid":
                 return this.state.isSearchHeader ? this._renderGridSearchHeader() : this._renderGridTitleHeader();
             default:

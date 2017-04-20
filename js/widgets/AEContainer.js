@@ -162,7 +162,7 @@ export default class AEContainer extends AEBaseComponent {
                 >
                   { action }
     </Modal>)
-  
+    console.log("Returning modals done");
     return modals;
  
   }

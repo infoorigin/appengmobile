@@ -76,7 +76,6 @@ static propTypes = {
 
     _renderForm(form){
         let uiBindingIds = getAllBindingIdsForNodeId(this.props.data, this.props.nodeId);
-        console.log("uiBindingIds ,",uiBindingIds);
         let forms = uiBindingIds.map(function(uiBindingId){
             let sectiondata = getDataByBindingId(this.props.data, this.props.nodeId, uiBindingId)
             let section = form.sections[0];
@@ -99,29 +98,35 @@ static propTypes = {
 
 
     render() {
-          return (
-            <View>
+        try {
+            return (
+                <View>
+                    
+                    <RECard containerStyle={{margin: 5}} titleStyle = {this.getInitialStyle().dividerItemText} 
+                        title='React Native Element Card'>
+                        {this.props.uiItems.map(function(item, i){
+                            switch(item.configObjectType){
+                                case "FormSection":
+                                    return this._renderFormSection(item);
+                                case "Form" :
+                                    return this._renderForm(item);
+                                case "DataGrid"  :
+                                    return this._renderGrid(item);
+                                default :
+                                    console.log("Invalid or unsupported view Item Type in Card Renderer",item.configObjectType)    ;
+                            }
+
+                        }.bind(this))}
                 
-                <RECard containerStyle={{margin: 5}} titleStyle = {this.getInitialStyle().dividerItemText} 
-                    title='React Native Element Card'>
-                    {this.props.uiItems.map(function(item, i){
-                        switch(item.configObjectType){
-                            case "FormSection":
-                                return this._renderFormSection(item);
-                            case "Form" :
-                                return this._renderForm(item);
-                            case "DataGrid"  :
-                                return this._renderGrid(item);
-                            default :
-                                console.log("Invalid or unsupported view Item Type in Card Renderer",item.configObjectType)    ;
-                        }
+                </RECard>
 
-                    }.bind(this))}
-               
-               </RECard>
-
-            </View>
-        );
+                </View>
+            );
+        }
+        catch (error) {
+            console.log("Error in renderng card ", error);
+            return <View/> ;
+        }
     }
 }
 

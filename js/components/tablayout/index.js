@@ -87,7 +87,7 @@ class AETabLayout extends Component {  // eslint-disable-line
     _renderModalContent(){
       let nodeId = this.props.card.node.configObjectId;
         return (
-        <AEModalContent modalUI={this.props.modalUI} nodeId={nodeId}>
+        <AEModalContent modalUI={this.props.modalUI} nodeId={nodeId} user={this.props.user}>
               <View> 
                 <Text>Modal Content</Text>
                 </View>

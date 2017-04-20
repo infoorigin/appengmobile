@@ -40,7 +40,6 @@ class AEModalContent extends AEBaseComponent {
 
   _renderModalUI(){
     let ui = this.props.modalUI;
-    console.log(" _renderModalUI");
     if(_.isEmpty(ui)) {
       return (<View></View>);
     }
@@ -52,6 +51,7 @@ class AEModalContent extends AEBaseComponent {
             uiItems={[ui]}
             nodeId={this.props.nodeId}
             data={this.props.data}
+            user={this.props.user}
             {...this._callBacks() }>
         </AECard>
     );
@@ -86,9 +86,11 @@ class AEModalContent extends AEBaseComponent {
 
     const contentContainerStyle = this.props.contentContainerStyle || {};
     contentContainerStyle.padding = (this.props.padder) ? this.getTheme().contentPadding : 0;
+    const modalUI = this._renderModalUI();
+    console.log("Modal UI rendered with blank");
     return(
       <KeyboardAwareScrollView automaticallyAdjustContentInsets={false} ref={(c) => {this._scrollview = c; this._root = c;}} {...this.prepareRootProps()} contentContainerStyle={contentContainerStyle}>
-        {this._renderModalUI()}
+        {modalUI}
       </KeyboardAwareScrollView>
     );
   }
